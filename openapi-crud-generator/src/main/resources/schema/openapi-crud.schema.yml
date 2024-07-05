@@ -1,0 +1,32 @@
+#$schema: "https://json-schema.org/draft/2020-12/schema",
+$id: https://wintersleep.org/openapi-crud.schema.yml
+title: CrudDefinition
+type: object
+properties:
+  entities:
+    type: array
+    items:
+      type: object
+      title: Entity
+      additionalProperties: false
+      properties:
+        title:
+          type: string
+        path:
+          type: string
+        parent:
+          type: string
+        access:
+          type: string
+          pattern: l?c?r?u?d?
+        audit:
+          type: string
+          pattern: c?u?d?
+        properties:
+          type: object
+          existingJavaType: java.util.Map<String,String>
+      required:
+        - path
+        - title
+        - access
+        - properties

@@ -1,0 +1,584 @@
+openapi: 3.0.3
+info:
+  title: Test API
+  description: Test API
+  version: 0.0.1
+servers:
+- url: http://localhost:8080
+paths:
+  /users:
+    get:
+      operationId: listUser
+      parameters:
+      - name: page
+        in: query
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+      - name: size
+        in: query
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+      - name: sort
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          headers:
+            Content-Range:
+              schema:
+                type: string
+              example: "Content-Range: users 25-49/123"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserEntry'
+      x-spring-paginated: true
+    post:
+      operationId: createUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /users/{id}:
+    get:
+      operationId: readUser
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    put:
+      operationId: updateUser
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    delete:
+      operationId: deleteUser
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+  /companies:
+    get:
+      operationId: listCompany
+      parameters:
+      - name: page
+        in: query
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+      - name: size
+        in: query
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+      - name: sort
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          headers:
+            Content-Range:
+              schema:
+                type: string
+              example: "Content-Range: companies 25-49/123"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CompanyEntry'
+      x-spring-paginated: true
+    post:
+      operationId: createCompany
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyCreate'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+  /companies/{id}:
+    get:
+      operationId: readCompany
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+    put:
+      operationId: updateCompany
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyUpdate'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+    delete:
+      operationId: deleteCompany
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+  /employees:
+    get:
+      operationId: listEmployee
+      parameters:
+      - name: page
+        in: query
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+      - name: size
+        in: query
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+      - name: sort
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          headers:
+            Content-Range:
+              schema:
+                type: string
+              example: "Content-Range: employees 25-49/123"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EmployeeEntry'
+      x-spring-paginated: true
+    post:
+      operationId: createEmployee
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeCreate'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+  /employees/{id}:
+    get:
+      operationId: readEmployee
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+    put:
+      operationId: updateEmployee
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeUpdate'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+    delete:
+      operationId: deleteEmployee
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+components:
+  schemas:
+    UserFilter:
+      title: UserFilter
+      properties:
+        id:
+          type: integer
+          format: int64
+        email:
+          type: string
+          format: email
+        firstName:
+          type: string
+        lastName:
+          type: string
+        displayName:
+          type: string
+    UserEntry:
+      title: UserEntry
+      required:
+      - id
+      - email
+      - displayName
+      properties:
+        id:
+          type: integer
+          format: int64
+        email:
+          type: string
+          format: email
+        firstName:
+          type: string
+        lastName:
+          type: string
+        displayName:
+          type: string
+    UserCreate:
+      title: UserCreate
+      required:
+      - email
+      - displayName
+      properties:
+        email:
+          type: string
+          format: email
+        firstName:
+          type: string
+        lastName:
+          type: string
+        displayName:
+          type: string
+    User:
+      title: User
+      required:
+      - id
+      - email
+      - displayName
+      - currentEmployeeId
+      properties:
+        id:
+          type: integer
+          format: int64
+        email:
+          type: string
+          format: email
+        firstName:
+          type: string
+        lastName:
+          type: string
+        displayName:
+          type: string
+        currentEmployeeId:
+          type: integer
+          format: int64
+    UserUpdate:
+      title: UserUpdate
+      required:
+      - displayName
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        displayName:
+          type: string
+    CompanyFilter:
+      title: CompanyFilter
+      properties:
+        name:
+          type: string
+        vatNumber:
+          type: string
+          format: vat
+        externalId:
+          type: string
+    CompanyEntry:
+      title: CompanyEntry
+      required:
+      - id
+      - name
+      - vatNumber
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        vatNumber:
+          type: string
+          format: vat
+        externalId:
+          type: string
+    CompanyCreate:
+      title: CompanyCreate
+      required:
+      - name
+      - vatNumber
+      properties:
+        name:
+          type: string
+        vatNumber:
+          type: string
+          format: vat
+        externalId:
+          type: string
+        url:
+          type: string
+          format: url
+    Company:
+      title: Company
+      required:
+      - id
+      - name
+      - vatNumber
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        vatNumber:
+          type: string
+          format: vat
+        externalId:
+          type: string
+        url:
+          type: string
+          format: url
+    CompanyUpdate:
+      title: CompanyUpdate
+      required:
+      - name
+      properties:
+        name:
+          type: string
+        url:
+          type: string
+          format: url
+    EmployeeFilter:
+      title: EmployeeFilter
+      properties:
+        id:
+          type: integer
+          format: int64
+        lastActivated:
+          type: string
+          format: date-time
+        lastDeActivated:
+          type: string
+          format: date-time
+        active:
+          type: boolean
+        userId:
+          type: integer
+          format: int64
+        userDisplayName:
+          type: string
+        companyId:
+          type: integer
+          format: int64
+        companyName:
+          type: string
+    EmployeeEntry:
+      title: EmployeeEntry
+      required:
+      - id
+      - lastActivated
+      - lastDeActivated
+      - active
+      - userId
+      - userDisplayName
+      - companyId
+      - companyName
+      properties:
+        id:
+          type: integer
+          format: int64
+        lastActivated:
+          type: string
+          format: date-time
+        lastDeActivated:
+          type: string
+          format: date-time
+        active:
+          type: boolean
+        userId:
+          type: integer
+          format: int64
+        userDisplayName:
+          type: string
+        companyId:
+          type: integer
+          format: int64
+        companyName:
+          type: string
+    EmployeeCreate:
+      title: EmployeeCreate
+      required:
+      - active
+      - userId
+      - companyId
+      properties:
+        active:
+          type: boolean
+        userId:
+          type: integer
+          format: int64
+        companyId:
+          type: integer
+          format: int64
+    Employee:
+      title: Employee
+      required:
+      - id
+      - lastActivated
+      - lastDeActivated
+      - active
+      - userId
+      - userDisplayName
+      - companyId
+      - companyName
+      properties:
+        id:
+          type: integer
+          format: int64
+        lastActivated:
+          type: string
+          format: date-time
+        lastDeActivated:
+          type: string
+          format: date-time
+        active:
+          type: boolean
+        userId:
+          type: integer
+          format: int64
+        userDisplayName:
+          type: string
+        companyId:
+          type: integer
+          format: int64
+        companyName:
+          type: string
+    EmployeeUpdate:
+      title: EmployeeUpdate
+      required:
+      - active
+      properties:
+        active:
+          type: boolean

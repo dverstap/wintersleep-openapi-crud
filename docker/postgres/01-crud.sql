@@ -1,0 +1,2 @@
+CREATE USER crud WITH PASSWORD 'test';
+CREATE DATABASE crud OWNER crud;

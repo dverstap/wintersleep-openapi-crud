@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: Crud Sample
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5432/crud
+    username: crud
+    password: test
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+logging:
+  level:
+    root: debug

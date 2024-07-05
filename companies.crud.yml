@@ -1,0 +1,54 @@
+structs:
+
+  Address:
+    street: string
+    streetNumber: string
+    zipCode: string
+    city: string
+    country: string:country-code
+
+# TODO arrays and maps
+# TODO enums
+
+entities:
+
+  - title: User
+    path: users
+    access: lcrud
+    audit: cud
+    properties:
+      id: lfr id
+      email: lfcr string:email
+      firstName?: lfcru string
+      lastName?: lfcru string
+      displayName: lfcru string
+      currentEmployeeId: r id
+
+  - title: Company
+    path: companies
+    access: lcrud
+    audit: cud
+    properties:
+      id: lr id
+      name: lfcru string
+      vatNumber: lfcr string:vat
+      externalId?: lfcr string
+      # TODO: address: cru Address
+      url?: cru string:url
+
+  - title: Employee
+    path: employees
+    parent: companies
+    access: lcrud
+    audit: cud
+    properties:
+      id: lfr id
+      lastActivated: lfr string:date-time
+      lastDeActivated: lfr string:date-time
+      # Changing this is more of an "action" that just a plain field-to-field mapping:
+      # The database just stores last activated/de-activated timestamps
+      active: lfrcu boolean
+      userId: lfcr id
+      userDisplayName: lfr string
+      companyId: lfcr id
+      companyName: lfr string
