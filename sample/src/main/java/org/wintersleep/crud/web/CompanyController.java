@@ -22,7 +22,7 @@ public class CompanyController
         implements CompaniesApi {
 
     public CompanyController(CompanyRepository companyRepository) {
-        super(companyRepository);
+        super("companies", companyRepository);
     }
 
     @Override

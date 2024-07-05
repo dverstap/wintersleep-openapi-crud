@@ -28,7 +28,7 @@ public class EmployeeController
     private final CompanyRepository companyRepository;
 
     public EmployeeController(EmployeeRepository employeeRepository, UserRepository userRepository, CompanyRepository companyRepository) {
-        super(employeeRepository);
+        super("employees", employeeRepository);
         this.userRepository = userRepository;
         this.companyRepository = companyRepository;
     }

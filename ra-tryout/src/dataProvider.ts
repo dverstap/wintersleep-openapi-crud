@@ -1,5 +1,80 @@
+import {stringify} from 'query-string';
 import simpleRestProvider from "ra-data-simple-rest";
+import {fetchUtils} from 'ra-core';
+
+let URL = "http://localhost:8080"
 
 export const dataProvider = simpleRestProvider(
-  import.meta.env.VITE_SIMPLE_REST_URL
+    URL
 );
+
+let httpClient = fetchUtils.fetchJson
+
+dataProvider
+    /*
+        .getList = (resource, params ) => {
+        let {page: o, perPage: i} = params.pagination, {field: d, order: y} = params.sort, $ = (o - 1) * i, f = o * i - 1,
+            l = {sort: JSON.stringify([d, y]), range: JSON.stringify([$, f]), filter: JSON.stringify(params.filter)},
+            c = `${n}/${resource}?${(0, h.stringify)(l)}`,
+            p = s === "Content-Range" ? {headers: new Headers({Range: `${resource}=${$}-${f}`})} : {};
+        return e(c, p).then(({headers: a, json: S}) => {
+            if (!a.has(s)) throw new Error(`The ${s} header is missing in the HTTP Response. The simple REST data provider expects responses for lists of resources to contain this header with the total number of results to build the pagination. If you are using CORS, did you declare ${s} in the Access-Control-Expose-Headers header?`);
+            return {
+                data: S,
+                total: s === "Content-Range" ? parseInt(a.get("content-range").split("/").pop(), 10) : parseInt(a.get(s.toLowerCase()))
+            }
+        })
+    */
+
+    .getList =
+    (resource, params) => {
+        const {page, perPage} = params.pagination || {page: 1, perPage: 10};
+        const {field, order} = params.sort || {field: 'id', order: 'ASC'};
+
+        const rangeStart = (page - 1) * perPage;
+        const rangeEnd = page * perPage - 1;
+
+        const query = {
+            page: page - 1,
+            size: perPage,
+            //sort: JSON.stringify([field, order]),
+            sort: `${field},${order}`,
+            //range: JSON.stringify([rangeStart, rangeEnd]),
+            filter: JSON.stringify(params.filter),
+        };
+        //debugger
+        const url = `${URL}/${resource}?${stringify(query)}`;
+        const options = {
+            signal: params.signal,
+        }
+        /*
+                    countHeader === 'Content-Range'
+                        ? {
+                            // Chrome doesn't return `Content-Range` header if no `Range` is provided in the request.
+                            headers: new Headers({
+                                Range: `${resource}=${rangeStart}-${rangeEnd}`,
+                            }),
+                            signal: params?.signal,
+                        }
+                        : {signal: params?.signal};
+        */
+        let countHeader = 'Content-Range'
+        return httpClient(url, options).then(({headers, json}) => {
+            if (!headers.has(countHeader)) {
+                throw new Error(
+                    `The ${countHeader} header is missing in the HTTP Response. The simple REST data provider expects responses for lists of resources to contain this header with the total number of results to build the pagination. If you are using CORS, did you declare ${countHeader} in the Access-Control-Expose-Headers header?`
+                );
+            }
+            return {
+                data: json,
+                total:
+                    countHeader === 'Content-Range'
+                        ? parseInt(
+                            headers.get('content-range')!.split('/').pop() ||
+                            '',
+                            10
+                        )
+                        : parseInt(headers.get(countHeader.toLowerCase())!),
+            };
+        });
+    }

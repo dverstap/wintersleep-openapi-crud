@@ -22,7 +22,7 @@ public class UserController
         implements UsersApi {
 
     public UserController(UserRepository userRepository) {
-        super(userRepository);
+        super("users", userRepository);
     }
 
     @Override

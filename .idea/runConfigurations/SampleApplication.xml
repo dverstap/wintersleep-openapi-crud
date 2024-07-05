@@ -1,5 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="SampleApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <option name="ENABLE_JMX_AGENT" value="false" />
     <module name="wintersleep-openapi-crud-sample" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="org.wintersleep.crud.SampleApplication" />
     <extension name="coverage">

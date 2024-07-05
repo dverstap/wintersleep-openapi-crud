@@ -2,13 +2,17 @@ package org.wintersleep.crud.web;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.List;
+
+import static java.lang.String.format;
 
 @RequiredArgsConstructor
 public abstract class AbstractCrudController<
@@ -19,6 +23,7 @@ public abstract class AbstractCrudController<
         ReadDto,
         UpdateDto> {
 
+    protected final String resource;
     protected final JpaRepository<Entity, ID> repository;
 
     protected ResponseEntity<ReadDto> create(CreateDto dto) {
@@ -34,10 +39,19 @@ public abstract class AbstractCrudController<
     }
 
     protected ResponseEntity<List<EntryDto>> list(Pageable pageable) {
-        return ResponseEntity.ok(repository.findAll(pageable)
-                .stream()
-                .map(this::mapEntry)
-                .toList());
+        Page<Entity> page = repository.findAll(pageable);
+        int start = page.getNumber() * pageable.getPageSize();
+        int end = start + page.getNumberOfElements() - 1;
+        long total = page.getTotalElements();
+        String contentRange = format("%s %d-%d/%d", "users", start, end, total);
+        return ResponseEntity
+                .ok()
+                .header(HttpHeaders.CONTENT_RANGE, contentRange)
+                .body(page
+                        .stream()
+                        .map(this::mapEntry)
+                        .toList())
+                ;
     }
 
     protected ResponseEntity<ReadDto> read(ID id) {
