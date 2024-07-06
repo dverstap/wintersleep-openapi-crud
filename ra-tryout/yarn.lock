@@ -2169,6 +2169,11 @@ jsonexport@^3.2.0:
   resolved "https://registry.yarnpkg.com/jsonexport/-/jsonexport-3.2.0.tgz#e5b4905ea1f6c8f8e0f62e4ceb26e4a31f1c93a8"
   integrity sha512-GbO9ugb0YTZatPd/hqCGR0FSwbr82H6OzG04yzdrG7XOe4QZ0jhQ+kOsB29zqkzoYJLmLxbbrFiuwbQu891XnQ==
 
+jsvat@^2.5.3:
+  version "2.5.3"
+  resolved "https://registry.yarnpkg.com/jsvat/-/jsvat-2.5.3.tgz#44d41d80b8d04a6b98cf721668a872ab35b6009e"
+  integrity sha512-jra/1qujP+vrrCgLcGRRHwLrKj69cLvWUMeFwhwoD/AeHSZ9BY9Bf59GNOtDdDmGhchNwasrWjnKBTbL19FHsg==
+
 "jsx-ast-utils@^2.4.1 || ^3.0.0":
   version "3.3.5"
   resolved "https://registry.yarnpkg.com/jsx-ast-utils/-/jsx-ast-utils-3.3.5.tgz#4766bd05a8e2a11af222becd19e15575e52a853a"

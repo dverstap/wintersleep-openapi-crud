@@ -2,26 +2,26 @@ package org.wintersleep.crud.web;
 
 import lombok.NonNull;
 import org.openapitools.api.EmployeesApi;
-import org.openapitools.model.EmployeeCreateDto;
-import org.openapitools.model.EmployeeDto;
-import org.openapitools.model.EmployeeEntryDto;
-import org.openapitools.model.EmployeeUpdateDto;
+import org.openapitools.model.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.wintersleep.crud.domain.CompanyRepository;
 import org.wintersleep.crud.domain.Employee;
 import org.wintersleep.crud.domain.EmployeeRepository;
 import org.wintersleep.crud.domain.UserRepository;
+import org.wintersleep.crud.util.Now;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("/")
+@Transactional // Unconventional, but ok for CRUD
 public class EmployeeController
-        extends AbstractCrudController<Employee, Long, EmployeeEntryDto, EmployeeCreateDto, EmployeeDto, EmployeeUpdateDto>
+        extends AbstractCrudController<Employee, Long, EmployeeEntryDto, EmployeeFilterDto, EmployeeCreateDto, EmployeeDto, EmployeeUpdateDto>
         implements EmployeesApi {
 
     private final UserRepository userRepository;
@@ -44,11 +44,13 @@ public class EmployeeController
         return ResponseEntity.ok().build();
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public ResponseEntity<List<EmployeeEntryDto>> listEmployee(Integer page, Integer size, String sort, Pageable pageable) {
-        return list(pageable);
+    public ResponseEntity<List<EmployeeEntryDto>> listEmployee(Integer page, Integer size, EmployeeFilterDto filter, String sort, Pageable pageable) {
+        return list(filter, pageable);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public ResponseEntity<EmployeeDto> readEmployee(Long id) {
         return read(id);
@@ -66,8 +68,8 @@ public class EmployeeController
                 .userDisplayName(employee.getUser().getDisplayName())
                 .companyId(employee.getCompany().getId())
                 .companyName(employee.getCompany().getName())
-                .lastActivated(employee.getLastActivatedAt())
-                .lastDeActivated(employee.getLastDeActivatedAt())
+                .lastActivatedAt(employee.getLastActivatedAt())
+                .lastDeActivatedAt(employee.getLastDeActivatedAt())
                 .active(employee.isActive())
                 .build();
     }
@@ -79,8 +81,8 @@ public class EmployeeController
                 .userDisplayName(employee.getUser().getDisplayName())
                 .companyId(employee.getCompany().getId())
                 .companyName(employee.getCompany().getName())
-                .lastActivated(employee.getLastActivatedAt())
-                .lastDeActivated(employee.getLastDeActivatedAt())
+                .lastActivatedAt(employee.getLastActivatedAt())
+                .lastDeActivatedAt(employee.getLastDeActivatedAt())
                 .active(employee.isActive())
                 .build();
     }
@@ -89,17 +91,17 @@ public class EmployeeController
         return Employee.builder()
                 .company(companyRepository.findById(dto.getCompanyId()).orElseThrow())
                 .user(userRepository.findById(dto.getUserId()).orElseThrow())
-                .lastActivatedAt(dto.getActive() == null ? null : OffsetDateTime.now())
+                .lastActivatedAt(dto.isActive() == null ? null : OffsetDateTime.now())
                 .build();
     }
 
     protected Employee mapUpdate(@NonNull EmployeeUpdateDto dto, @NonNull Employee employee) {
         boolean wasActive = employee.isActive();
-        if (!wasActive && dto.getActive()) {
-            employee.setLastActivatedAt(OffsetDateTime.now());
+        if (!wasActive && dto.isActive()) {
+            employee.setLastActivatedAt(Now.offsetDateTime());
         }
-        if (wasActive && !dto.getActive()) {
-            employee.setLastDeActivatedAt(OffsetDateTime.now());
+        if (wasActive && !dto.isActive()) {
+            employee.setLastDeActivatedAt(Now.offsetDateTime());
         }
         return employee;
     }

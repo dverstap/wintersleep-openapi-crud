@@ -2,6 +2,8 @@ package org.wintersleep.crud.web;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,10 +21,12 @@ public abstract class AbstractCrudController<
         Entity,
         ID,
         EntryDto,
+        FilterDto,
         CreateDto,
         ReadDto,
         UpdateDto> {
 
+    private final Logger log = LoggerFactory.getLogger(getClass());
     protected final String resource;
     protected final JpaRepository<Entity, ID> repository;
 
@@ -38,7 +42,8 @@ public abstract class AbstractCrudController<
         return ResponseEntity.ok().build();
     }
 
-    protected ResponseEntity<List<EntryDto>> list(Pageable pageable) {
+    protected ResponseEntity<List<EntryDto>> list(FilterDto filterDto, Pageable pageable) {
+        log.debug("Filter: {}", filterDto);
         Page<Entity> page = repository.findAll(pageable);
         int start = page.getNumber() * pageable.getPageSize();
         int end = start + page.getNumberOfElements() - 1;

@@ -109,6 +109,9 @@ public class EntityDef {
     private Map<String, Schema<?>> generateProperties(EntityModelType modelType, List<PropertyDef> propertyDefs) {
         Preconditions.checkArgument(!propertyDefs.isEmpty(), "Property definitions cannot be empty for {} model of {}", modelType, title);
         Map<String, Schema<?>> result = new LinkedHashMap<>();
+        if (modelType == EntityModelType.FILTER) {
+            result.put("q", new StringSchema());
+        }
         for (PropertyDef propertyDef : propertyDefs) {
             Schema<?> schema = propertyDef.generateSchema();
             result.put(propertyDef.name(), schema);
@@ -163,10 +166,18 @@ public class EntityDef {
                         //.required(true)
                 )
                 .addParametersItem(new QueryParameter()
+                        .name("filter")
+                        .schema(new Schema<>()
+                                .$ref("#/components/schemas/" + getModelName(EntityModelType.FILTER)))
+                )
+//                .addParametersItem(new QueryParameter()
+//                        .name("filter")
+//                        .schema(new StringSchema())
+//                )
+                .addParametersItem(new QueryParameter()
                         .name("sort")
                         .schema(new StringSchema())
                 )
-                // TODO Filter
                 .responses(new ApiResponses()
                         .addApiResponse("200", new ApiResponse()
                                 .description("OK")

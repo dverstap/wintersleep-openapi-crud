@@ -6,9 +6,12 @@ spring:
     username: crud
     password: test
   jpa:
+    open-in-view: false
     hibernate:
       ddl-auto: update
 
 logging:
   level:
     root: debug
+    org.hibernate: info
+    org.springframework.orm: info

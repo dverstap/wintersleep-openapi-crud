@@ -34,6 +34,16 @@
             <version>0.2.6</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-apt</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-jpa</artifactId>
+        </dependency>
+
 <!--
         <dependency>
             <groupId>org.springframework</groupId>
@@ -125,6 +135,7 @@
                                 <!--<apiFirst>true</apiFirst>-->
                                 <basePackage>org.wintersleep.openapi.sample</basePackage>
                                 <bigDecimalAsString>true</bigDecimalAsString>
+                                <booleanGetterPrefix>is</booleanGetterPrefix>
                                 <delegatePattern>false</delegatePattern>
                                 <documentationProvider>source</documentationProvider>
                                 <generateBuilders>true</generateBuilders>
@@ -149,6 +160,18 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessors>
+                        <annotationProcessor>lombok.launch.AnnotationProcessorHider$AnnotationProcessor</annotationProcessor>
+                        <annotationProcessor>com.querydsl.apt.jpa.JPAAnnotationProcessor</annotationProcessor>
+                        <!--<annotationProcessor>org.mapstruct.ap.MappingProcessor</annotationProcessor>-->
+                    </annotationProcessors>
+                </configuration>
             </plugin>
 
             <plugin>

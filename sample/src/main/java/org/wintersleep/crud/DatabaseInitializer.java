@@ -19,7 +19,7 @@ public class DatabaseInitializer implements ApplicationRunner {
     private final CompanyRepository companyRepository;
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
         if (userRepository.count() == 0) {
             for (int i = 0; i < 10; i++) {
                 User user = User.builder()

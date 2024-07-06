@@ -23,6 +23,10 @@ paths:
           minimum: 1
           type: integer
           format: int32
+      - name: filter
+        in: query
+        schema:
+          $ref: '#/components/schemas/UserFilter'
       - name: sort
         in: query
         schema:
@@ -125,6 +129,10 @@ paths:
           minimum: 1
           type: integer
           format: int32
+      - name: filter
+        in: query
+        schema:
+          $ref: '#/components/schemas/CompanyFilter'
       - name: sort
         in: query
         schema:
@@ -227,6 +235,10 @@ paths:
           minimum: 1
           type: integer
           format: int32
+      - name: filter
+        in: query
+        schema:
+          $ref: '#/components/schemas/EmployeeFilter'
       - name: sort
         in: query
         schema:
@@ -317,6 +329,8 @@ components:
     UserFilter:
       title: UserFilter
       properties:
+        q:
+          type: string
         id:
           type: integer
           format: int64
@@ -400,6 +414,8 @@ components:
     CompanyFilter:
       title: CompanyFilter
       properties:
+        q:
+          type: string
         name:
           type: string
         vatNumber:
@@ -473,13 +489,15 @@ components:
     EmployeeFilter:
       title: EmployeeFilter
       properties:
+        q:
+          type: string
         id:
           type: integer
           format: int64
-        lastActivated:
+        lastActivatedAt:
           type: string
           format: date-time
-        lastDeActivated:
+        lastDeActivatedAt:
           type: string
           format: date-time
         active:
@@ -498,8 +516,8 @@ components:
       title: EmployeeEntry
       required:
       - id
-      - lastActivated
-      - lastDeActivated
+      - lastActivatedAt
+      - lastDeActivatedAt
       - active
       - userId
       - userDisplayName
@@ -509,10 +527,10 @@ components:
         id:
           type: integer
           format: int64
-        lastActivated:
+        lastActivatedAt:
           type: string
           format: date-time
-        lastDeActivated:
+        lastDeActivatedAt:
           type: string
           format: date-time
         active:
@@ -546,8 +564,8 @@ components:
       title: Employee
       required:
       - id
-      - lastActivated
-      - lastDeActivated
+      - lastActivatedAt
+      - lastDeActivatedAt
       - active
       - userId
       - userDisplayName
@@ -557,10 +575,10 @@ components:
         id:
           type: integer
           format: int64
-        lastActivated:
+        lastActivatedAt:
           type: string
           format: date-time
-        lastDeActivated:
+        lastDeActivatedAt:
           type: string
           format: date-time
         active:

@@ -9,6 +9,8 @@ structs:
 
 # TODO arrays and maps
 # TODO enums
+# TODO Add s to properties, for sortable
+# TODO Add q to entities, for query (text search, q parameter)
 
 entities:
 
@@ -43,8 +45,8 @@ entities:
     audit: cud
     properties:
       id: lfr id
-      lastActivated: lfr string:date-time
-      lastDeActivated: lfr string:date-time
+      lastActivatedAt: lfr string:date-time
+      lastDeActivatedAt: lfr string:date-time
       # Changing this is more of an "action" that just a plain field-to-field mapping:
       # The database just stores last activated/de-activated timestamps
       active: lfrcu boolean

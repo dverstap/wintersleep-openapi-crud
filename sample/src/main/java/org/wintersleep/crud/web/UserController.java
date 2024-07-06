@@ -2,10 +2,7 @@ package org.wintersleep.crud.web;
 
 import lombok.NonNull;
 import org.openapitools.api.UsersApi;
-import org.openapitools.model.UserCreateDto;
-import org.openapitools.model.UserDto;
-import org.openapitools.model.UserEntryDto;
-import org.openapitools.model.UserUpdateDto;
+import org.openapitools.model.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/")
 public class UserController
-        extends AbstractCrudController<User, Long, UserEntryDto, UserCreateDto, UserDto, UserUpdateDto>
+        extends AbstractCrudController<User, Long, UserEntryDto, UserFilterDto, UserCreateDto, UserDto, UserUpdateDto>
         implements UsersApi {
 
     public UserController(UserRepository userRepository) {
@@ -37,8 +34,8 @@ public class UserController
     }
 
     @Override
-    public ResponseEntity<List<UserEntryDto>> listUser(Integer page, Integer size, String sort, Pageable pageable) {
-        return list(pageable);
+    public ResponseEntity<List<UserEntryDto>> listUser(Integer page, Integer size, UserFilterDto filter, String sort, Pageable pageable) {
+        return list(filter, pageable);
     }
 
     @Override
