@@ -2,7 +2,7 @@
   <configuration default="false" name="SampleApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
     <option name="ENABLE_JMX_AGENT" value="false" />
     <module name="wintersleep-openapi-crud-sample" />
-    <option name="SPRING_BOOT_MAIN_CLASS" value="org.wintersleep.crud.SampleApplication" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="org.wintersleep.openapi.crud.sample.SampleApplication" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="org.wintersleep.crud.*" />

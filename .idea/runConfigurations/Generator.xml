@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Generator" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="org.wintersleep.openapi.crud.generator.Generator" />
+    <module name="wintersleep-openapi-crud-generator" />
+    <option name="PROGRAM_PARAMETERS" value="companies.crud.yml companies.openapi.yml" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="org.wintersleep.openapi.crud.generator.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
