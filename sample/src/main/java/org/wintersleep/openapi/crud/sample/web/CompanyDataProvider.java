@@ -8,8 +8,8 @@ import org.openapitools.model.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.wintersleep.openapi.crud.core.domain.BooleanTimestampPair;
-import org.wintersleep.openapi.crud.sample.domain.Company;
 import org.wintersleep.openapi.crud.core.provider.JpaQueryDslDataProvider;
+import org.wintersleep.openapi.crud.sample.domain.Company;
 import org.wintersleep.openapi.crud.sample.domain.QCompany;
 
 @Service
@@ -20,7 +20,7 @@ public class CompanyDataProvider extends JpaQueryDslDataProvider<
         CompanyCreateDto, CompanyDto, CompanyUpdateDto> {
 
     public CompanyDataProvider() {
-        super("companies", Company.class, QCompany.company);
+        super("companies", Company.class, QCompany.company, QCompany.company.id);
     }
 
     @Override
@@ -33,19 +33,6 @@ public class CompanyDataProvider extends JpaQueryDslDataProvider<
                 like(company.vatNumber, dto.getVatNumber()),
                 BooleanTimestampPair.filter(company.verifiedTimestampPair, dto.isVerified())
         );
-    }
-
-    @Override
-    protected Expression<? extends Comparable<?>> mapOrderExpression(CompanySortDto fieldName) {
-        final QCompany company = QCompany.company;
-        return switch (fieldName) {
-            case ID -> company.id;
-            case NAME -> company.name;
-            case EXTERNAL_ID -> company.externalId;
-            case VAT_NUMBER -> company.vatNumber;
-            case LAST_VERIFIED_AT -> company.verifiedTimestampPair.lastTrueAt;
-            case LAST_UNVERIFIED_AT -> company.verifiedTimestampPair.lastFalseAt;
-        };
     }
 
     private BooleanExpression search(String q) {
@@ -61,6 +48,19 @@ public class CompanyDataProvider extends JpaQueryDslDataProvider<
     }
 
     @Override
+    protected Expression<? extends Comparable<?>> mapOrderExpression(CompanySortDto fieldName) {
+        final QCompany company = QCompany.company;
+        return switch (fieldName) {
+            case ID -> company.id;
+            case NAME -> company.name;
+            case EXTERNAL_ID -> company.externalId;
+            case VAT_NUMBER -> company.vatNumber;
+            case LAST_VERIFIED_AT -> company.verifiedTimestampPair.lastSetAt;
+            case LAST_UNVERIFIED_AT -> company.verifiedTimestampPair.lastUnSetAt;
+        };
+    }
+
+    @Override
     protected CompanyEntryDto mapEntry(@NonNull Company company) {
         return CompanyEntryDto.builder()
                 .id(company.getId())
@@ -68,8 +68,8 @@ public class CompanyDataProvider extends JpaQueryDslDataProvider<
                 .name(company.getName())
                 .externalId(company.getExternalId())
                 .verified(company.isVerified())
-                .lastVerifiedAt(company.getVerifiedTimestampPair().getLastTrueAt())
-                .lastUnverifiedAt(company.getVerifiedTimestampPair().getLastFalseAt())
+                .lastVerifiedAt(company.getVerifiedTimestampPair().getLastSetAt())
+                .lastUnverifiedAt(company.getVerifiedTimestampPair().getLastUnSetAt())
                 .build();
     }
 
@@ -82,8 +82,8 @@ public class CompanyDataProvider extends JpaQueryDslDataProvider<
                 .externalId(company.getExternalId())
                 .url(company.getUrl())
                 .verified(company.isVerified())
-                .lastVerifiedAt(company.getVerifiedTimestampPair().getLastTrueAt())
-                .lastUnverifiedAt(company.getVerifiedTimestampPair().getLastFalseAt())
+                .lastVerifiedAt(company.getVerifiedTimestampPair().getLastSetAt())
+                .lastUnverifiedAt(company.getVerifiedTimestampPair().getLastUnSetAt())
                 .build();
     }
 

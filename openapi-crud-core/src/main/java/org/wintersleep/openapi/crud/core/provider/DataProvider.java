@@ -28,9 +28,14 @@ public interface DataProvider<ID, EntryDto, SortPropertyId extends Enum<SortProp
      * in a WebMvcConfigurer implementation. If you forget this, this will typically snow up as a FilterDto
      * with all properties set to null, even though they are in the HTTP request.
      */
-    @Transactional
+    @Transactional(readOnly = true)
     default ResponseEntity<List<EntryDto>> list(FilterDto filterDto, SortRequest<SortPropertyId> sortRequest, OffsetLimit offsetLimit) {
         throw new UnsupportedOperationException("list not supported by " + getClass().getSimpleName());
+    }
+
+    @Transactional(readOnly = true)
+    default ResponseEntity<List<ReadDto>> getMany(List<Long> ids) {
+        throw new UnsupportedOperationException("getMany not supported by " + getClass().getSimpleName());
     }
 
     @Transactional
@@ -38,7 +43,7 @@ public interface DataProvider<ID, EntryDto, SortPropertyId extends Enum<SortProp
         throw new UnsupportedOperationException("create not supported by " + getClass().getSimpleName());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     ResponseEntity<ReadDto> read(ID id);
 
     @Transactional

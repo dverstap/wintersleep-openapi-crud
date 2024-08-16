@@ -12,32 +12,32 @@ import java.time.OffsetDateTime;
 @Data
 public class BooleanTimestampPair {
 
-    private OffsetDateTime lastTrueAt;
-    private OffsetDateTime lastFalseAt;
+    private OffsetDateTime lastSetAt;
+    private OffsetDateTime lastUnSetAt;
 
     public static BooleanTimestampPair of(boolean value) {
         BooleanTimestampPair result = new BooleanTimestampPair();
         if (value) {
-            result.lastTrueAt = Now.offsetDateTime();
+            result.lastSetAt = Now.offsetDateTime();
         }
         return result;
     }
 
     public boolean get() {
-        if (lastTrueAt == null) {
+        if (lastSetAt == null) {
             return false;
         }
-        if (lastFalseAt == null) {
+        if (lastUnSetAt == null) {
             return true;
         }
-        return lastTrueAt.isAfter(lastFalseAt);
+        return lastSetAt.isAfter(lastUnSetAt);
     }
 
     public void set(boolean verified) {
         if (verified) {
-            lastTrueAt = Now.offsetDateTime();
+            lastSetAt = Now.offsetDateTime();
         } else {
-            lastFalseAt = Now.offsetDateTime();
+            lastUnSetAt = Now.offsetDateTime();
         }
     }
 
@@ -46,10 +46,10 @@ public class BooleanTimestampPair {
             return null;
         }
         BooleanExpression expr = Expressions.allOf(
-                timestampPair.lastTrueAt.isNotNull(),
+                timestampPair.lastSetAt.isNotNull(),
                 Expressions.anyOf(
-                        timestampPair.lastFalseAt.isNull(),
-                        timestampPair.lastTrueAt.after(timestampPair.lastFalseAt)
+                        timestampPair.lastUnSetAt.isNull(),
+                        timestampPair.lastSetAt.after(timestampPair.lastUnSetAt)
                 )
         );
         if (value) {

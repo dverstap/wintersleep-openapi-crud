@@ -8,7 +8,7 @@ servers:
 paths:
   /users:
     get:
-      operationId: listUser
+      operationId: listUsers
       parameters:
       - name: page
         in: query
@@ -100,21 +100,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-    delete:
-      operationId: deleteUser
+  /users/many:
+    get:
+      operationId: getManyUsers
       parameters:
       - name: id
-        in: path
+        in: query
         required: true
         schema:
-          type: integer
-          format: int64
+          type: array
+          items:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
   /companies:
     get:
-      operationId: listCompany
+      operationId: listCompanies
       parameters:
       - name: page
         in: query
@@ -218,9 +227,30 @@ paths:
       responses:
         "200":
           description: OK
+  /companies/many:
+    get:
+      operationId: getManyCompanies
+      parameters:
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Company'
   /employees:
     get:
-      operationId: listEmployee
+      operationId: listEmployees
       parameters:
       - name: page
         in: query
@@ -324,6 +354,27 @@ paths:
       responses:
         "200":
           description: OK
+  /employees/many:
+    get:
+      operationId: getManyEmployees
+      parameters:
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Employee'
 components:
   schemas:
     UserFilter:
@@ -362,6 +413,14 @@ components:
           type: string
         displayName:
           type: string
+    UserSort:
+      title: UserSort
+      enum:
+      - id
+      - email
+      - firstName
+      - lastName
+      - displayName
     UserCreate:
       title: UserCreate
       required:
@@ -416,6 +475,9 @@ components:
       properties:
         q:
           type: string
+        id:
+          type: integer
+          format: int64
         name:
           type: string
         vatNumber:
@@ -539,14 +601,14 @@ components:
         id:
           type: integer
           format: int64
+        active:
+          type: boolean
         lastActivatedAt:
           type: string
           format: date-time
         lastDeActivatedAt:
           type: string
           format: date-time
-        active:
-          type: boolean
         userId:
           type: integer
           format: int64
@@ -561,9 +623,9 @@ components:
       title: EmployeeEntry
       required:
       - id
+      - active
       - lastActivatedAt
       - lastDeActivatedAt
-      - active
       - userId
       - userDisplayName
       - companyId
@@ -572,14 +634,14 @@ components:
         id:
           type: integer
           format: int64
+        active:
+          type: boolean
         lastActivatedAt:
           type: string
           format: date-time
         lastDeActivatedAt:
           type: string
           format: date-time
-        active:
-          type: boolean
         userId:
           type: integer
           format: int64
@@ -590,6 +652,12 @@ components:
           format: int64
         companyName:
           type: string
+    EmployeeSort:
+      title: EmployeeSort
+      enum:
+      - id
+      - lastActivatedAt
+      - lastDeActivatedAt
     EmployeeCreate:
       title: EmployeeCreate
       required:
@@ -609,9 +677,9 @@ components:
       title: Employee
       required:
       - id
+      - active
       - lastActivatedAt
       - lastDeActivatedAt
-      - active
       - userId
       - userDisplayName
       - companyId
@@ -620,14 +688,14 @@ components:
         id:
           type: integer
           format: int64
+        active:
+          type: boolean
         lastActivatedAt:
           type: string
           format: date-time
         lastDeActivatedAt:
           type: string
           format: date-time
-        active:
-          type: boolean
         userId:
           type: integer
           format: int64

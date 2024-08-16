@@ -12,6 +12,8 @@ properties:
       properties:
         title:
           type: string
+        pluralTitle:
+          type: string
         path:
           type: string
         parent:
@@ -28,5 +30,6 @@ properties:
       required:
         - path
         - title
+        - pluralTitle
         - access
         - properties

@@ -3,6 +3,8 @@ package org.wintersleep.openapi.crud.sample;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.openapitools.model.CompanyFilterDto;
+import org.openapitools.model.EmployeeFilterDto;
+import org.openapitools.model.UserFilterDto;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -30,5 +32,8 @@ public class SampleWebMvcConfigurer implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new FilterArgumentResolver<>(objectMapper, CompanyFilterDto.class));
+        resolvers.add(new FilterArgumentResolver<>(objectMapper, EmployeeFilterDto.class));
+        resolvers.add(new FilterArgumentResolver<>(objectMapper, UserFilterDto.class));
     }
+
 }

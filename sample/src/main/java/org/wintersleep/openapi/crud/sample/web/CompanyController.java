@@ -40,8 +40,13 @@ public class CompanyController implements CompaniesApi {
     }
 
     @Override
-    public ResponseEntity<List<CompanyEntryDto>> listCompany(Integer page, Integer size, CompanyFilterDto filter, String sort, Pageable pageable) {
+    public ResponseEntity<List<CompanyEntryDto>> listCompanies(Integer page, Integer size, CompanyFilterDto filter, String sort, Pageable pageable) {
         return dataProvider.list(filter, SortRequest.parse(sort, CompanySortDto::fromValue), OffsetLimit.ofPage(page, size));
+    }
+
+    @Override
+    public ResponseEntity<List<CompanyDto>> getManyCompanies(List<Long> ids) {
+        return dataProvider.getMany(ids);
     }
 
     // TODO

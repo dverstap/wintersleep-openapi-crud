@@ -70,3 +70,21 @@ dataProvider.getList = (resource, params) => {
     };
   });
 };
+
+dataProvider.getMany = function (resource, params) {
+  var query = {
+    ids: JSON.stringify({ id: params.ids }),
+    //_ids: params.ids.join("*"),
+  };
+  var idParams = params.ids.map((id) => "id=" + id).join("&");
+  //var url = "".concat(URL, "/").concat(resource, "/many?").concat(stringify(query));
+  var url = "".concat(URL, "/").concat(resource, "/many?").concat(idParams);
+  return httpClient(url, {
+    signal: params === null || params === void 0 ? void 0 : params.signal,
+  }).then(function (_a) {
+    var json = _a.json;
+    return {
+      data: json,
+    };
+  });
+};

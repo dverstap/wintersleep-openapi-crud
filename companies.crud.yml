@@ -15,23 +15,25 @@ structs:
 entities:
 
   - title: User
+    pluralTitle: Users
     path: users
-    access: lcrud
+    access: lcru
     audit: cud
     properties:
-      id: lfr id
-      email: lfcr string:email
-      firstName?: lfcru string
-      lastName?: lfcru string
-      displayName: lfcru string
+      id: lsfr id
+      email: lsfcr string:email
+      firstName?: lsfcru string
+      lastName?: lsfcru string
+      displayName: lsfcru string
       currentEmployeeId: r id
 
   - title: Company
+    pluralTitle: Companies
     path: companies
     access: lcrud
     audit: cud
     properties:
-      id: lsr id
+      id: lsfr id
       name: lsfcru string
       vatNumber: lsfcr string:vat
       externalId?: lsfcr string
@@ -42,17 +44,18 @@ entities:
       lastUnverifiedAt: lsfr string:date-time
 
   - title: Employee
+    pluralTitle: Employees
     path: employees
     parent: companies
     access: lcrud
     audit: cud
     properties:
-      id: lfr id
-      lastActivatedAt: lfr string:date-time
-      lastDeActivatedAt: lfr string:date-time
+      id: lsfr id
       # Changing this is more of an "action" that just a plain field-to-field mapping:
       # The database just stores last activated/de-activated timestamps
       active: lfrcu boolean
+      lastActivatedAt: lsfr string:date-time
+      lastDeActivatedAt: lsfr string:date-time
       userId: lfcr id
       userDisplayName: lfr string
       companyId: lfcr id

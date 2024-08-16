@@ -39,8 +39,8 @@ public class Company implements Persistable<Long> {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "lastTrueAt", column = @Column(name = "last_verified_at")),
-            @AttributeOverride(name = "lastFalseAt", column = @Column(name = "last_un_verified_at"))
+            @AttributeOverride(name = "lastSetAt", column = @Column(name = "last_verified_at")),
+            @AttributeOverride(name = "lastUnSetAt", column = @Column(name = "last_un_verified_at"))
     })
     private BooleanTimestampPair verifiedTimestampPair;
 

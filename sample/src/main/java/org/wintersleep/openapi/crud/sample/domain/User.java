@@ -3,7 +3,6 @@ package org.wintersleep.openapi.crud.sample.domain;
 import lombok.*;
 import org.hibernate.annotations.NaturalId;
 import org.springframework.data.domain.Persistable;
-import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 

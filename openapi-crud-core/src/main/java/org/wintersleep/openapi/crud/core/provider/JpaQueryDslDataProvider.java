@@ -6,6 +6,7 @@ import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQuery;
 import lombok.Getter;
@@ -40,15 +41,17 @@ public abstract class JpaQueryDslDataProvider<
     protected final String resource;
     protected final Class<Entity> entityClass;
     protected final EntityPath<Entity> entityPath;
+    protected final NumberPath<Long> idPath;
 
     @PersistenceContext
     protected EntityManager entityManager;
 
-    public JpaQueryDslDataProvider(String resource, Class<Entity> entityClass, EntityPath<Entity> entityPath) {
+    public JpaQueryDslDataProvider(String resource, Class<Entity> entityClass, EntityPath<Entity> entityPath, NumberPath<Long> idPath) {
         this.log = LoggerFactory.getLogger(getClass() + "." + resource);
         this.resource = resource;
         this.entityClass = entityClass;
         this.entityPath = entityPath;
+        this.idPath = idPath;
     }
 
     @Override
@@ -78,6 +81,23 @@ public abstract class JpaQueryDslDataProvider<
                 .body(page
                         .stream()
                         .map(this::mapEntry)
+                        .toList())
+                ;
+    }
+
+    @Override
+    public ResponseEntity<List<ReadDto>> getMany(List<Long> ids) {
+        BooleanExpression where = idPath.in(ids);
+        JPAQuery<Entity> query = new JPAQuery<>(entityManager)
+                .select(entityPath)
+                .from(entityPath)
+                .where(where);
+        List<Entity> entities = query.fetch();
+        return ResponseEntity
+                .ok()
+                .body(entities
+                        .stream()
+                        .map(this::mapRead)
                         .toList())
                 ;
     }

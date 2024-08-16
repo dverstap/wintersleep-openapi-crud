@@ -2,9 +2,9 @@ package org.wintersleep.openapi.crud.sample.domain;
 
 import lombok.*;
 import org.springframework.data.domain.Persistable;
+import org.wintersleep.openapi.crud.core.domain.BooleanTimestampPair;
 
 import javax.persistence.*;
-import java.time.OffsetDateTime;
 
 @Data
 @Builder
@@ -31,9 +31,13 @@ public class Employee implements Persistable<Long> {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Company company;
 
-    private OffsetDateTime lastActivatedAt;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "lastSetAt", column = @Column(name = "last_activated_at")),
+            @AttributeOverride(name = "lastUnSetAt", column = @Column(name = "last_de_activated_at"))
+    })
+    private BooleanTimestampPair activatedTimestampPair;
 
-    private OffsetDateTime lastDeActivatedAt;
 
     @Override
     public boolean isNew() {
@@ -41,12 +45,14 @@ public class Employee implements Persistable<Long> {
     }
 
     public boolean isActive() {
-        if (lastActivatedAt == null) {
-            return false;
-        }
-        if (lastDeActivatedAt == null) {
-            return true;
-        }
-        return lastActivatedAt.isAfter(lastDeActivatedAt);
+        return activatedTimestampPair != null && activatedTimestampPair.get();
     }
+
+    public void setActive(boolean active) {
+        if (activatedTimestampPair == null) {
+            activatedTimestampPair = new BooleanTimestampPair();
+        }
+        activatedTimestampPair.set(active);
+    }
+
 }

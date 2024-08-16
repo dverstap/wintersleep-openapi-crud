@@ -31,6 +31,7 @@ public class EntityDef {
     // TODO parent
     private final @NonNull String path;
     private final @NonNull String title;
+    private final @NonNull String pluralTitle;
     private final @NonNull Set<EntityOperationType> operationTypes;
     private final @NonNull Set<AccessAudit> audits;
     private final @NonNull Map<String, PropertyDef> properties;
@@ -38,6 +39,7 @@ public class EntityDef {
     public EntityDef(Entity entity) {
         this.path = entity.getPath();
         this.title = entity.getTitle();
+        this.pluralTitle = entity.getPluralTitle();
         this.operationTypes = Collections.unmodifiableSet(EntityOperationType.parse(entity.getAccess()));
         this.audits = Collections.unmodifiableSet(AccessAudit.parse(entity.getAudit()));
         var properties = new LinkedHashMap<String, PropertyDef>();
@@ -158,8 +160,7 @@ public class EntityDef {
         if (supportsRead() || supportsUpdate() || supportsDelete()) {
             PathItem item = new PathItem();
             if (supportsRead()) {
-                item.get(buildReadOperation()
-                );
+                item.get(buildReadOperation());
             }
             if (supportsUpdate()) {
                 item.put(buildUpdateOperation());
@@ -168,6 +169,11 @@ public class EntityDef {
                 item.delete(buildDeleteOperation());
             }
             paths.addPathItem("/" + path + "/{id}", item);
+        }
+        if (supportsRead()) {
+            PathItem item = new PathItem();
+            item.get(buildGetManyOperation());
+            paths.addPathItem("/" + path + "/many", item);
         }
     }
 
@@ -281,6 +287,26 @@ public class EntityDef {
                 );
     }
 
+    private Operation buildGetManyOperation() {
+        return new Operation()
+                .operationId(operationId(EntityOperationType.GET_MANY))
+                .addParametersItem(idsParameter())
+                .responses(new ApiResponses()
+                        .addApiResponse("200", new ApiResponse()
+                                .description("OK")
+                                .content(new Content()
+                                        .addMediaType("application/json", new MediaType()
+                                                .schema(new ArraySchema()
+                                                        .items(new Schema<>()
+                                                                .$ref("#/components/schemas/" + getModelName(EntityModelType.READ))
+                                                        )
+                                                )
+                                        )
+                                )
+                        )
+                );
+    }
+
     private Operation buildUpdateOperation() {
         return new Operation()
                 .operationId(operationId(EntityOperationType.UPDATE))
@@ -322,7 +348,13 @@ public class EntityDef {
 
     private String operationId(EntityOperationType operationType) {
         // Unfortunately, this must be unique, preventing making an abstract class with default implementations ...
-        return operationType.name().toLowerCase() + title;
+        // That is one of the reasons to introduce the DataProvider interface server-side as well
+        String prefix = operationType == EntityOperationType.GET_MANY ? "getMany" : operationType.name().toLowerCase();
+        if (operationType.isMultiple()) {
+            return prefix + pluralTitle;
+        } else {
+            return prefix + title;
+        }
     }
 
     private static Parameter idParameter() {
@@ -332,5 +364,12 @@ public class EntityDef {
                 .schema(PrimitiveType.LONG.createProperty());
     }
 
+    private static Parameter idsParameter() {
+        return new QueryParameter()
+                .name("id")
+                .required(true)
+                .schema(new ArraySchema()
+                        .items(PrimitiveType.LONG.createProperty()));
+    }
 
 }

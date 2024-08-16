@@ -12,17 +12,20 @@ import static java.lang.String.format;
 
 @Getter
 public enum EntityOperationType {
-    LIST(EntityModelType.LIST, EntityModelType.FILTER),
-    CREATE(EntityModelType.CREATE),
-    READ(EntityModelType.READ),
-    UPDATE(EntityModelType.UPDATE),
-    DELETE(),
+    LIST(true, EntityModelType.LIST, EntityModelType.FILTER),
+    GET_MANY(true, EntityModelType.READ),
+    CREATE(false, EntityModelType.CREATE),
+    READ(false, EntityModelType.READ),
+    UPDATE(false, EntityModelType.UPDATE),
+    DELETE(false),
     ;
 
     private final char letter;
+    private final boolean multiple;
     private final Set<EntityModelType> modelTypes;
 
-    EntityOperationType(EntityModelType... modelTypes) {
+    EntityOperationType(boolean multiple, EntityModelType... modelTypes) {
+        this.multiple = multiple;
         letter = Character.toLowerCase(name().charAt(0));
         this.modelTypes = Sets.immutableEnumSet(List.of(modelTypes));
     }
