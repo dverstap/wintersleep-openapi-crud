@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.lang.String.format;
+
 @Getter
 public enum EntityOperationType {
     LIST(EntityModelType.LIST, EntityModelType.FILTER),
@@ -25,18 +27,18 @@ public enum EntityOperationType {
         this.modelTypes = Sets.immutableEnumSet(List.of(modelTypes));
     }
 
-    public static EntityOperationType of(char ch) {
+    public static EntityOperationType of(int ch) {
         for (EntityOperationType access : EntityOperationType.values()) {
             if (access.letter == ch) {
                 return access;
             }
         }
-        throw new IllegalArgumentException("Invalid character for PropertyAccess: " + ch);
+        throw new IllegalArgumentException(format("Invalid character for EntityOperationType: %s (%s)", (char) ch, ch));
     }
 
     public static Set<EntityOperationType> parse(String str) {
         return str.chars()
-                .mapToObj(ch -> of((char) ch))
+                .mapToObj(ch -> of(ch))
                 .collect(Collectors.toCollection(EntityOperationType::noneOf));
     }
 

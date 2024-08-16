@@ -74,6 +74,7 @@ public class UserController
                 .displayName(dto.getDisplayName())
                 .firstName(dto.getFirstName())
                 .lastName(dto.getLastName())
+                .displayName(dto.getDisplayName())
                 .build();
     }
 

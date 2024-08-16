@@ -14,7 +14,6 @@ import org.wintersleep.crud.domain.EmployeeRepository;
 import org.wintersleep.crud.domain.UserRepository;
 import org.wintersleep.crud.util.Now;
 
-import java.time.OffsetDateTime;
 import java.util.List;
 
 @RestController
@@ -91,7 +90,7 @@ public class EmployeeController
         return Employee.builder()
                 .company(companyRepository.findById(dto.getCompanyId()).orElseThrow())
                 .user(userRepository.findById(dto.getUserId()).orElseThrow())
-                .lastActivatedAt(dto.isActive() == null ? null : OffsetDateTime.now())
+                .lastActivatedAt(dto.isActive() ? Now.offsetDateTime() : null)
                 .build();
     }
 

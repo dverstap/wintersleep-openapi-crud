@@ -1,16 +1,23 @@
 package org.wintersleep.crud.web;
 
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import lombok.NonNull;
 import org.openapitools.model.*;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.wintersleep.crud.domain.BooleanTimestampPair;
 import org.wintersleep.crud.domain.Company;
 import org.wintersleep.crud.domain.QCompany;
 import org.wintersleep.crud.provider.AbstractDataProvider;
 
-@Component
-public class CompanyDataProvider extends AbstractDataProvider<Company, Long, CompanyEntryDto, CompanyFilterDto, CompanyCreateDto, CompanyDto, CompanyUpdateDto> {
+@Service
+@Transactional
+public class CompanyDataProvider extends AbstractDataProvider<
+        Company, Long, CompanyEntryDto,
+        CompanySortDto, CompanyFilterDto,
+        CompanyCreateDto, CompanyDto, CompanyUpdateDto> {
 
     public CompanyDataProvider() {
         super("companies", Company.class, QCompany.company);
@@ -23,8 +30,22 @@ public class CompanyDataProvider extends AbstractDataProvider<Company, Long, Com
                 search(dto.getQ()),
                 like(company.name, dto.getName()),
                 like(company.externalId, dto.getExternalId()),
-                like(company.vatNumber, dto.getVatNumber())
+                like(company.vatNumber, dto.getVatNumber()),
+                BooleanTimestampPair.filter(company.verifiedTimestampPair, dto.isVerified())
         );
+    }
+
+    @Override
+    protected Expression<? extends Comparable<?>> mapOrderExpression(CompanySortDto fieldName) {
+        final QCompany company = QCompany.company;
+        return switch (fieldName) {
+            case ID -> company.id;
+            case NAME -> company.name;
+            case EXTERNAL_ID -> company.externalId;
+            case VAT_NUMBER -> company.vatNumber;
+            case LAST_VERIFIED_AT -> company.verifiedTimestampPair.lastTrueAt;
+            case LAST_UNVERIFIED_AT -> company.verifiedTimestampPair.lastFalseAt;
+        };
     }
 
     private BooleanExpression search(String q) {
@@ -46,6 +67,9 @@ public class CompanyDataProvider extends AbstractDataProvider<Company, Long, Com
                 .vatNumber(company.getVatNumber())
                 .name(company.getName())
                 .externalId(company.getExternalId())
+                .verified(company.isVerified())
+                .lastVerifiedAt(company.getVerifiedTimestampPair().getLastTrueAt())
+                .lastUnverifiedAt(company.getVerifiedTimestampPair().getLastFalseAt())
                 .build();
     }
 
@@ -57,6 +81,9 @@ public class CompanyDataProvider extends AbstractDataProvider<Company, Long, Com
                 .name(company.getName())
                 .externalId(company.getExternalId())
                 .url(company.getUrl())
+                .verified(company.isVerified())
+                .lastVerifiedAt(company.getVerifiedTimestampPair().getLastTrueAt())
+                .lastUnverifiedAt(company.getVerifiedTimestampPair().getLastFalseAt())
                 .build();
     }
 
@@ -67,6 +94,7 @@ public class CompanyDataProvider extends AbstractDataProvider<Company, Long, Com
                 .name(dto.getName())
                 .externalId(dto.getExternalId())
                 .url(dto.getUrl())
+                .verifiedTimestampPair(BooleanTimestampPair.of(dto.isVerified()))
                 .build();
     }
 
@@ -74,6 +102,7 @@ public class CompanyDataProvider extends AbstractDataProvider<Company, Long, Com
     protected Company mapUpdate(@NonNull CompanyUpdateDto dto, @NonNull Company company) {
         company.setName(dto.getName());
         company.setUrl(dto.getUrl());
+        company.setVerified(dto.isVerified());
         return company;
     }
 

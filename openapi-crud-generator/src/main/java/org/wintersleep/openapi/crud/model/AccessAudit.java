@@ -4,6 +4,8 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.lang.String.format;
+
 public enum AccessAudit {
     CREATE,
     UPDATE,
@@ -22,7 +24,7 @@ public enum AccessAudit {
                 return access;
             }
         }
-        throw new IllegalArgumentException("Invalid character for PropertyAccess: " + ch);
+        throw new IllegalArgumentException(format("Invalid character for AccessAudit: %s (%s)", (char) ch, ch));
     }
 
     public static Set<AccessAudit> parse(String str) {

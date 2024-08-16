@@ -1,7 +1,8 @@
 import {
+  AutocompleteInput,
   BooleanField,
   BooleanInput,
-  Button,
+  Create,
   Datagrid,
   DateField,
   DateTimeInput,
@@ -9,6 +10,7 @@ import {
   List,
   ReferenceField,
   ReferenceInput,
+  required,
   SaveButton,
   Show,
   SimpleForm,
@@ -17,9 +19,7 @@ import {
   TextInput,
   Toolbar,
   useEditContext,
-  useGetRecordId,
   useNotify,
-  useRecordContext,
   useRedirect,
 } from "react-admin";
 
@@ -27,13 +27,13 @@ export const EmployeeList = () => (
   <List>
     <Datagrid sort={{ field: "id", order: "ASC" }}>
       <TextField source="id" />
-      <DateField source="lastActivatedAt" showTime={true} />
-      <DateField source="lastDeActivatedAt" showTime={true} />
-      <BooleanField source="active" />
       <ReferenceField source="userId" reference="users" />
       {/*<TextField source="userDisplayName" />*/}
       <ReferenceField source="companyId" reference="companies" />
       {/*<TextField source="companyName"/>*/}
+      <BooleanField source="active" />
+      <DateField source="lastActivatedAt" showTime={true} />
+      <DateField source="lastDeActivatedAt" showTime={true} />
     </Datagrid>
   </List>
 );
@@ -42,11 +42,11 @@ export const EmployeeShow = () => (
   <Show>
     <SimpleShowLayout>
       <TextField source="id" />
-      <DateField source="lastActivatedAt" showTime={true} />
-      <DateField source="lastDeActivatedAt" showTime={true} />
-      <BooleanField source="active" />
       <ReferenceField source="userId" reference="users" />
       <ReferenceField source="companyId" reference="companies" />
+      <BooleanField source="active" />
+      <DateField source="lastActivatedAt" showTime={true} />
+      <DateField source="lastDeActivatedAt" showTime={true} />
     </SimpleShowLayout>
   </Show>
 );
@@ -63,7 +63,6 @@ const EditToolbar = () => {
   if (context.isPending) {
     return null;
   }
-  console.log(r);
   return (
     <Toolbar>
       <SaveButton />
@@ -89,21 +88,41 @@ const EditToolbar = () => {
 };
 
 export const EmployeeEdit = () => {
-  const recordId = useGetRecordId();
   return (
-    <Edit>
+    <Edit mutationMode={"pessimistic"}>
       <SimpleForm toolbar={<EditToolbar />}>
         <TextInput source="id" disabled={true} />
+        <ReferenceInput
+          source="userId"
+          reference="users"
+          format={(user) => user.displayName}
+        >
+          <AutocompleteInput name={"userId"} disabled />
+        </ReferenceInput>
+        <ReferenceInput source="companyId" reference="companies">
+          <AutocompleteInput name={"companyId"} disabled />
+        </ReferenceInput>
+        <BooleanInput source="active" />
         <DateTimeInput source="lastActivatedAt" disabled={true} />
         <DateTimeInput source="lastDeActivatedAt" disabled={true} />
-        <BooleanInput source="active" />
-        <ReferenceInput source="userId" reference="users" disabled={true} />
-        <ReferenceInput
-          source="companyId"
-          reference="companies"
-          disabled={true}
-        />
       </SimpleForm>
     </Edit>
   );
 };
+
+export const EmployeeCreate = () => (
+  <Create>
+    <SimpleForm>
+      <ReferenceInput source="userId" reference="users">
+        <AutocompleteInput name={"userId"} validate={required("companyId")} />
+      </ReferenceInput>
+      <ReferenceInput source="companyId" reference="companies">
+        <AutocompleteInput
+          name={"companyId"}
+          validate={required("companyId")}
+        />
+      </ReferenceInput>
+      <BooleanInput source="active" />
+    </SimpleForm>
+  </Create>
+);

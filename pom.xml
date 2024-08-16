@@ -15,7 +15,7 @@
     <properties>
         <java.version>17</java.version>
         <jsonschema2pojo.version>1.2.1</jsonschema2pojo.version>
-        <openapitools.version>7.6.0</openapitools.version>
+        <openapitools.version>7.7.0</openapitools.version>
         <snakeyaml.version>1.32</snakeyaml.version>
         <spring-framework.version>5.3.37</spring-framework.version>
     </properties>

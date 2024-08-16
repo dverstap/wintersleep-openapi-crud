@@ -423,12 +423,23 @@ components:
           format: vat
         externalId:
           type: string
+        verified:
+          type: boolean
+        lastVerifiedAt:
+          type: string
+          format: date-time
+        lastUnverifiedAt:
+          type: string
+          format: date-time
     CompanyEntry:
       title: CompanyEntry
       required:
       - id
       - name
       - vatNumber
+      - verified
+      - lastVerifiedAt
+      - lastUnverifiedAt
       properties:
         id:
           type: integer
@@ -440,11 +451,29 @@ components:
           format: vat
         externalId:
           type: string
+        verified:
+          type: boolean
+        lastVerifiedAt:
+          type: string
+          format: date-time
+        lastUnverifiedAt:
+          type: string
+          format: date-time
+    CompanySort:
+      title: CompanySort
+      enum:
+      - id
+      - name
+      - vatNumber
+      - externalId
+      - lastVerifiedAt
+      - lastUnverifiedAt
     CompanyCreate:
       title: CompanyCreate
       required:
       - name
       - vatNumber
+      - verified
       properties:
         name:
           type: string
@@ -456,12 +485,17 @@ components:
         url:
           type: string
           format: url
+        verified:
+          type: boolean
     Company:
       title: Company
       required:
       - id
       - name
       - vatNumber
+      - verified
+      - lastVerifiedAt
+      - lastUnverifiedAt
       properties:
         id:
           type: integer
@@ -476,16 +510,27 @@ components:
         url:
           type: string
           format: url
+        verified:
+          type: boolean
+        lastVerifiedAt:
+          type: string
+          format: date-time
+        lastUnverifiedAt:
+          type: string
+          format: date-time
     CompanyUpdate:
       title: CompanyUpdate
       required:
       - name
+      - verified
       properties:
         name:
           type: string
         url:
           type: string
           format: url
+        verified:
+          type: boolean
     EmployeeFilter:
       title: EmployeeFilter
       properties:

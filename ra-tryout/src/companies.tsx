@@ -1,6 +1,10 @@
 import {
+  BooleanField,
+  BooleanInput,
   Create,
   Datagrid,
+  DateField,
+  DateTimeInput,
   Edit,
   List,
   required,
@@ -19,6 +23,7 @@ const filters = [
   <TextInput source="name" label="Name" />,
   <TextInput source="vatNumber" label="VAT" />,
   <TextInput source="externalId" label="External ID" />,
+  <BooleanInput source="verified" label="Verified" />,
 ];
 
 export const CompanyList = () => (
@@ -28,6 +33,7 @@ export const CompanyList = () => (
       <TextField source="name" />
       <TextField source="vatNumber" />
       <TextField source="externalId" />
+      <BooleanField source="verified" sortable={false} />
     </Datagrid>
   </List>
 );
@@ -39,7 +45,10 @@ export const CompanyShow = () => (
       <TextField source="name" />
       <TextField source="vatNumber" />
       <TextField source="externalId" />
-      <UrlField source="url" />
+      <UrlField source="url" target="_blank" />
+      <BooleanField source="verified" />
+      <DateField source="lastVerifiedAt" showTime={true} />
+      <DateField source="lastUnVerifiedAt" showTime={true} />
     </SimpleShowLayout>
   </Show>
 );
@@ -78,13 +87,16 @@ const validateUrl: Validator[] = [
 ];
 
 export const CompanyEdit = () => (
-  <Edit>
+  <Edit mutationMode={"pessimistic"}>
     <SimpleForm>
       <TextInput source="id" disabled={true} />
       <TextInput source="name" />
       <TextInput source="vatNumber" disabled={true} />
       <TextInput source="externalId" label="External ID" disabled={true} />
       <TextInput source="url" validate={validateUrl} />
+      <BooleanInput source="verified" />
+      <DateTimeInput source="lastVerifiedAt" disabled={true} />
+      <DateTimeInput source="lastUnVerifiedAt" disabled={true} />
     </SimpleForm>
   </Edit>
 );
@@ -96,6 +108,7 @@ export const CompanyCreate = () => (
       <TextInput source="vatNumber" validate={validateVat} />
       <TextInput source="externalId" label="External ID" />
       <TextInput source="url" validate={validateUrl} />
+      <BooleanInput source="verified" />
     </SimpleForm>
   </Create>
 );

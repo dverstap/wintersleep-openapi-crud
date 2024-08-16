@@ -5,17 +5,19 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public enum EntityModelType {
-    FILTER,
-    LIST(),
-    CREATE,
-    READ,
-    UPDATE,
+    FILTER(PropertyModelType.FILTER),
+    LIST(PropertyModelType.LIST), // TODO delete this field, because: https://marmelab.com/react-admin/DataProviderWriting.html#getlist-and-getone-shared-cache
+    CREATE(PropertyModelType.CREATE),
+    READ(PropertyModelType.READ),
+    UPDATE(PropertyModelType.UPDATE),
     //DELETE,
     ;
 
+    private final PropertyModelType propertyModelType;
     public final char letter;
 
-    EntityModelType() {
+    EntityModelType(PropertyModelType propertyModelType) {
+        this.propertyModelType = propertyModelType;
         letter = Character.toLowerCase(name().charAt(0));
     }
 
@@ -40,6 +42,14 @@ public enum EntityModelType {
 
     public static EnumSet<EntityModelType> noneOf() {
         return EnumSet.noneOf(EntityModelType.class);
+    }
+
+    public PropertyModelType getPropertyModelType() {
+        return propertyModelType;
+    }
+
+    public char getLetter() {
+        return letter;
     }
 
 }

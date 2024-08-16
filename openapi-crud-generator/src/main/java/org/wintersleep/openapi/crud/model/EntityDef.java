@@ -79,7 +79,16 @@ public class EntityDef {
                 ;
     }
 
-    public Schema<?> generateSchema(EntityOperationType operationType, EntityModelType modelType) {
+    public List<PropertyDef> getPropertyDefs(PropertyModelType modelType) {
+        return properties
+                .values()
+                .stream()
+                .filter(def -> def.isIn(modelType))
+                .toList()
+                ;
+    }
+
+    public Schema<?> generateSchema(EntityModelType modelType) {
         String title = getModelName(modelType);
         List<PropertyDef> propertyDefs = getPropertyDefs(modelType);
         Schema<?> schema = new Schema<>(SpecVersion.V30)
@@ -98,8 +107,21 @@ public class EntityDef {
         return schema;
     }
 
+    public Schema<?> generateSortSchema() {
+        String title = getModelName(PropertyModelType.SORT);
+        return new Schema<>(SpecVersion.V30)
+                .title(title)
+                //.extensions(Map.of("x-implements", "org.wintersleep.crud.provider.SortEnum"))
+                ._enum(getSortableProperties());
+    }
+
     public @NotNull String getModelName(EntityModelType modelType) {
+        return getModelName(modelType.getPropertyModelType());
+    }
+
+    public @NotNull String getModelName(PropertyModelType modelType) {
         return switch (modelType) {
+            case SORT -> this.title + "Sort";
             case LIST -> this.title + "Entry";
             case READ -> this.title;
             default -> this.title + StringUtils.capitalize(modelType.name().toLowerCase());
@@ -205,6 +227,13 @@ public class EntityDef {
                 )
                 .extensions(Map.of("x-spring-paginated", true))
                 ;
+    }
+
+    public List<String> getSortableProperties() {
+        return getPropertyDefs(PropertyModelType.SORT)
+                .stream()
+                .map(PropertyDef::name)
+                .toList();
     }
 
     private Operation buildCreateOperation() {

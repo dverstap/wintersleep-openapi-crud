@@ -1,14 +1,19 @@
 import { Admin, Resource, ShowGuesser } from "react-admin";
 import { Layout } from "./Layout";
 import { dataProvider } from "./dataProvider";
-import { UserList } from "./users";
+import { UserEdit, UserList, UserShow } from "./users";
 import {
   CompanyCreate,
   CompanyEdit,
   CompanyList,
   CompanyShow,
 } from "./companies";
-import { EmployeeEdit, EmployeeList, EmployeeShow } from "./employees";
+import {
+  EmployeeCreate,
+  EmployeeEdit,
+  EmployeeList,
+  EmployeeShow,
+} from "./employees";
 
 export const App = () => (
   <Admin layout={Layout} dataProvider={dataProvider}>
@@ -24,12 +29,14 @@ export const App = () => (
       list={EmployeeList}
       show={EmployeeShow}
       edit={EmployeeEdit}
+      create={EmployeeCreate}
     />
     <Resource
       name="users"
       list={UserList}
+      show={UserShow}
+      edit={UserEdit}
       recordRepresentation="displayName"
-      show={ShowGuesser}
     />
   </Admin>
 );

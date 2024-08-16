@@ -31,12 +31,15 @@ entities:
     access: lcrud
     audit: cud
     properties:
-      id: lr id
-      name: lfcru string
-      vatNumber: lfcr string:vat
-      externalId?: lfcr string
+      id: lsr id
+      name: lsfcru string
+      vatNumber: lsfcr string:vat
+      externalId?: lsfcr string
       # TODO: address: cru Address
       url?: cru string:url
+      verified: lfcru boolean
+      lastVerifiedAt: lsfr string:date-time
+      lastUnverifiedAt: lsfr string:date-time
 
   - title: Employee
     path: employees

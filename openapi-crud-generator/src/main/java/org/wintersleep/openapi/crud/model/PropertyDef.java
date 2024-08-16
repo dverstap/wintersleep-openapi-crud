@@ -11,7 +11,7 @@ import java.util.Set;
 public record PropertyDef(
         @NonNull String name,
         boolean optional,
-        @NonNull Set<EntityModelType> modelTypes,
+        @NonNull Set<PropertyModelType> modelTypes,
         @NonNull String type,
         @Nullable String format
 ) {
@@ -82,7 +82,7 @@ public record PropertyDef(
         if (parts1.length != 2) {
             throw new IllegalArgumentException(String.format("Invalid value '%s' for property '%s'", value, name));
         }
-        Set<EntityModelType> accesses = EntityModelType.parse(parts1[0]);
+        Set<PropertyModelType> accesses = PropertyModelType.parse(parts1[0]);
         String[] parts2 = parts1[1].split(":");
         if (parts2.length > 2) {
             throw new IllegalArgumentException(String.format("Invalid value '%s' for property '%s'", value, name));
@@ -92,7 +92,11 @@ public record PropertyDef(
         return new PropertyDef(name, optional, accesses, type, format);
     }
 
-    public boolean isIn(EntityModelType modelType) {
+    public boolean isIn(PropertyModelType modelType) {
         return modelTypes.contains(modelType);
+    }
+
+    public boolean isIn(EntityModelType modelType) {
+        return modelTypes.contains(modelType.getPropertyModelType());
     }
 }

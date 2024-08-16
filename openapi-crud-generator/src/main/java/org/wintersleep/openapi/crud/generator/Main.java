@@ -23,6 +23,7 @@ import org.wintersleep.openapi.crud.model.internal.OpenapiCrudSchema;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 public class Main {
 
@@ -63,7 +64,12 @@ public class Main {
             entityDef.addPaths(paths);
             for (EntityOperationType access : entityDef.getOperationTypes()) {
                 for (EntityModelType modelType : access.getModelTypes()) {
-                    Schema<?> schema = entityDef.generateSchema(access, modelType);
+                    Schema<?> schema = entityDef.generateSchema(modelType);
+                    components.addSchemas(schema.getTitle(), schema);
+                }
+                List<String> sortableProperties = entityDef.getSortableProperties();
+                if (!sortableProperties.isEmpty()) {
+                    Schema<?> schema = entityDef.generateSortSchema();
                     components.addSchemas(schema.getTitle(), schema);
                 }
             }

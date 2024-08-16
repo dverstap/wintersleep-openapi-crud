@@ -3,8 +3,11 @@ package org.wintersleep.crud.domain;
 import lombok.*;
 import org.hibernate.annotations.NaturalId;
 import org.springframework.data.domain.Persistable;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
+
+import static org.springframework.util.StringUtils.hasText;
 
 @Data
 @Builder
@@ -41,4 +44,20 @@ public class User implements Persistable<Long> {
         return id == null;
     }
 
+    /// Call this after setting email and first/last name!
+    public void setDisplayName(String displayName) {
+        if (hasText(displayName)) {
+            this.displayName = displayName;
+        } else {
+            if (hasText(this.firstName) && hasText(this.lastName)) {
+                this.displayName = firstName + " " + lastName;
+            } else if (hasText(this.firstName)) {
+                this.displayName = firstName;
+            } else if (hasText(this.lastName)) {
+                this.displayName = lastName;
+            } else {
+                this.displayName = email;
+            }
+        }
+    }
 }
