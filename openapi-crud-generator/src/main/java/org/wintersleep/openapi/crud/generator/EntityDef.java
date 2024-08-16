@@ -231,7 +231,7 @@ public class EntityDef {
                                 )
                         )
                 )
-                .extensions(Map.of("x-spring-paginated", true))
+                //.extensions(Map.of("x-spring-paginated", true))
                 ;
     }
 

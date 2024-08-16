@@ -45,7 +45,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UserEntry'
-      x-spring-paginated: true
     post:
       operationId: createUser
       requestBody:
@@ -160,7 +159,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/CompanyEntry'
-      x-spring-paginated: true
     post:
       operationId: createCompany
       requestBody:
@@ -287,7 +285,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/EmployeeEntry'
-      x-spring-paginated: true
     post:
       operationId: createEmployee
       requestBody:

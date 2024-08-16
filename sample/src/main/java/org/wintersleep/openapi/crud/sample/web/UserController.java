@@ -2,7 +2,6 @@ package org.wintersleep.openapi.crud.sample.web;
 
 import org.openapitools.api.UsersApi;
 import org.openapitools.model.*;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +21,7 @@ public class UserController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<List<UserEntryDto>> listUsers(Integer page, Integer size, UserFilterDto filter, String sort, Pageable pageable) {
+    public ResponseEntity<List<UserEntryDto>> listUsers(Integer page, Integer size, UserFilterDto filter, String sort) {
         return dataProvider.list(filter, SortRequest.parse(sort, UserSortDto::fromValue), OffsetLimit.ofPage(page, size));
     }
 

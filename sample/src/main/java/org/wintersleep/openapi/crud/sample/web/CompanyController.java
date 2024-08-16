@@ -2,7 +2,6 @@ package org.wintersleep.openapi.crud.sample.web;
 
 import org.openapitools.api.CompaniesApi;
 import org.openapitools.model.*;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,7 +39,7 @@ public class CompanyController implements CompaniesApi {
     }
 
     @Override
-    public ResponseEntity<List<CompanyEntryDto>> listCompanies(Integer page, Integer size, CompanyFilterDto filter, String sort, Pageable pageable) {
+    public ResponseEntity<List<CompanyEntryDto>> listCompanies(Integer page, Integer size, CompanyFilterDto filter, String sort) {
         return dataProvider.list(filter, SortRequest.parse(sort, CompanySortDto::fromValue), OffsetLimit.ofPage(page, size));
     }
 

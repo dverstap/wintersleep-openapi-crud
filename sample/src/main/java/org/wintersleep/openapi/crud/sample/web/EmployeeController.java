@@ -2,7 +2,6 @@ package org.wintersleep.openapi.crud.sample.web;
 
 import org.openapitools.api.EmployeesApi;
 import org.openapitools.model.*;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,7 +32,7 @@ public class EmployeeController implements EmployeesApi {
     }
 
     @Override
-    public ResponseEntity<List<EmployeeEntryDto>> listEmployees(Integer page, Integer size, EmployeeFilterDto filter, String sort, Pageable pageable) {
+    public ResponseEntity<List<EmployeeEntryDto>> listEmployees(Integer page, Integer size, EmployeeFilterDto filter, String sort) {
         return dataProvider.list(filter, SortRequest.parse(sort, EmployeeSortDto::fromValue), OffsetLimit.ofPage(page, size));
     }
 
