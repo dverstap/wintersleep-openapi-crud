@@ -99,18 +99,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-  /users/many:
+  /users/ids/{ids}:
     get:
       operationId: getManyUsers
       parameters:
-      - name: id
-        in: query
+      - name: ids
+        in: path
         required: true
         schema:
-          type: array
-          items:
-            type: integer
-            format: int64
+          type: string
       responses:
         "200":
           description: OK
@@ -225,18 +222,15 @@ paths:
       responses:
         "200":
           description: OK
-  /companies/many:
+  /companies/ids/{ids}:
     get:
       operationId: getManyCompanies
       parameters:
-      - name: id
-        in: query
+      - name: ids
+        in: path
         required: true
         schema:
-          type: array
-          items:
-            type: integer
-            format: int64
+          type: string
       responses:
         "200":
           description: OK
@@ -351,18 +345,15 @@ paths:
       responses:
         "200":
           description: OK
-  /employees/many:
+  /employees/ids/{ids}:
     get:
       operationId: getManyEmployees
       parameters:
-      - name: id
-        in: query
+      - name: ids
+        in: path
         required: true
         schema:
-          type: array
-          items:
-            type: integer
-            format: int64
+          type: string
       responses:
         "200":
           description: OK

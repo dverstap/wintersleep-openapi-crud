@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.SequencedSet;
 
 /**
  * The server-side DataProvider mimics the client-side DataProvider:
@@ -34,7 +35,7 @@ public interface DataProvider<ID, EntryDto, SortPropertyId extends Enum<SortProp
     }
 
     @Transactional(readOnly = true)
-    default ResponseEntity<List<ReadDto>> getMany(List<Long> ids) {
+    default ResponseEntity<List<ReadDto>> getMany(SequencedSet<Long> ids) {
         throw new UnsupportedOperationException("getMany not supported by " + getClass().getSimpleName());
     }
 

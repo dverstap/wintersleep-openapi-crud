@@ -5,6 +5,7 @@ import org.openapitools.model.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.wintersleep.openapi.crud.core.provider.GetManyIdentifiers;
 import org.wintersleep.openapi.crud.core.provider.OffsetLimit;
 import org.wintersleep.openapi.crud.core.provider.SortRequest;
 
@@ -37,8 +38,8 @@ public class EmployeeController implements EmployeesApi {
     }
 
     @Override
-    public ResponseEntity<List<EmployeeDto>> getManyEmployees(List<Long> ids) {
-        return dataProvider.getMany(ids);
+    public ResponseEntity<List<EmployeeDto>> getManyEmployees(String ids) {
+        return dataProvider.getMany(GetManyIdentifiers.parse(ids));
     }
 
     @Override

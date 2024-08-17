@@ -79,6 +79,8 @@
                         </annotationProcessor>
                         <annotationProcessor>com.querydsl.apt.jpa.JPAAnnotationProcessor</annotationProcessor>
                     </annotationProcessors>
+                    <source>21</source>
+                    <target>21</target>
                 </configuration>
             </plugin>
 

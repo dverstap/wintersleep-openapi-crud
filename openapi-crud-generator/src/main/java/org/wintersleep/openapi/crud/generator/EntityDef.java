@@ -173,7 +173,7 @@ public class EntityDef {
         if (supportsRead()) {
             PathItem item = new PathItem();
             item.get(buildGetManyOperation());
-            paths.addPathItem("/" + path + "/many", item);
+            paths.addPathItem("/" + path + "/ids/{ids}", item);
         }
     }
 
@@ -364,12 +364,31 @@ public class EntityDef {
                 .schema(PrimitiveType.LONG.createProperty());
     }
 
+/*
     private static Parameter idsParameter() {
         return new QueryParameter()
                 .name("id")
                 .required(true)
                 .schema(new ArraySchema()
                         .items(PrimitiveType.LONG.createProperty()));
+    }
+*/
+
+/*
+    private static Parameter idsParameter() {
+        return new PathParameter()
+                .name("ids")
+                .required(true)
+                .schema(new ArraySchema()
+                        .items(PrimitiveType.LONG.createProperty()));
+    }
+*/
+
+    private static Parameter idsParameter() {
+        return new PathParameter()
+                .name("ids")
+                .required(true)
+                .schema(new StringSchema());
     }
 
 }
