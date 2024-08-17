@@ -45,8 +45,8 @@ public class CompanyController implements CompaniesApi {
     }
 
     @Override
-    public ResponseEntity<List<CompanyDto>> getManyCompanies(String ids) {
-        return dataProvider.getMany(GetManyIdentifiers.parse(ids));
+    public ResponseEntity<List<CompanyDto>> getManyCompanies(List<Long> ids) {
+        return dataProvider.getMany(ids);
     }
 
     // TODO

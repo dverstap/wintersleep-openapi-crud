@@ -38,8 +38,8 @@ public class EmployeeController implements EmployeesApi {
     }
 
     @Override
-    public ResponseEntity<List<EmployeeDto>> getManyEmployees(String ids) {
-        return dataProvider.getMany(GetManyIdentifiers.parse(ids));
+    public ResponseEntity<List<EmployeeDto>> getManyEmployees(List<Long> ids) {
+        return dataProvider.getMany(ids);
     }
 
     @Override

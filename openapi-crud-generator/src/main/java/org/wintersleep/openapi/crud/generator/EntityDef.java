@@ -374,7 +374,6 @@ public class EntityDef {
     }
 */
 
-/*
     private static Parameter idsParameter() {
         return new PathParameter()
                 .name("ids")
@@ -382,13 +381,14 @@ public class EntityDef {
                 .schema(new ArraySchema()
                         .items(PrimitiveType.LONG.createProperty()));
     }
-*/
 
+/*
     private static Parameter idsParameter() {
         return new PathParameter()
                 .name("ids")
                 .required(true)
                 .schema(new StringSchema());
     }
+*/
 
 }

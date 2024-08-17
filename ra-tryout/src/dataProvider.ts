@@ -2,7 +2,7 @@ import { stringify } from "query-string";
 import simpleRestProvider from "ra-data-simple-rest";
 import { fetchUtils } from "ra-core";
 
-let URL = "http://localhost:8080";
+let URL = "http://localhost:8081";
 
 export const dataProvider = simpleRestProvider(URL);
 
@@ -79,7 +79,9 @@ dataProvider.getMany = function (resource, params) {
   // var idParams = params.ids.map((id) => "id=" + id).join("&");
   //var url = "".concat(URL, "/").concat(resource, "/many?").concat(stringify(query));
   //var url = "".concat(URL, "/").concat(resource, "/many?").concat(idParams);
-  var url = "".concat(URL, "/").concat(resource, "/ids/").concat(params.ids.join("_"));
+  var url = "".concat(URL, "/").concat(resource, "/ids/").concat(params.ids.join(","));
+  // var ids = encodeURIComponent(JSON.stringify(params.ids))
+  // var url = "".concat(URL, "/").concat(resource, "/ids/").concat(ids);
   return httpClient(url, {
     signal: params === null || params === void 0 ? void 0 : params.signal,
   }).then(function (_a) {

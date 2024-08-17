@@ -1,8 +1,11 @@
 package org.wintersleep.openapi.crud.sample.web;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openapitools.api.UsersApi;
 import org.openapitools.model.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.wintersleep.openapi.crud.core.provider.GetManyIdentifiers;
@@ -13,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/")
+@Slf4j
 public class UserController implements UsersApi {
 
     private final UserDataProvider dataProvider;
@@ -21,14 +25,19 @@ public class UserController implements UsersApi {
         this.dataProvider = dataProvider;
     }
 
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        log.info("initBinder() called");
+    }
+
     @Override
     public ResponseEntity<List<UserEntryDto>> listUsers(Integer page, Integer size, UserFilterDto filter, String sort) {
         return dataProvider.list(filter, SortRequest.parse(sort, UserSortDto::fromValue), OffsetLimit.ofPage(page, size));
     }
 
     @Override
-    public ResponseEntity<List<UserDto>> getManyUsers(String ids) {
-        return dataProvider.getMany(GetManyIdentifiers.parse(ids));
+    public ResponseEntity<List<UserDto>> getManyUsers(List<Long> ids) {
+        return dataProvider.getMany(ids);
     }
 
     @Override

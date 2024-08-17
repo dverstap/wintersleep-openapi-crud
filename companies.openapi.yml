@@ -107,7 +107,10 @@ paths:
         in: path
         required: true
         schema:
-          type: string
+          type: array
+          items:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
@@ -230,7 +233,10 @@ paths:
         in: path
         required: true
         schema:
-          type: string
+          type: array
+          items:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK
@@ -353,7 +359,10 @@ paths:
         in: path
         required: true
         schema:
-          type: string
+          type: array
+          items:
+            type: integer
+            format: int64
       responses:
         "200":
           description: OK

@@ -20,8 +20,8 @@ import org.springframework.web.client.HttpServerErrorException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Collection;
 import java.util.List;
-import java.util.SequencedSet;
 
 import static java.lang.String.format;
 
@@ -87,7 +87,7 @@ public abstract class JpaQueryDslDataProvider<
     }
 
     @Override
-    public ResponseEntity<List<ReadDto>> getMany(SequencedSet<Long> ids) {
+    public ResponseEntity<List<ReadDto>> getMany(Collection<Long> ids) {
         BooleanExpression where = idPath.in(ids);
         JPAQuery<Entity> query = new JPAQuery<>(entityManager)
                 .select(entityPath)
