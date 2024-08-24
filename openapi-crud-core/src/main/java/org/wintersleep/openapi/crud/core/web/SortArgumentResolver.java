@@ -1,21 +1,24 @@
 package org.wintersleep.openapi.crud.core.web;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-public class FilterArgumentResolver<T> implements HandlerMethodArgumentResolver {
+import java.util.function.Function;
 
-    private final ObjectMapper objectMapper;
+@Slf4j
+public class SortArgumentResolver<T extends Enum<T>> implements HandlerMethodArgumentResolver {
+
     private final Class<T> clazz;
+    private final Function<String, T> converter;
 
-    public FilterArgumentResolver(ObjectMapper objectMapper, Class<T> clazz) {
-        this.objectMapper = objectMapper;
+    public SortArgumentResolver(Class<T> clazz, Function<String, T> converter) {
         this.clazz = clazz;
+        this.converter = converter;
     }
 
     @Override
@@ -25,11 +28,13 @@ public class FilterArgumentResolver<T> implements HandlerMethodArgumentResolver 
 
     @Override
     public T resolveArgument(@NonNull MethodParameter parameter, ModelAndViewContainer mavContainer,
-                             NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        String filter = webRequest.getParameter("filter");
-        if (filter == null) {
-            return clazz.getConstructor().newInstance();
+                             NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+        String sort = webRequest.getParameter("sort");
+        if (sort == null) {
+            return null;
         }
-        return objectMapper.readValue(filter, clazz);
+        log.debug("Resolving sort argument: {}", sort);
+        return converter.apply(sort);
     }
+
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.wintersleep.openapi.crud.core.domain.BooleanTimestampPair;
 import org.wintersleep.openapi.crud.core.provider.JpaQueryDslDataProvider;
+import org.wintersleep.openapi.crud.core.provider.SortDirection;
 import org.wintersleep.openapi.crud.sample.domain.*;
 
 @Service
@@ -59,13 +60,15 @@ public class EmployeeDataProvider extends JpaQueryDslDataProvider<
     }
 
     @Override
-    protected Expression<? extends Comparable<?>> mapOrderExpression(EmployeeSortDto fieldName) {
+    protected Expression<? extends Comparable<?>> mapOrderExpression(EmployeeSortDto propertyId, SortDirection direction) {
         final QEmployee employee = QEmployee.employee;
-        return switch (fieldName) {
+        return switch (propertyId) {
             case ID -> employee.id;
-            // TODO Sort on User/Company name
+            case ACTIVE -> BooleanTimestampPair.order(employee.activatedTimestampPair, direction);
             case LAST_ACTIVATED_AT -> employee.activatedTimestampPair.lastSetAt;
             case LAST_DE_ACTIVATED_AT -> employee.activatedTimestampPair.lastUnSetAt;
+            case USER_ID -> employee.user.displayName;
+            case COMPANY_ID -> employee.company.name;
         };
     }
 
@@ -73,9 +76,7 @@ public class EmployeeDataProvider extends JpaQueryDslDataProvider<
         return EmployeeEntryDto.builder()
                 .id(employee.getId())
                 .userId(employee.getUser().getId())
-                .userDisplayName(employee.getUser().getDisplayName())
                 .companyId(employee.getCompany().getId())
-                .companyName(employee.getCompany().getName())
                 .lastActivatedAt(employee.getActivatedTimestampPair().getLastSetAt())
                 .lastDeActivatedAt(employee.getActivatedTimestampPair().getLastUnSetAt())
                 .active(employee.isActive())
@@ -86,9 +87,7 @@ public class EmployeeDataProvider extends JpaQueryDslDataProvider<
         return EmployeeDto.builder()
                 .id(employee.getId())
                 .userId(employee.getUser().getId())
-                .userDisplayName(employee.getUser().getDisplayName())
                 .companyId(employee.getCompany().getId())
-                .companyName(employee.getCompany().getName())
                 .lastActivatedAt(employee.getActivatedTimestampPair().getLastSetAt())
                 .lastDeActivatedAt(employee.getActivatedTimestampPair().getLastUnSetAt())
                 .active(employee.isActive())

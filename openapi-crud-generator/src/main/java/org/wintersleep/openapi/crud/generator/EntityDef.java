@@ -178,7 +178,7 @@ public class EntityDef {
     }
 
     private Operation buildListOperation() {
-        return new Operation()
+        Operation operation = new Operation()
                 .operationId(operationId(EntityOperationType.LIST))
                 .addParametersItem(new QueryParameter()
                                 .name("page")
@@ -202,10 +202,6 @@ public class EntityDef {
 //                        .name("filter")
 //                        .schema(new StringSchema())
 //                )
-                .addParametersItem(new QueryParameter()
-                        .name("sort")
-                        .schema(new StringSchema())
-                )
                 .responses(new ApiResponses()
                         .addApiResponse("200", new ApiResponse()
                                 .description("OK")
@@ -230,7 +226,21 @@ public class EntityDef {
                                         .example(format("Content-Range: %s 25-49/123", path))
                                 )
                         )
-                )
+                );
+        if (!getSortableProperties().isEmpty()) {
+            operation
+                    .addParametersItem(new QueryParameter()
+                            .name("sort")
+                            .schema(new Schema<>()
+                                    .$ref("#/components/schemas/" + getModelName(PropertyModelType.SORT)))
+                    )
+                    .addParametersItem(new QueryParameter()
+                            .name("order")
+                            .schema(new Schema<>()
+                                    .$ref("#/components/schemas/SortOrder"))
+                    );
+        }
+        return operation
                 //.extensions(Map.of("x-spring-paginated", true))
                 ;
     }

@@ -8,6 +8,7 @@ import org.openapitools.model.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.wintersleep.openapi.crud.core.provider.JpaQueryDslDataProvider;
+import org.wintersleep.openapi.crud.core.provider.SortDirection;
 import org.wintersleep.openapi.crud.sample.domain.QUser;
 import org.wintersleep.openapi.crud.sample.domain.User;
 
@@ -49,9 +50,9 @@ public class UserDataProvider extends JpaQueryDslDataProvider<
 
 
     @Override
-    protected Expression<? extends Comparable<?>> mapOrderExpression(UserSortDto fieldName) {
+    protected Expression<? extends Comparable<?>> mapOrderExpression(UserSortDto propertyId, SortDirection direction) {
         final QUser user = QUser.user;
-        return switch (fieldName) {
+        return switch (propertyId) {
             case ID -> user.id;
             case EMAIL -> user.email;
             case FIRST_NAME -> user.firstName;

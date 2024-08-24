@@ -14,4 +14,7 @@ logging:
   level:
     root: debug
     org.hibernate: info
+    org.hibernate.SQL: debug
     org.springframework.orm: info
+    org.springframework.web: trace
+    org.springframework.security: trace

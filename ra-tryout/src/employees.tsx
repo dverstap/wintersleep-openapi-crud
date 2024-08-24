@@ -25,7 +25,8 @@ import {
 
 export const EmployeeList = () => (
   <List>
-    <Datagrid sort={{ field: "id", order: "ASC" }}>
+    {/*<Datagrid sort={{ field: "id", order: "ASC" }}>*/}
+    <Datagrid>
       <TextField source="id" />
       <ReferenceField source="userId" reference="users" />
       {/*<TextField source="userDisplayName" />*/}

@@ -39,7 +39,7 @@ entities:
       externalId?: lsfcr string
       # TODO: address: cru Address
       url?: cru string:url
-      verified: lfcru boolean
+      verified: lsfcru boolean
       lastVerifiedAt: lsfr string:date-time
       lastUnverifiedAt: lsfr string:date-time
 
@@ -53,10 +53,8 @@ entities:
       id: lsfr id
       # Changing this is more of an "action" that just a plain field-to-field mapping:
       # The database just stores last activated/de-activated timestamps
-      active: lfrcu boolean
+      active: lsfrcu boolean
       lastActivatedAt: lsfr string:date-time
       lastDeActivatedAt: lsfr string:date-time
-      userId: lfcr id
-      userDisplayName: lfr string
-      companyId: lfcr id
-      companyName: lfr string
+      userId: lsfcr id
+      companyId: lsfcr id

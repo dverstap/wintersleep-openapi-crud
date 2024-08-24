@@ -30,7 +30,11 @@ paths:
       - name: sort
         in: query
         schema:
-          type: string
+          $ref: '#/components/schemas/UserSort'
+      - name: order
+        in: query
+        schema:
+          $ref: '#/components/schemas/SortOrder'
       responses:
         "200":
           description: OK
@@ -144,7 +148,11 @@ paths:
       - name: sort
         in: query
         schema:
-          type: string
+          $ref: '#/components/schemas/CompanySort'
+      - name: order
+        in: query
+        schema:
+          $ref: '#/components/schemas/SortOrder'
       responses:
         "200":
           description: OK
@@ -270,7 +278,11 @@ paths:
       - name: sort
         in: query
         schema:
-          type: string
+          $ref: '#/components/schemas/EmployeeSort'
+      - name: order
+        in: query
+        schema:
+          $ref: '#/components/schemas/SortOrder'
       responses:
         "200":
           description: OK
@@ -525,6 +537,7 @@ components:
       - name
       - vatNumber
       - externalId
+      - verified
       - lastVerifiedAt
       - lastUnverifiedAt
     CompanyCreate:
@@ -609,13 +622,9 @@ components:
         userId:
           type: integer
           format: int64
-        userDisplayName:
-          type: string
         companyId:
           type: integer
           format: int64
-        companyName:
-          type: string
     EmployeeEntry:
       title: EmployeeEntry
       required:
@@ -624,9 +633,7 @@ components:
       - lastActivatedAt
       - lastDeActivatedAt
       - userId
-      - userDisplayName
       - companyId
-      - companyName
       properties:
         id:
           type: integer
@@ -642,19 +649,18 @@ components:
         userId:
           type: integer
           format: int64
-        userDisplayName:
-          type: string
         companyId:
           type: integer
           format: int64
-        companyName:
-          type: string
     EmployeeSort:
       title: EmployeeSort
       enum:
       - id
+      - active
       - lastActivatedAt
       - lastDeActivatedAt
+      - userId
+      - companyId
     EmployeeCreate:
       title: EmployeeCreate
       required:
@@ -678,9 +684,7 @@ components:
       - lastActivatedAt
       - lastDeActivatedAt
       - userId
-      - userDisplayName
       - companyId
-      - companyName
       properties:
         id:
           type: integer
@@ -696,13 +700,9 @@ components:
         userId:
           type: integer
           format: int64
-        userDisplayName:
-          type: string
         companyId:
           type: integer
           format: int64
-        companyName:
-          type: string
     EmployeeUpdate:
       title: EmployeeUpdate
       required:
@@ -710,3 +710,8 @@ components:
       properties:
         active:
           type: boolean
+    SortOrder:
+      type: string
+      enum:
+      - ASC
+      - DESC

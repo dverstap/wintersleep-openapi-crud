@@ -7,6 +7,7 @@ import {
   DateTimeInput,
   Edit,
   List,
+  NullableBooleanInput,
   required,
   Show,
   SimpleForm,
@@ -23,7 +24,11 @@ const filters = [
   <TextInput source="name" label="Name" />,
   <TextInput source="vatNumber" label="VAT" />,
   <TextInput source="externalId" label="External ID" />,
-  <BooleanInput source="verified" label="Verified" />,
+  <NullableBooleanInput
+    source="verified"
+    label="Verified"
+    defaultValue={null}
+  />,
 ];
 
 export const CompanyList = () => (
@@ -33,7 +38,7 @@ export const CompanyList = () => (
       <TextField source="name" />
       <TextField source="vatNumber" />
       <TextField source="externalId" />
-      <BooleanField source="verified" sortable={false} />
+      <BooleanField source="verified" />
     </Datagrid>
   </List>
 );

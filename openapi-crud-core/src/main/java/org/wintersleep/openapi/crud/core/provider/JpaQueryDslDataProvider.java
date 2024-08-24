@@ -163,12 +163,13 @@ public abstract class JpaQueryDslDataProvider<
     }
 
     protected Expression<? extends Comparable<?>> mapOrderExpression(SortRequest<SortPropertyId> sortRequest) {
-        return mapOrderExpression(sortRequest.propertyId());
+        return mapOrderExpression(sortRequest.propertyId(), sortRequest.direction());
     }
 
-    protected abstract Expression<? extends Comparable<?>> mapOrderExpression(SortPropertyId sort);
+    protected abstract Expression<? extends Comparable<?>> mapOrderExpression(SortPropertyId propertyId, SortDirection direction);
 
     protected OrderSpecifier.NullHandling mapOrderNullHandling(SortRequest<SortPropertyId> sortRequest) {
+        // TODO make the default configurable:
         return OrderSpecifier.NullHandling.Default;
     }
 

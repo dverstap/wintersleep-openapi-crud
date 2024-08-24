@@ -2,7 +2,8 @@ import { stringify } from "query-string";
 import simpleRestProvider from "ra-data-simple-rest";
 import { fetchUtils } from "ra-core";
 
-let URL = "http://localhost:8081";
+let URL = "http://localhost:2080"; // Caddy
+//let URL = "http://localhost:8080"; // Tomcat
 
 export const dataProvider = simpleRestProvider(URL);
 
@@ -34,7 +35,8 @@ dataProvider.getList = (resource, params) => {
     page: page - 1,
     size: perPage,
     //sort: JSON.stringify([field, order]),
-    sort: `${field},${order}`,
+    sort: field,
+    order: order,
     //range: JSON.stringify([rangeStart, rangeEnd]),
     filter: JSON.stringify(params.filter),
   };
@@ -79,7 +81,10 @@ dataProvider.getMany = function (resource, params) {
   // var idParams = params.ids.map((id) => "id=" + id).join("&");
   //var url = "".concat(URL, "/").concat(resource, "/many?").concat(stringify(query));
   //var url = "".concat(URL, "/").concat(resource, "/many?").concat(idParams);
-  var url = "".concat(URL, "/").concat(resource, "/ids/").concat(params.ids.join(","));
+  var url = ""
+    .concat(URL, "/")
+    .concat(resource, "/ids/")
+    .concat(params.ids.join(","));
   // var ids = encodeURIComponent(JSON.stringify(params.ids))
   // var url = "".concat(URL, "/").concat(resource, "/ids/").concat(ids);
   return httpClient(url, {

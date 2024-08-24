@@ -9,6 +9,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Paths;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.servers.Server;
 import org.everit.json.schema.ValidationException;
 import org.everit.json.schema.loader.SchemaLoader;
@@ -71,6 +72,8 @@ public class Generator {
                 }
             }
         }
+        components
+                .addSchemas("SortOrder", new StringSchema()._enum(List.of("ASC", "DESC")));
         openAPI.paths(paths);
         openAPI.components(components);
 

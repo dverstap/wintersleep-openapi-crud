@@ -8,7 +8,6 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.wintersleep.openapi.crud.core.provider.GetManyIdentifiers;
 import org.wintersleep.openapi.crud.core.provider.OffsetLimit;
 import org.wintersleep.openapi.crud.core.provider.SortRequest;
 
@@ -31,8 +30,8 @@ public class UserController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<List<UserEntryDto>> listUsers(Integer page, Integer size, UserFilterDto filter, String sort) {
-        return dataProvider.list(filter, SortRequest.parse(sort, UserSortDto::fromValue), OffsetLimit.ofPage(page, size));
+    public ResponseEntity<List<UserEntryDto>> listUsers(Integer page, Integer size, UserFilterDto filter, UserSortDto sort, SortOrderDto order) {
+        return dataProvider.list(filter, SortRequest.of(sort, order), OffsetLimit.ofPage(page, size));
     }
 
     @Override

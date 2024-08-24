@@ -1,8 +1,10 @@
 package org.wintersleep.openapi.crud.core.domain;
 
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import lombok.Data;
+import org.wintersleep.openapi.crud.core.provider.SortDirection;
 import org.wintersleep.openapi.crud.core.util.Now;
 
 import javax.persistence.Embeddable;
@@ -45,18 +47,39 @@ public class BooleanTimestampPair {
         if (value == null) {
             return null;
         }
-        BooleanExpression expr = Expressions.allOf(
+        if (value) {
+            return trueExpr(timestampPair);
+        } else {
+            return trueExpr(timestampPair).not();
+        }
+    }
+
+
+    public static Expression<? extends Comparable<?>> order(QBooleanTimestampPair timestampPair, SortDirection direction) {
+//        return switch (direction) {
+//            case ASC -> Expressions.cases()
+//                    .when(trueExpr(timestampPair))
+//                    .then(Expressions.constant(1))
+//                    .otherwise(0);
+//            case DESC -> Expressions.cases()
+//                    .when(trueExpr(timestampPair))
+//                    .then(Expressions.constant(0))
+//                    .otherwise(1);
+//        };
+        return Expressions.cases()
+                .when(trueExpr(timestampPair))
+                .then(Expressions.constant(1))
+                .otherwise(0);
+    }
+
+    public static BooleanExpression trueExpr(QBooleanTimestampPair timestampPair) {
+        return Expressions.allOf(
                 timestampPair.lastSetAt.isNotNull(),
                 Expressions.anyOf(
                         timestampPair.lastUnSetAt.isNull(),
                         timestampPair.lastSetAt.after(timestampPair.lastUnSetAt)
                 )
         );
-        if (value) {
-            return expr;
-        } else {
-            return expr.not();
-        }
     }
 
 }

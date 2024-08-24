@@ -5,7 +5,6 @@ import org.openapitools.model.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.wintersleep.openapi.crud.core.provider.GetManyIdentifiers;
 import org.wintersleep.openapi.crud.core.provider.OffsetLimit;
 import org.wintersleep.openapi.crud.core.provider.SortRequest;
 
@@ -40,8 +39,8 @@ public class CompanyController implements CompaniesApi {
     }
 
     @Override
-    public ResponseEntity<List<CompanyEntryDto>> listCompanies(Integer page, Integer size, CompanyFilterDto filter, String sort) {
-        return dataProvider.list(filter, SortRequest.parse(sort, CompanySortDto::fromValue), OffsetLimit.ofPage(page, size));
+    public ResponseEntity<List<CompanyEntryDto>> listCompanies(Integer page, Integer size, CompanyFilterDto filter, CompanySortDto sort, SortOrderDto order) {
+        return dataProvider.list(filter, SortRequest.of(sort, order), OffsetLimit.ofPage(page, size));
     }
 
     @Override
