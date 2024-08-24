@@ -28,9 +28,11 @@ public interface DataProvider<ID, EntryDto, SortPropertyId extends Enum<SortProp
      * Note that for filtering to work, you must register the FilterDto using FilterArgumentResolver,
      * in a WebMvcConfigurer implementation. If you forget this, this will typically snow up as a FilterDto
      * with all properties set to null, even though they are in the HTTP request.
+     * For the SortPropertyId, you will need to register a SortConverter in the WebMvcConfigurer.
+     * If your entity does not support search, just pass null.
      */
     @Transactional(readOnly = true)
-    default ResponseEntity<List<EntryDto>> list(FilterDto filterDto, SortRequest<SortPropertyId> sortRequest, OffsetLimit offsetLimit) {
+    default ResponseEntity<List<EntryDto>> list(FilterDto filterDto, String search, SortRequest<SortPropertyId> sortRequest, OffsetLimit offsetLimit) {
         throw new UnsupportedOperationException("list not supported by " + getClass().getSimpleName());
     }
 

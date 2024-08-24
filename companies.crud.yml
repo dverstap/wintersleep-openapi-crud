@@ -19,6 +19,7 @@ entities:
     path: users
     access: lcru
     audit: cud
+    search: true
     properties:
       id: lsfr id
       email: lsfcr string:email
@@ -32,6 +33,7 @@ entities:
     path: companies
     access: lcrud
     audit: cud
+    search: true
     properties:
       id: lsfr id
       name: lsfcru string
@@ -49,6 +51,7 @@ entities:
     parent: companies
     access: lcrud
     audit: cud
+    search: true
     properties:
       id: lsfr id
       # Changing this is more of an "action" that just a plain field-to-field mapping:

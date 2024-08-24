@@ -6,6 +6,7 @@ import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpServerErrorException;
 
 import javax.persistence.EntityManager;
@@ -56,9 +58,9 @@ public abstract class JpaQueryDslDataProvider<
     }
 
     @Override
-    public ResponseEntity<List<EntryDto>> list(FilterDto filterDto, SortRequest<SortPropertyId> sortRequest, OffsetLimit offsetLimit) {
+    public ResponseEntity<List<EntryDto>> list(FilterDto filterDto, String search, SortRequest<SortPropertyId> sortRequest, OffsetLimit offsetLimit) {
         log.debug("Filter: {}", filterDto);
-        BooleanExpression where = filterDto == null ? null : mapFilter(filterDto);
+        BooleanExpression where = mapWhere(filterDto, search);
         JPAQuery<Entity> query = new JPAQuery<>(entityManager)
                 .select(entityPath)
                 .from(entityPath)
@@ -85,6 +87,7 @@ public abstract class JpaQueryDslDataProvider<
                         .toList())
                 ;
     }
+
 
     @Override
     public ResponseEntity<List<ReadDto>> getMany(Collection<Long> ids) {
@@ -153,7 +156,16 @@ public abstract class JpaQueryDslDataProvider<
         return entity;
     }
 
-    protected abstract BooleanExpression mapFilter(@NonNull FilterDto filterDto);
+    protected BooleanExpression mapWhere(FilterDto filterDto, String search) {
+        return Expressions.allOf(
+                filterDto == null ? null : mapFilter(filterDto),
+                StringUtils.hasText(search) ? mapSearch(search) : null
+        );
+    }
+
+    protected abstract BooleanExpression mapFilter(FilterDto filterDto);
+
+    protected abstract BooleanExpression mapSearch(String search);
 
     protected OrderSpecifier<? extends Comparable<?>> mapOrderSpecifier(SortRequest<SortPropertyId> sortRequest) {
         Order order = sortRequest.direction() == SortDirection.ASC ? Order.ASC : Order.DESC;

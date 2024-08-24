@@ -4,8 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.openapitools.api.UsersApi;
 import org.openapitools.model.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.wintersleep.openapi.crud.core.provider.OffsetLimit;
@@ -24,14 +22,11 @@ public class UserController implements UsersApi {
         this.dataProvider = dataProvider;
     }
 
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        log.info("initBinder() called");
-    }
-
     @Override
-    public ResponseEntity<List<UserEntryDto>> listUsers(Integer page, Integer size, UserFilterDto filter, UserSortDto sort, SortOrderDto order) {
-        return dataProvider.list(filter, SortRequest.of(sort, order), OffsetLimit.ofPage(page, size));
+    public ResponseEntity<List<UserEntryDto>> listUsers(UserFilterDto filter, String search,
+                                                        UserSortDto sort, SortOrderDto order,
+                                                        Integer page, Integer size) {
+        return dataProvider.list(filter, search, SortRequest.of(sort, order), OffsetLimit.ofPage(page, size));
     }
 
     @Override

@@ -34,6 +34,7 @@ public class EntityDef {
     private final @NonNull String pluralTitle;
     private final @NonNull Set<EntityOperationType> operationTypes;
     private final @NonNull Set<AccessAudit> audits;
+    private final boolean search;
     private final @NonNull Map<String, PropertyDef> properties;
 
     public EntityDef(Entity entity) {
@@ -42,6 +43,7 @@ public class EntityDef {
         this.pluralTitle = entity.getPluralTitle();
         this.operationTypes = Collections.unmodifiableSet(EntityOperationType.parse(entity.getAccess()));
         this.audits = Collections.unmodifiableSet(AccessAudit.parse(entity.getAudit()));
+        this.search = entity.getSearch();
         var properties = new LinkedHashMap<String, PropertyDef>();
         if (entity.getProperties() != null) {
             for (var entry : entity.getProperties().entrySet()) {
@@ -133,9 +135,9 @@ public class EntityDef {
     private Map<String, Schema<?>> generateProperties(EntityModelType modelType, List<PropertyDef> propertyDefs) {
         Preconditions.checkArgument(!propertyDefs.isEmpty(), "Property definitions cannot be empty for {} model of {}", modelType, title);
         Map<String, Schema<?>> result = new LinkedHashMap<>();
-        if (modelType == EntityModelType.FILTER) {
-            result.put("q", new StringSchema());
-        }
+//        if (modelType == EntityModelType.FILTER) {
+//            result.put("q", new StringSchema());
+//        }
         for (PropertyDef propertyDef : propertyDefs) {
             Schema<?> schema = propertyDef.generateSchema();
             result.put(propertyDef.name(), schema);
@@ -181,6 +183,31 @@ public class EntityDef {
         Operation operation = new Operation()
                 .operationId(operationId(EntityOperationType.LIST))
                 .addParametersItem(new QueryParameter()
+                        .name("filter")
+                        .schema(new Schema<>()
+                                .$ref("#/components/schemas/" + getModelName(EntityModelType.FILTER)))
+                );
+        if (search) {
+            operation.addParametersItem(new QueryParameter()
+                    .name("q")
+                    .schema(new StringSchema())
+            );
+        }
+        if (!getSortableProperties().isEmpty()) {
+            operation
+                    .addParametersItem(new QueryParameter()
+                            .name("sort")
+                            .schema(new Schema<>()
+                                    .$ref("#/components/schemas/" + getModelName(PropertyModelType.SORT)))
+                    )
+                    .addParametersItem(new QueryParameter()
+                            .name("order")
+                            .schema(new Schema<>()
+                                    .$ref("#/components/schemas/SortOrder"))
+                    );
+        }
+        operation
+                .addParametersItem(new QueryParameter()
                                 .name("page")
                                 .schema(new IntegerSchema()
                                         .minimum(BigDecimal.ZERO))
@@ -190,18 +217,10 @@ public class EntityDef {
                                 .name("size")
                                 .schema(new IntegerSchema()
                                         .minimum(BigDecimal.ONE)
-                                        .maximum(BigDecimal.valueOf(100)))
+                                        .maximum(BigDecimal.valueOf(1000)))
                         //.required(true)
-                )
-                .addParametersItem(new QueryParameter()
-                        .name("filter")
-                        .schema(new Schema<>()
-                                .$ref("#/components/schemas/" + getModelName(EntityModelType.FILTER)))
-                )
-//                .addParametersItem(new QueryParameter()
-//                        .name("filter")
-//                        .schema(new StringSchema())
-//                )
+                );
+        operation
                 .responses(new ApiResponses()
                         .addApiResponse("200", new ApiResponse()
                                 .description("OK")
@@ -227,19 +246,6 @@ public class EntityDef {
                                 )
                         )
                 );
-        if (!getSortableProperties().isEmpty()) {
-            operation
-                    .addParametersItem(new QueryParameter()
-                            .name("sort")
-                            .schema(new Schema<>()
-                                    .$ref("#/components/schemas/" + getModelName(PropertyModelType.SORT)))
-                    )
-                    .addParametersItem(new QueryParameter()
-                            .name("order")
-                            .schema(new Schema<>()
-                                    .$ref("#/components/schemas/SortOrder"))
-                    );
-        }
         return operation
                 //.extensions(Map.of("x-spring-paginated", true))
                 ;

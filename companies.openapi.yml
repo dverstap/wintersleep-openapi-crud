@@ -10,6 +10,22 @@ paths:
     get:
       operationId: listUsers
       parameters:
+      - name: filter
+        in: query
+        schema:
+          $ref: '#/components/schemas/UserFilter'
+      - name: q
+        in: query
+        schema:
+          type: string
+      - name: sort
+        in: query
+        schema:
+          $ref: '#/components/schemas/UserSort'
+      - name: order
+        in: query
+        schema:
+          $ref: '#/components/schemas/SortOrder'
       - name: page
         in: query
         schema:
@@ -19,22 +35,10 @@ paths:
       - name: size
         in: query
         schema:
-          maximum: 100
+          maximum: 1000
           minimum: 1
           type: integer
           format: int32
-      - name: filter
-        in: query
-        schema:
-          $ref: '#/components/schemas/UserFilter'
-      - name: sort
-        in: query
-        schema:
-          $ref: '#/components/schemas/UserSort'
-      - name: order
-        in: query
-        schema:
-          $ref: '#/components/schemas/SortOrder'
       responses:
         "200":
           description: OK
@@ -128,6 +132,22 @@ paths:
     get:
       operationId: listCompanies
       parameters:
+      - name: filter
+        in: query
+        schema:
+          $ref: '#/components/schemas/CompanyFilter'
+      - name: q
+        in: query
+        schema:
+          type: string
+      - name: sort
+        in: query
+        schema:
+          $ref: '#/components/schemas/CompanySort'
+      - name: order
+        in: query
+        schema:
+          $ref: '#/components/schemas/SortOrder'
       - name: page
         in: query
         schema:
@@ -137,22 +157,10 @@ paths:
       - name: size
         in: query
         schema:
-          maximum: 100
+          maximum: 1000
           minimum: 1
           type: integer
           format: int32
-      - name: filter
-        in: query
-        schema:
-          $ref: '#/components/schemas/CompanyFilter'
-      - name: sort
-        in: query
-        schema:
-          $ref: '#/components/schemas/CompanySort'
-      - name: order
-        in: query
-        schema:
-          $ref: '#/components/schemas/SortOrder'
       responses:
         "200":
           description: OK
@@ -258,6 +266,22 @@ paths:
     get:
       operationId: listEmployees
       parameters:
+      - name: filter
+        in: query
+        schema:
+          $ref: '#/components/schemas/EmployeeFilter'
+      - name: q
+        in: query
+        schema:
+          type: string
+      - name: sort
+        in: query
+        schema:
+          $ref: '#/components/schemas/EmployeeSort'
+      - name: order
+        in: query
+        schema:
+          $ref: '#/components/schemas/SortOrder'
       - name: page
         in: query
         schema:
@@ -267,22 +291,10 @@ paths:
       - name: size
         in: query
         schema:
-          maximum: 100
+          maximum: 1000
           minimum: 1
           type: integer
           format: int32
-      - name: filter
-        in: query
-        schema:
-          $ref: '#/components/schemas/EmployeeFilter'
-      - name: sort
-        in: query
-        schema:
-          $ref: '#/components/schemas/EmployeeSort'
-      - name: order
-        in: query
-        schema:
-          $ref: '#/components/schemas/SortOrder'
       responses:
         "200":
           description: OK
@@ -389,8 +401,6 @@ components:
     UserFilter:
       title: UserFilter
       properties:
-        q:
-          type: string
         id:
           type: integer
           format: int64
@@ -482,8 +492,6 @@ components:
     CompanyFilter:
       title: CompanyFilter
       properties:
-        q:
-          type: string
         id:
           type: integer
           format: int64
@@ -606,8 +614,6 @@ components:
     EmployeeFilter:
       title: EmployeeFilter
       properties:
-        q:
-          type: string
         id:
           type: integer
           format: int64

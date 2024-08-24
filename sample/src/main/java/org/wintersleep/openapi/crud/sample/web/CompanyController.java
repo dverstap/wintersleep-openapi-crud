@@ -39,8 +39,10 @@ public class CompanyController implements CompaniesApi {
     }
 
     @Override
-    public ResponseEntity<List<CompanyEntryDto>> listCompanies(Integer page, Integer size, CompanyFilterDto filter, CompanySortDto sort, SortOrderDto order) {
-        return dataProvider.list(filter, SortRequest.of(sort, order), OffsetLimit.ofPage(page, size));
+    public ResponseEntity<List<CompanyEntryDto>> listCompanies(CompanyFilterDto filter, String search,
+                                                               CompanySortDto sort, SortOrderDto order,
+                                                               Integer page, Integer size) {
+        return dataProvider.list(filter, search, SortRequest.of(sort, order), OffsetLimit.ofPage(page, size));
     }
 
     @Override

@@ -24,6 +24,8 @@ properties:
         audit:
           type: string
           pattern: c?u?d?
+        search:
+          type: boolean
         properties:
           type: object
           existingJavaType: java.util.Map<String,String>

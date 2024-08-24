@@ -28,7 +28,6 @@ public class CompanyDataProvider extends JpaQueryDslDataProvider<
     protected BooleanExpression mapFilter(CompanyFilterDto dto) {
         QCompany company = QCompany.company;
         return Expressions.allOf(
-                search(dto.getQ()),
                 like(company.name, dto.getName()),
                 like(company.externalId, dto.getExternalId()),
                 like(company.vatNumber, dto.getVatNumber()),
@@ -36,10 +35,8 @@ public class CompanyDataProvider extends JpaQueryDslDataProvider<
         );
     }
 
-    private BooleanExpression search(String q) {
-        if (q == null) {
-            return null;
-        }
+    @Override
+    protected BooleanExpression mapSearch(String q) {
         QCompany company = QCompany.company;
         return Expressions.anyOf(
                 like(company.name, q),

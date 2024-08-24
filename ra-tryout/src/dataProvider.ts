@@ -31,6 +31,8 @@ dataProvider.getList = (resource, params) => {
   const rangeStart = (page - 1) * perPage;
   const rangeEnd = page * perPage - 1;
 
+  let q = params.filter.q;
+  delete params.filter.q;
   const query = {
     page: page - 1,
     size: perPage,
@@ -38,8 +40,10 @@ dataProvider.getList = (resource, params) => {
     sort: field,
     order: order,
     //range: JSON.stringify([rangeStart, rangeEnd]),
+    q: q,
     filter: JSON.stringify(params.filter),
   };
+  delete params.filter.q;
   //debugger
   const url = `${URL}/${resource}?${stringify(query)}`;
   const options = {

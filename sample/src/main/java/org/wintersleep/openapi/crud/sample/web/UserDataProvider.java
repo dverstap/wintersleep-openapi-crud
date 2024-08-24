@@ -27,7 +27,6 @@ public class UserDataProvider extends JpaQueryDslDataProvider<
     protected BooleanExpression mapFilter(UserFilterDto dto) {
         QUser user = QUser.user;
         return Expressions.allOf(
-                search(dto.getQ()),
                 like(user.email, dto.getEmail()),
                 like(user.firstName, dto.getFirstName()),
                 like(user.lastName, dto.getLastName()),
@@ -35,10 +34,8 @@ public class UserDataProvider extends JpaQueryDslDataProvider<
         );
     }
 
-    private BooleanExpression search(String q) {
-        if (q == null) {
-            return null;
-        }
+    @Override
+    protected BooleanExpression mapSearch(String q) {
         QUser user = QUser.user;
         return Expressions.anyOf(
                 like(user.email, q),

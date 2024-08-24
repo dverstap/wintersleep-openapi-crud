@@ -32,8 +32,8 @@ public class EmployeeDataProvider extends JpaQueryDslDataProvider<
     protected BooleanExpression mapFilter(EmployeeFilterDto dto) {
         QEmployee employee = QEmployee.employee;
         return Expressions.allOf(
-                search(dto.getQ()),
-// TODO the type-safety here makes it hard to filter on fields of the related entity
+// The type-safety here makes it hard to filter on fields of the related entity
+// (because they are not declared in the CRUD definition), but at least these fields are searchable.
 //                like(employee.name, dto.getName()),
 //                like(employee.externalId, dto.getExternalId()),
 //                like(employee.vatNumber, dto.getVatNumber()),
@@ -41,10 +41,8 @@ public class EmployeeDataProvider extends JpaQueryDslDataProvider<
         );
     }
 
-    private BooleanExpression search(String q) {
-        if (q == null) {
-            return null;
-        }
+    @Override
+    protected BooleanExpression mapSearch(String q) {
         QEmployee employee = QEmployee.employee;
         QUser user = employee.user;
         QCompany company = employee.company;

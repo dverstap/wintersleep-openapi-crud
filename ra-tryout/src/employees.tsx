@@ -8,6 +8,7 @@ import {
   DateTimeInput,
   Edit,
   List,
+  NullableBooleanInput,
   ReferenceField,
   ReferenceInput,
   required,
@@ -23,8 +24,13 @@ import {
   useRedirect,
 } from "react-admin";
 
+const filters = [
+  <TextInput source="q" label="Search" alwaysOn />,
+  <NullableBooleanInput source="active" label="Active" defaultValue={null} />,
+];
+
 export const EmployeeList = () => (
-  <List>
+  <List filters={filters}>
     {/*<Datagrid sort={{ field: "id", order: "ASC" }}>*/}
     <Datagrid>
       <TextField source="id" />
