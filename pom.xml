@@ -23,7 +23,7 @@
     <modules>
         <module>openapi-crud-generator</module>
         <module>openapi-crud-core</module>
-        <module>sample</module>
+        <module>sample-backend</module>
     </modules>
 
     <dependencyManagement>

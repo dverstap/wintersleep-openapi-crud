@@ -1,4 +1,4 @@
-# ra-tryout
+# sample-frontend
 
 ## Installation
 
