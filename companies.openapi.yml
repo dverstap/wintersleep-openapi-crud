@@ -43,10 +43,10 @@ paths:
         "200":
           description: OK
           headers:
-            Content-Range:
+            X-Total-Count:
               schema:
                 type: string
-              example: "Content-Range: users 25-49/123"
+              example: "X-Total-Count: 319"
           content:
             application/json:
               schema:
@@ -165,10 +165,10 @@ paths:
         "200":
           description: OK
           headers:
-            Content-Range:
+            X-Total-Count:
               schema:
                 type: string
-              example: "Content-Range: companies 25-49/123"
+              example: "X-Total-Count: 319"
           content:
             application/json:
               schema:
@@ -299,10 +299,10 @@ paths:
         "200":
           description: OK
           headers:
-            Content-Range:
+            X-Total-Count:
               schema:
                 type: string
-              example: "Content-Range: employees 25-49/123"
+              example: "X-Total-Count: 319"
           content:
             application/json:
               schema:

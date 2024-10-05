@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.openapitools.model.*;
 import org.springframework.format.FormatterRegistry;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -23,10 +22,11 @@ public class SampleWebMvcConfigurer implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("http://localhost:5173")
+        registry
+                .addMapping("/**")
+                .allowedOrigins("http://localhost:5173") // TODO
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .exposedHeaders(HttpHeaders.CONTENT_RANGE)
+                .exposedHeaders("X-Total-Count")
         ;
     }
 

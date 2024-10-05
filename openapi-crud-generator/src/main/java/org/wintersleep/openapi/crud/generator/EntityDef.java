@@ -23,8 +23,6 @@ import org.wintersleep.openapi.crud.model.internal.Entity;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static java.lang.String.format;
-
 @Getter
 public class EntityDef {
 
@@ -223,29 +221,34 @@ public class EntityDef {
                 );
         operation
                 .responses(new ApiResponses()
-                        .addApiResponse("200", new ApiResponse()
-                                .description("OK")
-                                .content(new Content()
-                                        .addMediaType("application/json", new MediaType()
-                                                .schema(new ArraySchema()
-                                                        .items(new Schema<>()
-                                                                .$ref("#/components/schemas/" + getModelName(EntityModelType.LIST))
+                                .addApiResponse("200", new ApiResponse()
+                                                .description("OK")
+                                                .content(new Content()
+                                                        .addMediaType("application/json", new MediaType()
+                                                                .schema(new ArraySchema()
+                                                                        .items(new Schema<>()
+                                                                                .$ref("#/components/schemas/" + getModelName(EntityModelType.LIST))
+                                                                        )
+                                                                )
                                                         )
                                                 )
-                                        )
+                                                // The React Admin ra-data-simple-rest provider uses Content-Range:
+                                                //   https://github.com/marmelab/react-admin/tree/master/packages/ra-data-simple-rest#cors-setup
+                                                // The Refine simple-rest provider uses: x-total-count:
+                                                //   https://refine.dev/docs/data/data-provider/#retrieving-the-total-row-count
+                                                //   https://github.com/refinedev/refine/blob/master/packages/simple-rest/src/provider.ts
+                                                // In either case, if API and UI are on different hosts, make sure CORS is set up correctly,
+                                                // as explained in the React Admin docs.
+//                                .addHeaderObject("Content-Range", new Header()
+//                                        .schema(new StringSchema())
+//                                        .example(format("Content-Range: %s 25-49/123", path))
+//                                )
+                                                // The React Admin ra-data-json-server uses X-Total-Count:
+                                                //   https://github.com/marmelab/react-admin/tree/master/packages/ra-data-json-server#rest-dialect
+                                                .addHeaderObject("X-Total-Count", new Header()
+                                                        .schema(new StringSchema())
+                                                        .example("X-Total-Count: 319"))
                                 )
-                                // The React Admin ra-data-simple-rest provider uses Content-Range:
-                                //   https://github.com/marmelab/react-admin/tree/master/packages/ra-data-simple-rest#cors-setup
-                                // The Refine simple-rest provider uses: x-total-count:
-                                //   https://refine.dev/docs/data/data-provider/#retrieving-the-total-row-count
-                                //   https://github.com/refinedev/refine/blob/master/packages/simple-rest/src/provider.ts
-                                // In either case, if API and UI are on different hosts, make sure CORS is set up correctly,
-                                // as explained in the React Admin docs.
-                                .addHeaderObject("Content-Range", new Header()
-                                        .schema(new StringSchema())
-                                        .example(format("Content-Range: %s 25-49/123", path))
-                                )
-                        )
                 );
         return operation
                 //.extensions(Map.of("x-spring-paginated", true))

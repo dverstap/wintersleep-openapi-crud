@@ -134,6 +134,10 @@
                             <generatorName>spring</generatorName>
                             <generateSupportingFiles>false</generateSupportingFiles>
                             <modelNameSuffix>Dto</modelNameSuffix>
+                            <parameterNameMappings>
+                                q=qqqqq,
+                                z=zzzzz,
+                            </parameterNameMappings>
                             <configOptions>
                                 <annotationLibrary>none</annotationLibrary>
                                 <!--<apiFirst>true</apiFirst>-->
