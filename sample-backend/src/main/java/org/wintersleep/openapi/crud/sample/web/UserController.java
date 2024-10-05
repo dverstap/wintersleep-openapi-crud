@@ -24,7 +24,7 @@ public class UserController implements UsersApi {
 
     @Override
     public ResponseEntity<List<UserEntryDto>> listUsers(UserFilterDto filter, String search,
-                                                        UserSortDto sort, SortOrderDto order,
+                                                        UserSortDto sort, SortOrder order,
                                                         Integer page, Integer size) {
         return dataProvider.list(filter, search, SortRequest.of(sort, order), OffsetLimit.ofPage(page, size));
     }

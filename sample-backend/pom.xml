@@ -134,9 +134,13 @@
                             <generatorName>spring</generatorName>
                             <generateSupportingFiles>false</generateSupportingFiles>
                             <modelNameSuffix>Dto</modelNameSuffix>
+                            <!-- To prevent that Dto is added to the name of these enums: -->
+                            <modelNameMappings>
+                                SortOrder=SortOrder,
+                            </modelNameMappings>
                             <parameterNameMappings>
-                                q=qqqqq,
-                                z=zzzzz,
+                                _sort=sort,
+                                _order=order,
                             </parameterNameMappings>
                             <configOptions>
                                 <annotationLibrary>none</annotationLibrary>

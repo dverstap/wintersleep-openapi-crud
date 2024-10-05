@@ -18,11 +18,11 @@ paths:
         in: query
         schema:
           type: string
-      - name: sort
+      - name: _sort
         in: query
         schema:
           $ref: '#/components/schemas/UserSort'
-      - name: order
+      - name: _order
         in: query
         schema:
           $ref: '#/components/schemas/SortOrder'
@@ -140,11 +140,11 @@ paths:
         in: query
         schema:
           type: string
-      - name: sort
+      - name: _sort
         in: query
         schema:
           $ref: '#/components/schemas/CompanySort'
-      - name: order
+      - name: _order
         in: query
         schema:
           $ref: '#/components/schemas/SortOrder'
@@ -274,11 +274,11 @@ paths:
         in: query
         schema:
           type: string
-      - name: sort
+      - name: _sort
         in: query
         schema:
           $ref: '#/components/schemas/EmployeeSort'
-      - name: order
+      - name: _order
         in: query
         schema:
           $ref: '#/components/schemas/SortOrder'

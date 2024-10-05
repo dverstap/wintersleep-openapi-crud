@@ -49,7 +49,7 @@ public class SampleWebMvcConfigurer implements WebMvcConfigurer {
         registry.addConverter(String.class, EmployeeSortDto.class, new SortConverter<>(EmployeeSortDto::fromValue));
         registry.addConverter(String.class, UserSortDto.class, new SortConverter<>(UserSortDto::fromValue));
 
-        registry.addConverter(new SortOrderConverter());
+        //registry.addConverter(new SortOrderConverter());
     }
 
 }

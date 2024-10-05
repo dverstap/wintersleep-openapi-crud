@@ -195,12 +195,12 @@ public class EntityDef {
         if (!getSortableProperties().isEmpty()) {
             operation
                     .addParametersItem(new QueryParameter()
-                            .name("sort")
+                            .name("_sort")
                             .schema(new Schema<>()
                                     .$ref("#/components/schemas/" + getModelName(PropertyModelType.SORT)))
                     )
                     .addParametersItem(new QueryParameter()
-                            .name("order")
+                            .name("_order")
                             .schema(new Schema<>()
                                     .$ref("#/components/schemas/SortOrder"))
                     );
