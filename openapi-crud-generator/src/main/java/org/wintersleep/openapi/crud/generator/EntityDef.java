@@ -183,6 +183,9 @@ public class EntityDef {
                 .operationId(operationId(EntityOperationType.LIST))
                 .addParametersItem(new QueryParameter()
                         .name("filter")
+                        // https://swagger.io/specification/v3/#parameter-object:
+                        .style(Parameter.StyleEnum.FORM)
+                        // .explode(true) // is the default for style=form
                         .schema(new Schema<>()
                                 .$ref("#/components/schemas/" + getModelName(EntityModelType.FILTER)))
                 );

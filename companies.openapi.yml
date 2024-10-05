@@ -12,6 +12,7 @@ paths:
       parameters:
       - name: filter
         in: query
+        style: form
         schema:
           $ref: '#/components/schemas/UserFilter'
       - name: q
@@ -134,6 +135,7 @@ paths:
       parameters:
       - name: filter
         in: query
+        style: form
         schema:
           $ref: '#/components/schemas/CompanyFilter'
       - name: q
@@ -268,6 +270,7 @@ paths:
       parameters:
       - name: filter
         in: query
+        style: form
         schema:
           $ref: '#/components/schemas/EmployeeFilter'
       - name: q
