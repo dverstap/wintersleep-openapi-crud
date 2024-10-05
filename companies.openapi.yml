@@ -26,19 +26,19 @@ paths:
         in: query
         schema:
           $ref: '#/components/schemas/SortOrder'
-      - name: page
+      - name: _start
         in: query
         schema:
           minimum: 0
           type: integer
-          format: int32
-      - name: size
+          format: int64
+      - name: _end
         in: query
         schema:
           maximum: 1000
           minimum: 1
           type: integer
-          format: int32
+          format: int64
       responses:
         "200":
           description: OK
@@ -148,19 +148,19 @@ paths:
         in: query
         schema:
           $ref: '#/components/schemas/SortOrder'
-      - name: page
+      - name: _start
         in: query
         schema:
           minimum: 0
           type: integer
-          format: int32
-      - name: size
+          format: int64
+      - name: _end
         in: query
         schema:
           maximum: 1000
           minimum: 1
           type: integer
-          format: int32
+          format: int64
       responses:
         "200":
           description: OK
@@ -282,19 +282,19 @@ paths:
         in: query
         schema:
           $ref: '#/components/schemas/SortOrder'
-      - name: page
+      - name: _start
         in: query
         schema:
           minimum: 0
           type: integer
-          format: int32
-      - name: size
+          format: int64
+      - name: _end
         in: query
         schema:
           maximum: 1000
           minimum: 1
           type: integer
-          format: int32
+          format: int64
       responses:
         "200":
           description: OK

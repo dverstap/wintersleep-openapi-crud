@@ -141,6 +141,8 @@
                             <parameterNameMappings>
                                 _sort=sort,
                                 _order=order,
+                                _start=start,
+                                _end=end,
                             </parameterNameMappings>
                             <configOptions>
                                 <annotationLibrary>none</annotationLibrary>

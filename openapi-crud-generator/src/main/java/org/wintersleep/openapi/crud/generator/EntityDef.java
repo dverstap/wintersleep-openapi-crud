@@ -207,14 +207,16 @@ public class EntityDef {
         }
         operation
                 .addParametersItem(new QueryParameter()
-                                .name("page")
+                                .name("_start")
                                 .schema(new IntegerSchema()
+                                        .format("int64")
                                         .minimum(BigDecimal.ZERO))
                         //.required(true)
                 )
                 .addParametersItem(new QueryParameter()
-                                .name("size")
+                                .name("_end")
                                 .schema(new IntegerSchema()
+                                        .format("int64")
                                         .minimum(BigDecimal.ONE)
                                         .maximum(BigDecimal.valueOf(1000)))
                         //.required(true)
