@@ -10,6 +10,13 @@ paths:
     get:
       operationId: listUsers
       parameters:
+      - name: id
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
       - name: filter
         in: query
         style: form
@@ -108,31 +115,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-  /users/ids/{ids}:
+  /companies:
     get:
-      operationId: getManyUsers
+      operationId: listCompanies
       parameters:
-      - name: ids
-        in: path
-        required: true
+      - name: id
+        in: query
         schema:
           type: array
           items:
             type: integer
             format: int64
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
-  /companies:
-    get:
-      operationId: listCompanies
-      parameters:
       - name: filter
         in: query
         style: form
@@ -243,31 +236,17 @@ paths:
       responses:
         "200":
           description: OK
-  /companies/ids/{ids}:
+  /employees:
     get:
-      operationId: getManyCompanies
+      operationId: listEmployees
       parameters:
-      - name: ids
-        in: path
-        required: true
+      - name: id
+        in: query
         schema:
           type: array
           items:
             type: integer
             format: int64
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Company'
-  /employees:
-    get:
-      operationId: listEmployees
-      parameters:
       - name: filter
         in: query
         style: form
@@ -378,27 +357,6 @@ paths:
       responses:
         "200":
           description: OK
-  /employees/ids/{ids}:
-    get:
-      operationId: getManyEmployees
-      parameters:
-      - name: ids
-        in: path
-        required: true
-        schema:
-          type: array
-          items:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Employee'
 components:
   schemas:
     UserFilter:

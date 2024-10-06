@@ -1,7 +1,10 @@
 package org.wintersleep.openapi.crud.core.provider;
 
 import com.querydsl.core.QueryResults;
-import com.querydsl.core.types.*;
+import com.querydsl.core.types.EntityPath;
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQuery;
 import lombok.Getter;
@@ -51,7 +54,15 @@ public abstract class JpaQueryDslDataProvider<
     }
 
     @Override
-    public ResponseEntity<List<EntryDto>> list(FilterDto filterDto, String search, SortRequest<SortPropertyId> sortRequest, OffsetLimit offsetLimit) {
+    public ResponseEntity<List<EntryDto>> list(List<Long> ids, FilterDto filterDto, String search, SortRequest<SortPropertyId> sortRequest, OffsetLimit offsetLimit) {
+        if (ids != null && !ids.isEmpty()) {
+            return getMany(ids);
+        } else {
+            return getList(filterDto, search, sortRequest, offsetLimit);
+        }
+    }
+
+    protected ResponseEntity<List<EntryDto>> getList(FilterDto filterDto, String search, SortRequest<SortPropertyId> sortRequest, OffsetLimit offsetLimit) {
         log.debug("Filter: {}", filterDto);
         BooleanExpression where = mapWhere(filterDto, search);
         JPAQuery<Entity> query = new JPAQuery<>(entityManager)
@@ -80,9 +91,7 @@ public abstract class JpaQueryDslDataProvider<
                 ;
     }
 
-
-    @Override
-    public ResponseEntity<List<ReadDto>> getMany(Collection<Long> ids) {
+    protected ResponseEntity<List<EntryDto>> getMany(Collection<Long> ids) {
         BooleanExpression where = idPath.in(ids);
         JPAQuery<Entity> query = new JPAQuery<>(entityManager)
                 .select(entityPath)
@@ -93,7 +102,7 @@ public abstract class JpaQueryDslDataProvider<
                 .ok()
                 .body(entities
                         .stream()
-                        .map(this::mapRead)
+                        .map(this::mapEntry)
                         .toList())
                 ;
     }
@@ -183,6 +192,7 @@ public abstract class JpaQueryDslDataProvider<
         }
         return path.likeIgnoreCase("%" + value + "%");
     }
+
     protected <T extends Comparable<?>> BooleanExpression eq(SimpleExpression<T> path, T value) {
         if (value == null) {
             return null;

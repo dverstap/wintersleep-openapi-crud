@@ -171,16 +171,18 @@ public class EntityDef {
             }
             paths.addPathItem("/" + path + "/{id}", item);
         }
-        if (supportsRead()) {
-            PathItem item = new PathItem();
-            item.get(buildGetManyOperation());
-            paths.addPathItem("/" + path + "/ids/{ids}", item);
-        }
     }
 
     private Operation buildListOperation() {
         Operation operation = new Operation()
                 .operationId(operationId(EntityOperationType.LIST))
+                .addParametersItem(new QueryParameter()
+                        .name("id")
+                        .schema(new ArraySchema()
+                                .items(new IntegerSchema()
+                                        .format("int64")
+                                )
+                        ))
                 .addParametersItem(new QueryParameter()
                         .name("filter")
                         // https://swagger.io/specification/v3/#parameter-object:
