@@ -32,10 +32,10 @@ public class EmployeeController implements EmployeesApi {
     }
 
     @Override
-    public ResponseEntity<List<EmployeeEntryDto>> listEmployees(List<Long> ids,
-                                                                EmployeeFilterDto filter, String search,
-                                                                EmployeeSortDto sort, SortOrder order,
-                                                                Long start, Long end) {
+    public ResponseEntity<List<EmployeeDto>> listEmployees(List<Long> ids,
+                                                           EmployeeFilterDto filter, String search,
+                                                           EmployeeSortDto sort, SortOrder order,
+                                                           Long start, Long end) {
         return dataProvider.list(ids, filter, search, SortRequest.of(sort, order), OffsetLimit.ofStartEnd(start, end));
     }
 

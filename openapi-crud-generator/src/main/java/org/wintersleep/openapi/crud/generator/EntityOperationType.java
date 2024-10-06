@@ -12,7 +12,7 @@ import static java.lang.String.format;
 
 @Getter
 public enum EntityOperationType {
-    LIST(true, EntityModelType.LIST, EntityModelType.FILTER),
+    LIST(true, EntityModelType.READ, EntityModelType.FILTER),
     GET_MANY(true, EntityModelType.READ),
     CREATE(false, EntityModelType.CREATE),
     READ(false, EntityModelType.READ),

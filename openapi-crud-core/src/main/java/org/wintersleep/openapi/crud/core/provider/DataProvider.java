@@ -21,7 +21,7 @@ import java.util.List;
  * <p>
  * Concrete implementations should also be annotated with @Transactional, otherwise no changes will actually occur.
  */
-public interface DataProvider<ID, EntryDto, SortPropertyId extends Enum<SortPropertyId>, FilterDto, CreateDto, ReadDto, UpdateDto> {
+public interface DataProvider<ID, SortPropertyId extends Enum<SortPropertyId>, FilterDto, CreateDto, ReadDto, UpdateDto> {
 
     /**
      * Note that for filtering to work, you must register the FilterDto using FilterArgumentResolver,
@@ -31,7 +31,7 @@ public interface DataProvider<ID, EntryDto, SortPropertyId extends Enum<SortProp
      * If your entity does not support search, just pass null.
      */
     @Transactional(readOnly = true)
-    default ResponseEntity<List<EntryDto>> list(List<Long> ids, FilterDto filterDto, String search, SortRequest<SortPropertyId> sortRequest, OffsetLimit offsetLimit) {
+    default ResponseEntity<List<ReadDto>> list(List<Long> ids, FilterDto filterDto, String search, SortRequest<SortPropertyId> sortRequest, OffsetLimit offsetLimit) {
         throw new UnsupportedOperationException("list not supported by " + getClass().getSimpleName());
     }
 

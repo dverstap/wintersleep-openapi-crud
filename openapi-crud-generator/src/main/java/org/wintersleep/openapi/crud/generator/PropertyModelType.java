@@ -9,11 +9,9 @@ import static java.lang.String.format;
 public enum PropertyModelType {
     SORT,
     FILTER,
-    LIST, // TODO delete this field, because: https://marmelab.com/react-admin/DataProviderWriting.html#getlist-and-getone-shared-cache
     CREATE,
     READ,
     UPDATE,
-    //DELETE,
     ;
 
     public final char letter;

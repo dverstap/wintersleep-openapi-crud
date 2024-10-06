@@ -6,11 +6,9 @@ import java.util.stream.Collectors;
 
 public enum EntityModelType {
     FILTER(PropertyModelType.FILTER),
-    LIST(PropertyModelType.LIST), // TODO delete this field, because: https://marmelab.com/react-admin/DataProviderWriting.html#getlist-and-getone-shared-cache
     CREATE(PropertyModelType.CREATE),
     READ(PropertyModelType.READ),
     UPDATE(PropertyModelType.UPDATE),
-    //DELETE,
     ;
 
     private final PropertyModelType propertyModelType;

@@ -23,10 +23,10 @@ public class UserController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<List<UserEntryDto>> listUsers(List<Long> ids,
-                                                        UserFilterDto filter, String search,
-                                                        UserSortDto sort, SortOrder order,
-                                                        Long start, Long end) {
+    public ResponseEntity<List<UserDto>> listUsers(List<Long> ids,
+                                                   UserFilterDto filter, String search,
+                                                   UserSortDto sort, SortOrder order,
+                                                   Long start, Long end) {
         return dataProvider.list(ids, filter, search, SortRequest.of(sort, order), OffsetLimit.ofStartEnd(start, end));
     }
 

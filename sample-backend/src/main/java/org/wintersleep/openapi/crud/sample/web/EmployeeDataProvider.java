@@ -15,7 +15,7 @@ import org.wintersleep.openapi.crud.sample.domain.*;
 @Service
 @Transactional
 public class EmployeeDataProvider extends JpaQueryDslDataProvider<
-        Employee, Long, EmployeeEntryDto,
+        Employee, Long,
         EmployeeSortDto, EmployeeFilterDto,
         EmployeeCreateDto, EmployeeDto, EmployeeUpdateDto> {
 
@@ -70,17 +70,6 @@ public class EmployeeDataProvider extends JpaQueryDslDataProvider<
             case USER_ID -> employee.user.displayName;
             case COMPANY_ID -> employee.company.name;
         };
-    }
-
-    protected EmployeeEntryDto mapEntry(@NonNull Employee employee) {
-        return EmployeeEntryDto.builder()
-                .id(employee.getId())
-                .userId(employee.getUser().getId())
-                .companyId(employee.getCompany().getId())
-                .lastActivatedAt(employee.getActivatedTimestampPair().getLastSetAt())
-                .lastDeActivatedAt(employee.getActivatedTimestampPair().getLastUnSetAt())
-                .active(employee.isActive())
-                .build();
     }
 
     protected EmployeeDto mapRead(@NonNull Employee employee) {

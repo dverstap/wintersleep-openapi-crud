@@ -17,47 +17,47 @@ entities:
   - title: User
     pluralTitle: Users
     path: users
-    access: lcru
+    operations: lcru
     audit: cud
     search: true
     properties:
-      id: lsfr id
-      email: lsfcr string:email
-      firstName?: lsfcru string
-      lastName?: lsfcru string
-      displayName: lsfcru string
+      id: sfr id
+      email: sfcr string:email
+      firstName?: sfcru string
+      lastName?: sfcru string
+      displayName: sfcru string
       currentEmployeeId: r id
 
   - title: Company
     pluralTitle: Companies
     path: companies
-    access: lcrud
+    operations: lcrud
     audit: cud
     search: true
     properties:
-      id: lsfr id
-      name: lsfcru string
-      vatNumber: lsfcr string:vat
-      externalId?: lsfcr string
+      id: sfr id
+      name: sfcru string
+      vatNumber: sfcr string:vat
+      externalId?: sfcr string
       # TODO: address: cru Address
       url?: cru string:url
-      verified: lsfcru boolean
-      lastVerifiedAt: lsfr string:date-time
-      lastUnverifiedAt: lsfr string:date-time
+      verified: sfcru boolean
+      lastVerifiedAt: sfr string:date-time
+      lastUnverifiedAt: sfr string:date-time
 
   - title: Employee
     pluralTitle: Employees
     path: employees
     parent: companies
-    access: lcrud
+    operations: lcrud
     audit: cud
     search: true
     properties:
-      id: lsfr id
+      id: sfr id
       # Changing this is more of an "action" that just a plain field-to-field mapping:
       # The database just stores last activated/de-activated timestamps
-      active: lsfrcu boolean
-      lastActivatedAt: lsfr string:date-time
-      lastDeActivatedAt: lsfr string:date-time
-      userId: lsfcr id
-      companyId: lsfcr id
+      active: sfrcu boolean
+      lastActivatedAt: sfr string:date-time
+      lastDeActivatedAt: sfr string:date-time
+      userId: sfcr id
+      companyId: sfcr id

@@ -18,7 +18,7 @@ properties:
           type: string
         parent:
           type: string
-        access:
+        operations:
           type: string
           pattern: l?c?r?u?d?
         audit:
@@ -33,5 +33,5 @@ properties:
         - path
         - title
         - pluralTitle
-        - access
+        - operations
         - properties

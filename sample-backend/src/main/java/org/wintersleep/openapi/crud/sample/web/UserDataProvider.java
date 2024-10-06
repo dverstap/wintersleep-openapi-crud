@@ -15,7 +15,7 @@ import org.wintersleep.openapi.crud.sample.domain.User;
 @Service
 @Transactional
 public class UserDataProvider extends JpaQueryDslDataProvider<
-        User, Long, UserEntryDto,
+        User, Long,
         UserSortDto, UserFilterDto,
         UserCreateDto, UserDto, UserUpdateDto> {
 
@@ -56,17 +56,6 @@ public class UserDataProvider extends JpaQueryDslDataProvider<
             case LAST_NAME -> user.lastName;
             case DISPLAY_NAME -> user.displayName;
         };
-    }
-
-    @Override
-    protected UserEntryDto mapEntry(@NonNull User user) {
-        return UserEntryDto.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .displayName(user.getDisplayName())
-                .build();
     }
 
     protected UserDto mapRead(@NonNull User user) {

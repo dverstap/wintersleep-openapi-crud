@@ -39,7 +39,7 @@ public class EntityDef {
         this.path = entity.getPath();
         this.title = entity.getTitle();
         this.pluralTitle = entity.getPluralTitle();
-        this.operationTypes = Collections.unmodifiableSet(EntityOperationType.parse(entity.getAccess()));
+        this.operationTypes = Collections.unmodifiableSet(EntityOperationType.parse(entity.getOperations()));
         this.audits = Collections.unmodifiableSet(AccessAudit.parse(entity.getAudit()));
         this.search = entity.getSearch();
         var properties = new LinkedHashMap<String, PropertyDef>();
@@ -125,7 +125,6 @@ public class EntityDef {
     public @NotNull String getModelName(PropertyModelType modelType) {
         return switch (modelType) {
             case SORT -> this.title + "Sort";
-            case LIST -> this.title + "Entry";
             case READ -> this.title;
             default -> this.title + StringUtils.capitalize(modelType.name().toLowerCase());
         };
@@ -231,7 +230,7 @@ public class EntityDef {
                                                         .addMediaType("application/json", new MediaType()
                                                                 .schema(new ArraySchema()
                                                                         .items(new Schema<>()
-                                                                                .$ref("#/components/schemas/" + getModelName(EntityModelType.LIST))
+                                                                                .$ref("#/components/schemas/" + getModelName(EntityModelType.READ))
                                                                         )
                                                                 )
                                                         )
@@ -304,26 +303,6 @@ public class EntityDef {
                                         .addMediaType("application/json", new MediaType()
                                                 .schema(new Schema<>()
                                                         .$ref("#/components/schemas/" + getModelName(EntityModelType.READ))
-                                                )
-                                        )
-                                )
-                        )
-                );
-    }
-
-    private Operation buildGetManyOperation() {
-        return new Operation()
-                .operationId(operationId(EntityOperationType.GET_MANY))
-                .addParametersItem(idsParameter())
-                .responses(new ApiResponses()
-                        .addApiResponse("200", new ApiResponse()
-                                .description("OK")
-                                .content(new Content()
-                                        .addMediaType("application/json", new MediaType()
-                                                .schema(new ArraySchema()
-                                                        .items(new Schema<>()
-                                                                .$ref("#/components/schemas/" + getModelName(EntityModelType.READ))
-                                                        )
                                                 )
                                         )
                                 )

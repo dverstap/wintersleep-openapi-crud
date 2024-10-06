@@ -16,7 +16,7 @@ import org.wintersleep.openapi.crud.sample.domain.QCompany;
 @Service
 @Transactional
 public class CompanyDataProvider extends JpaQueryDslDataProvider<
-        Company, Long, CompanyEntryDto,
+        Company, Long,
         CompanySortDto, CompanyFilterDto,
         CompanyCreateDto, CompanyDto, CompanyUpdateDto> {
 
@@ -57,19 +57,6 @@ public class CompanyDataProvider extends JpaQueryDslDataProvider<
             case LAST_VERIFIED_AT -> company.verifiedTimestampPair.lastSetAt;
             case LAST_UNVERIFIED_AT -> company.verifiedTimestampPair.lastUnSetAt;
         };
-    }
-
-    @Override
-    protected CompanyEntryDto mapEntry(@NonNull Company company) {
-        return CompanyEntryDto.builder()
-                .id(company.getId())
-                .vatNumber(company.getVatNumber())
-                .name(company.getName())
-                .externalId(company.getExternalId())
-                .verified(company.isVerified())
-                .lastVerifiedAt(company.getVerifiedTimestampPair().getLastSetAt())
-                .lastUnverifiedAt(company.getVerifiedTimestampPair().getLastUnSetAt())
-                .build();
     }
 
     @Override

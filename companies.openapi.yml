@@ -60,7 +60,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/UserEntry'
+                  $ref: '#/components/schemas/User'
     post:
       operationId: createUser
       requestBody:
@@ -169,7 +169,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/CompanyEntry'
+                  $ref: '#/components/schemas/Company'
     post:
       operationId: createCompany
       requestBody:
@@ -290,7 +290,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/EmployeeEntry'
+                  $ref: '#/components/schemas/Employee'
     post:
       operationId: createEmployee
       requestBody:
@@ -374,48 +374,6 @@ components:
           type: string
         displayName:
           type: string
-    UserEntry:
-      title: UserEntry
-      required:
-      - id
-      - email
-      - displayName
-      properties:
-        id:
-          type: integer
-          format: int64
-        email:
-          type: string
-          format: email
-        firstName:
-          type: string
-        lastName:
-          type: string
-        displayName:
-          type: string
-    UserSort:
-      title: UserSort
-      enum:
-      - id
-      - email
-      - firstName
-      - lastName
-      - displayName
-    UserCreate:
-      title: UserCreate
-      required:
-      - email
-      - displayName
-      properties:
-        email:
-          type: string
-          format: email
-        firstName:
-          type: string
-        lastName:
-          type: string
-        displayName:
-          type: string
     User:
       title: User
       required:
@@ -439,6 +397,29 @@ components:
         currentEmployeeId:
           type: integer
           format: int64
+    UserSort:
+      title: UserSort
+      enum:
+      - id
+      - email
+      - firstName
+      - lastName
+      - displayName
+    UserCreate:
+      title: UserCreate
+      required:
+      - email
+      - displayName
+      properties:
+        email:
+          type: string
+          format: email
+        firstName:
+          type: string
+        lastName:
+          type: string
+        displayName:
+          type: string
     UserUpdate:
       title: UserUpdate
       required:
@@ -471,8 +452,8 @@ components:
         lastUnverifiedAt:
           type: string
           format: date-time
-    CompanyEntry:
-      title: CompanyEntry
+    Company:
+      title: Company
       required:
       - id
       - name
@@ -491,6 +472,9 @@ components:
           format: vat
         externalId:
           type: string
+        url:
+          type: string
+          format: url
         verified:
           type: boolean
         lastVerifiedAt:
@@ -528,37 +512,6 @@ components:
           format: url
         verified:
           type: boolean
-    Company:
-      title: Company
-      required:
-      - id
-      - name
-      - vatNumber
-      - verified
-      - lastVerifiedAt
-      - lastUnverifiedAt
-      properties:
-        id:
-          type: integer
-          format: int64
-        name:
-          type: string
-        vatNumber:
-          type: string
-          format: vat
-        externalId:
-          type: string
-        url:
-          type: string
-          format: url
-        verified:
-          type: boolean
-        lastVerifiedAt:
-          type: string
-          format: date-time
-        lastUnverifiedAt:
-          type: string
-          format: date-time
     CompanyUpdate:
       title: CompanyUpdate
       required:
@@ -592,8 +545,8 @@ components:
         companyId:
           type: integer
           format: int64
-    EmployeeEntry:
-      title: EmployeeEntry
+    Employee:
+      title: Employee
       required:
       - id
       - active
@@ -637,33 +590,6 @@ components:
       properties:
         active:
           type: boolean
-        userId:
-          type: integer
-          format: int64
-        companyId:
-          type: integer
-          format: int64
-    Employee:
-      title: Employee
-      required:
-      - id
-      - active
-      - lastActivatedAt
-      - lastDeActivatedAt
-      - userId
-      - companyId
-      properties:
-        id:
-          type: integer
-          format: int64
-        active:
-          type: boolean
-        lastActivatedAt:
-          type: string
-          format: date-time
-        lastDeActivatedAt:
-          type: string
-          format: date-time
         userId:
           type: integer
           format: int64

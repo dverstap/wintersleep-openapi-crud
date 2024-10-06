@@ -27,14 +27,13 @@ import static java.lang.String.format;
 public abstract class JpaQueryDslDataProvider<
         Entity,
         ID,
-        EntryDto,
         SortPropertyId extends Enum<SortPropertyId>,
         FilterDto,
         CreateDto,
         ReadDto,
         UpdateDto
         >
-        implements DataProvider<ID, EntryDto, SortPropertyId, FilterDto, CreateDto, ReadDto, UpdateDto> {
+        implements DataProvider<ID, SortPropertyId, FilterDto, CreateDto, ReadDto, UpdateDto> {
 
     protected final Logger log;
     protected final String resource;
@@ -54,7 +53,7 @@ public abstract class JpaQueryDslDataProvider<
     }
 
     @Override
-    public ResponseEntity<List<EntryDto>> list(List<Long> ids, FilterDto filterDto, String search, SortRequest<SortPropertyId> sortRequest, OffsetLimit offsetLimit) {
+    public ResponseEntity<List<ReadDto>> list(List<Long> ids, FilterDto filterDto, String search, SortRequest<SortPropertyId> sortRequest, OffsetLimit offsetLimit) {
         if (ids != null && !ids.isEmpty()) {
             return getMany(ids);
         } else {
@@ -62,7 +61,7 @@ public abstract class JpaQueryDslDataProvider<
         }
     }
 
-    protected ResponseEntity<List<EntryDto>> getList(FilterDto filterDto, String search, SortRequest<SortPropertyId> sortRequest, OffsetLimit offsetLimit) {
+    protected ResponseEntity<List<ReadDto>> getList(FilterDto filterDto, String search, SortRequest<SortPropertyId> sortRequest, OffsetLimit offsetLimit) {
         log.debug("Filter: {}", filterDto);
         BooleanExpression where = mapWhere(filterDto, search);
         JPAQuery<Entity> query = new JPAQuery<>(entityManager)
@@ -86,12 +85,12 @@ public abstract class JpaQueryDslDataProvider<
                 .header("X-Total-Count", Long.toString(results.getTotal()))
                 .body(page
                         .stream()
-                        .map(this::mapEntry)
+                        .map(this::mapRead)
                         .toList())
                 ;
     }
 
-    protected ResponseEntity<List<EntryDto>> getMany(Collection<Long> ids) {
+    protected ResponseEntity<List<ReadDto>> getMany(Collection<Long> ids) {
         BooleanExpression where = idPath.in(ids);
         JPAQuery<Entity> query = new JPAQuery<>(entityManager)
                 .select(entityPath)
@@ -102,7 +101,7 @@ public abstract class JpaQueryDslDataProvider<
                 .ok()
                 .body(entities
                         .stream()
-                        .map(this::mapEntry)
+                        .map(this::mapRead)
                         .toList())
                 ;
     }
@@ -199,8 +198,6 @@ public abstract class JpaQueryDslDataProvider<
         }
         return path.eq(value);
     }
-
-    protected abstract EntryDto mapEntry(@NonNull Entity entity);
 
     protected abstract ReadDto mapRead(@NonNull Entity entity);
 
