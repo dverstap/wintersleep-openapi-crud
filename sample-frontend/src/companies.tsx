@@ -15,9 +15,12 @@ import {
   SimpleForm,
   SimpleShowLayout,
   TextField,
+  TextFieldProps,
   TextInput,
   UrlField,
+  useRecordContext,
   Validator,
+  WithListContext,
 } from "react-admin";
 import { checkVAT, countries } from "jsvat";
 
@@ -33,10 +36,28 @@ const filters = [
   />,
 ];
 
+const ColoredTextField = (props: TextFieldProps) => {
+  const record = useRecordContext();
+  return (
+    <div
+      style={{
+        backgroundColor: record[props.source] % 2 == 0 ? "red" : "green",
+        paddingLeft: "3px",
+        paddingRight: "3px",
+        paddingTop: "3px",
+        paddingBottom: "3px",
+      }}
+    >
+      <TextField {...props} />
+    </div>
+  );
+};
+
 export const CompanyList = () => (
   <List filters={filters}>
     <Datagrid>
       <TextField source="id" />
+      <ColoredTextField source="id" />
       <TextField source="name" />
       <TextField source="vatNumber" />
       <TextField source="externalId" />
