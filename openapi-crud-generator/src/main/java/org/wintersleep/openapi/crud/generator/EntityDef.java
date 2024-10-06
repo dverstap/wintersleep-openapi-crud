@@ -2,10 +2,7 @@ package org.wintersleep.openapi.crud.generator;
 
 import com.google.common.base.Preconditions;
 import io.swagger.v3.core.util.PrimitiveType;
-import io.swagger.v3.oas.models.Operation;
-import io.swagger.v3.oas.models.PathItem;
-import io.swagger.v3.oas.models.Paths;
-import io.swagger.v3.oas.models.SpecVersion;
+import io.swagger.v3.oas.models.*;
 import io.swagger.v3.oas.models.headers.Header;
 import io.swagger.v3.oas.models.media.*;
 import io.swagger.v3.oas.models.parameters.Parameter;
@@ -109,8 +106,8 @@ public class EntityDef {
         return schema;
     }
 
-    public Schema<?> generateSortSchema() {
-        String title = getModelName(PropertyModelType.SORT);
+    public Schema<?> generateSortFieldSchema() {
+        String title = getModelName(PropertyModelType.SORT); // + "Field";
         return new Schema<>(SpecVersion.V30)
                 .title(title)
                 // x-implements doesn't do anything for enums
@@ -172,13 +169,7 @@ public class EntityDef {
     private Operation buildListOperation() {
         Operation operation = new Operation()
                 .operationId(operationId(EntityOperationType.LIST))
-                .addParametersItem(new QueryParameter()
-                        .name("id")
-                        .schema(new ArraySchema()
-                                .items(new IntegerSchema()
-                                        .format("int64")
-                                )
-                        ))
+                .addParametersItem(idArrayParameter())
                 .addParametersItem(new QueryParameter()
                         .name("filter")
                         // https://swagger.io/specification/v3/#parameter-object:
@@ -360,6 +351,20 @@ public class EntityDef {
         }
     }
 
+    public void addComponents(Components components) {
+        for (EntityOperationType access : operationTypes) {
+            for (EntityModelType modelType : access.getModelTypes()) {
+                Schema<?> schema = generateSchema(modelType);
+                components.addSchemas(schema.getTitle(), schema);
+            }
+            List<String> sortableProperties = getSortableProperties();
+            if (!sortableProperties.isEmpty()) {
+                Schema<?> schema = generateSortFieldSchema();
+                components.addSchemas(schema.getTitle(), schema);
+            }
+        }
+    }
+
     private static Parameter idParameter() {
         return new PathParameter()
                 .name("id")
@@ -367,31 +372,11 @@ public class EntityDef {
                 .schema(PrimitiveType.LONG.createProperty());
     }
 
-/*
-    private static Parameter idsParameter() {
+    private static Parameter idArrayParameter() {
         return new QueryParameter()
                 .name("id")
-                .required(true)
                 .schema(new ArraySchema()
                         .items(PrimitiveType.LONG.createProperty()));
     }
-*/
-
-    private static Parameter idsParameter() {
-        return new PathParameter()
-                .name("ids")
-                .required(true)
-                .schema(new ArraySchema()
-                        .items(PrimitiveType.LONG.createProperty()));
-    }
-
-/*
-    private static Parameter idsParameter() {
-        return new PathParameter()
-                .name("ids")
-                .required(true)
-                .schema(new StringSchema());
-    }
-*/
 
 }

@@ -8,7 +8,6 @@ import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Paths;
 import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.servers.Server;
 import org.everit.json.schema.ValidationException;
@@ -60,17 +59,7 @@ public class Generator {
         for (Entity entity : crudSchema.getEntities()) {
             EntityDef entityDef = new EntityDef(entity);
             entityDef.addPaths(paths);
-            for (EntityOperationType access : entityDef.getOperationTypes()) {
-                for (EntityModelType modelType : access.getModelTypes()) {
-                    Schema<?> schema = entityDef.generateSchema(modelType);
-                    components.addSchemas(schema.getTitle(), schema);
-                }
-                List<String> sortableProperties = entityDef.getSortableProperties();
-                if (!sortableProperties.isEmpty()) {
-                    Schema<?> schema = entityDef.generateSortSchema();
-                    components.addSchemas(schema.getTitle(), schema);
-                }
-            }
+            entityDef.addComponents(components);
         }
         components
                 .addSchemas("SortOrder",
