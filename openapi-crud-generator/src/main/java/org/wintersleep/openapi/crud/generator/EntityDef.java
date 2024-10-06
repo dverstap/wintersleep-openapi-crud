@@ -115,6 +115,7 @@ public class EntityDef {
         String title = getModelName(PropertyModelType.SORT);
         return new Schema<>(SpecVersion.V30)
                 .title(title)
+                // x-implements doesn't do anything for enums
                 //.extensions(Map.of("x-implements", "org.wintersleep.crud.provider.SortEnum"))
                 ._enum(getSortableProperties());
     }

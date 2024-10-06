@@ -35,8 +35,12 @@ public class BooleanTimestampPair {
         return lastSetAt.isAfter(lastUnSetAt);
     }
 
-    public void set(boolean verified) {
-        if (verified) {
+    public void set(boolean value) {
+        if (value == this.get()) {
+            // avoid updating the timestamps all the time:
+            return;
+        }
+        if (value) {
             lastSetAt = Now.offsetDateTime();
         } else {
             lastUnSetAt = Now.offsetDateTime();

@@ -1,14 +1,8 @@
 package org.wintersleep.openapi.crud.core.provider;
 
 import com.querydsl.core.QueryResults;
-import com.querydsl.core.types.EntityPath;
-import com.querydsl.core.types.Expression;
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberPath;
-import com.querydsl.core.types.dsl.StringPath;
+import com.querydsl.core.types.*;
+import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQuery;
 import lombok.Getter;
 import lombok.NonNull;
@@ -190,6 +184,12 @@ public abstract class JpaQueryDslDataProvider<
             return null;
         }
         return path.likeIgnoreCase("%" + value + "%");
+    }
+    protected <T extends Comparable<?>> BooleanExpression eq(SimpleExpression<T> path, T value) {
+        if (value == null) {
+            return null;
+        }
+        return path.eq(value);
     }
 
     protected abstract EntryDto mapEntry(@NonNull Entity entity);

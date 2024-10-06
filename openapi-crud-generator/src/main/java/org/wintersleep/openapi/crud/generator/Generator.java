@@ -73,7 +73,12 @@ public class Generator {
             }
         }
         components
-                .addSchemas("SortOrder", new StringSchema()._enum(List.of("ASC", "DESC")));
+                .addSchemas("SortOrder",
+                        new StringSchema()
+                                ._enum(List.of("ASC", "DESC"))
+                        // x-implements doesn't do anything for enums
+                        //.extensions(Map.of("x-implements", "x.y"))
+                );
         openAPI.paths(paths);
         openAPI.components(components);
 

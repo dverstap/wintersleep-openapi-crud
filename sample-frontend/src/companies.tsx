@@ -8,6 +8,8 @@ import {
   Edit,
   List,
   NullableBooleanInput,
+  ReferenceField,
+  ReferenceManyField,
   required,
   Show,
   SimpleForm,
@@ -46,6 +48,7 @@ export const CompanyList = () => (
 export const CompanyShow = () => (
   <Show>
     <SimpleShowLayout>
+      <h2>Company</h2>
       <TextField source="id" />
       <TextField source="name" />
       <TextField source="vatNumber" />
@@ -54,6 +57,14 @@ export const CompanyShow = () => (
       <BooleanField source="verified" />
       <DateField source="lastVerifiedAt" showTime={true} />
       <DateField source="lastUnVerifiedAt" showTime={true} />
+      <h2>Employees</h2>
+      <ReferenceManyField reference="employees" target="companyId">
+        <Datagrid>
+          <ReferenceField reference="employees" source="id" />
+          <ReferenceField source="userId" reference="users" />
+          <TextField source="active" />
+        </Datagrid>
+      </ReferenceManyField>
     </SimpleShowLayout>
   </Show>
 );

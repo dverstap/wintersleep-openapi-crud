@@ -100,3 +100,70 @@ dataProvider.getMany = function (resource, params) {
     };
   });
 };
+
+dataProvider.getManyReference = function (resource, params) {
+  const { page, perPage } = params.pagination;
+  const { field, order } = params.sort;
+
+  const rangeStart = (page - 1) * perPage;
+  const rangeEnd = page * perPage - 1;
+
+  let q = params.filter.q;
+  delete params.filter.q;
+  params.filter[params.target] = params.id;
+  const query = {
+    page: page - 1,
+    size: perPage,
+    //sort: JSON.stringify([field, order]),
+    sort: field,
+    order: order,
+    //range: JSON.stringify([rangeStart, rangeEnd]),
+    q: q,
+    filter: JSON.stringify(params.filter),
+    //[params.target]: params.id,
+  };
+  delete params.filter.q;
+  //debugger
+  const url = `${URL}/${resource}?${stringify(query)}`;
+  const options = {
+    signal: params.signal,
+  };
+
+  /*
+  const query = {
+    sort: JSON.stringify([field, order]),
+    range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
+    filter: JSON.stringify({
+      ...params.filter,
+      [params.target]: params.id,
+    }),
+  };
+  const url = `${apiUrl}/${resource}?${stringify(query)}`;
+  const options =
+      countHeader === 'Content-Range'
+          ? {
+            // Chrome doesn't return `Content-Range` header if no `Range` is provided in the request.
+            headers: new Headers({
+              Range: `${resource}=${rangeStart}-${rangeEnd}`,
+            }),
+            signal: params?.signal,
+          }
+          : { signal: params?.signal };
+*/
+
+  let countHeader = "Content-Range";
+  return httpClient(url, options).then(({ headers, json }) => {
+    if (!headers.has(countHeader)) {
+      throw new Error(
+        `The ${countHeader} header is missing in the HTTP Response. The simple REST data provider expects responses for lists of resources to contain this header with the total number of results to build the pagination. If you are using CORS, did you declare ${countHeader} in the Access-Control-Expose-Headers header?`
+      );
+    }
+    return {
+      data: json,
+      total:
+        countHeader === "Content-Range"
+          ? parseInt(headers.get("content-range")!.split("/").pop() || "", 10)
+          : parseInt(headers.get(countHeader.toLowerCase())!),
+    };
+  });
+};

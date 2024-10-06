@@ -57,3 +57,10 @@ There are many other interesting options:
 
 Generate OpenAPI data definitions from this, which should lead to good
 TypeScript interfaces.
+
+
+# React-Admin
+
+- I18N/L10N
+- Login
+- Access Control

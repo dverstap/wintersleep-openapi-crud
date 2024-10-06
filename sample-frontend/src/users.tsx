@@ -2,6 +2,8 @@ import {
   Datagrid,
   Edit,
   List,
+  ReferenceField,
+  ReferenceManyField,
   Show,
   SimpleForm,
   SimpleShowLayout,
@@ -32,11 +34,20 @@ export const UserList = () => (
 export const UserShow = () => (
   <Show>
     <SimpleShowLayout>
+      <h2>User</h2>
       <TextField source="id" />
       <TextField source="email" />
       <TextField source="displayName" />
       <TextField source="firstName" />
       <TextField source="lastName" />
+      <h2>Employees</h2>
+      <ReferenceManyField reference="employees" target="userId">
+        <Datagrid>
+          <ReferenceField reference="employees" source="id" />
+          <ReferenceField reference="companies" source="companyId" />
+          <TextField source="active" />
+        </Datagrid>
+      </ReferenceManyField>
     </SimpleShowLayout>
   </Show>
 );
@@ -47,7 +58,7 @@ export const UserEdit = () => {
       <SimpleForm>
         <TextInput source="id" disabled={true} />
         <TextInput source="email" disabled={true} />
-        <TextInput source="firstName" />
+        <TextInput source="firstName" required={true} />
         <TextInput source="lastName" />
         <TextInput source="displayName" disabled={true} />
       </SimpleForm>

@@ -48,6 +48,7 @@ export const EmployeeList = () => (
 export const EmployeeShow = () => (
   <Show>
     <SimpleShowLayout>
+      <h2>Employee</h2>
       <TextField source="id" />
       <ReferenceField source="userId" reference="users" />
       <ReferenceField source="companyId" reference="companies" />

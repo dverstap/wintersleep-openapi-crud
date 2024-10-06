@@ -55,4 +55,10 @@ public class Employee implements Persistable<Long> {
         activatedTimestampPair.set(active);
     }
 
+    public BooleanTimestampPair getActivatedTimestampPair() {
+        if (activatedTimestampPair == null) {
+            activatedTimestampPair = new BooleanTimestampPair();
+        }
+        return activatedTimestampPair;
+    }
 }

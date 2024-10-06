@@ -37,6 +37,8 @@ public class EmployeeDataProvider extends JpaQueryDslDataProvider<
 //                like(employee.name, dto.getName()),
 //                like(employee.externalId, dto.getExternalId()),
 //                like(employee.vatNumber, dto.getVatNumber()),
+                eq(employee.company.id, dto.getCompanyId()),
+                eq(employee.user.id, dto.getUserId()),
                 BooleanTimestampPair.filter(employee.activatedTimestampPair, dto.isActive())
         );
     }
