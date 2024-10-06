@@ -5,7 +5,6 @@ import org.openapitools.model.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.wintersleep.openapi.crud.core.provider.SortRequest;
 
 import java.util.List;
 
@@ -39,10 +38,11 @@ public class CompanyController implements CompaniesApi {
 
     @Override
     public ResponseEntity<List<CompanyDto>> listCompanies(List<Long> ids,
-                                                          CompanyFilterDto filter, String search,
-                                                          CompanySortDto sort, SampleSortOrder order,
+                                                          CompanyFilterDto filter,
+                                                          String search,
+                                                          CompanySortOrderDto sortOrder,
                                                           SampleStartEndDto startEnd) {
-        return dataProvider.list(ids, filter, search, SortRequest.of(sort, order), startEnd);
+        return dataProvider.list(ids, filter, search, sortOrder, startEnd);
     }
 
     @Override

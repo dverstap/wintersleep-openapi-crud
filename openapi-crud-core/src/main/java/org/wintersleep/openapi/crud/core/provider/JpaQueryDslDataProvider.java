@@ -28,12 +28,13 @@ public abstract class JpaQueryDslDataProvider<
         Entity,
         ID,
         SortPropertyId extends Enum<SortPropertyId>,
+        GeneratedOrderDirection extends Enum<GeneratedOrderDirection>,
         FilterDto,
         CreateDto,
         ReadDto,
         UpdateDto
         >
-        implements DataProvider<ID, SortPropertyId, FilterDto, CreateDto, ReadDto, UpdateDto> {
+        implements DataProvider<ID, SortPropertyId, GeneratedOrderDirection, FilterDto, CreateDto, ReadDto, UpdateDto> {
 
     protected final Logger log;
     protected final String resource;
@@ -53,24 +54,24 @@ public abstract class JpaQueryDslDataProvider<
     }
 
     @Override
-    public ResponseEntity<List<ReadDto>> list(List<Long> ids, FilterDto filterDto, String search, SortRequest<SortPropertyId> sortRequest, StartEnd startEnd) {
+    public ResponseEntity<List<ReadDto>> list(List<Long> ids, FilterDto filterDto, String search, SortOrder<SortPropertyId, GeneratedOrderDirection> sortOrder, StartEnd startEnd) {
         if (ids != null && !ids.isEmpty()) {
             return getMany(ids);
         } else {
-            return getList(filterDto, search, sortRequest, OffsetLimit.of(startEnd));
+            return getList(filterDto, search, OrderBy.of(sortOrder), OffsetLimit.of(startEnd));
         }
     }
 
-    protected ResponseEntity<List<ReadDto>> getList(FilterDto filterDto, String search, SortRequest<SortPropertyId> sortRequest, OffsetLimit offsetLimit) {
+    protected ResponseEntity<List<ReadDto>> getList(FilterDto filterDto, String search, OrderBy<SortPropertyId> orderBy, OffsetLimit offsetLimit) {
         log.debug("Filter: {}", filterDto);
         BooleanExpression where = mapWhere(filterDto, search);
         JPAQuery<Entity> query = new JPAQuery<>(entityManager)
                 .select(entityPath)
                 .from(entityPath)
                 .where(where);
-        if (sortRequest != null) {
+        if (orderBy != null) {
             query
-                    .orderBy(mapOrderSpecifier(sortRequest));
+                    .orderBy(mapOrderSpecifier(orderBy));
         }
         if (offsetLimit != null) {
             query
@@ -167,20 +168,20 @@ public abstract class JpaQueryDslDataProvider<
 
     protected abstract BooleanExpression mapSearch(String search);
 
-    protected OrderSpecifier<? extends Comparable<?>> mapOrderSpecifier(SortRequest<SortPropertyId> sortRequest) {
-        Order order = sortRequest.direction() == SortDirection.ASC ? Order.ASC : Order.DESC;
-        Expression<? extends Comparable<?>> expression = mapOrderExpression(sortRequest);
-        OrderSpecifier.NullHandling nullhandling = mapOrderNullHandling(sortRequest);
+    protected OrderSpecifier<? extends Comparable<?>> mapOrderSpecifier(OrderBy<SortPropertyId> orderBy) {
+        Order order = orderBy.direction() == OrderDirection.ASC ? Order.ASC : Order.DESC;
+        Expression<? extends Comparable<?>> expression = mapOrderExpression(orderBy);
+        OrderSpecifier.NullHandling nullhandling = mapOrderNullHandling(orderBy);
         return new OrderSpecifier<>(order, expression, nullhandling);
     }
 
-    protected Expression<? extends Comparable<?>> mapOrderExpression(SortRequest<SortPropertyId> sortRequest) {
-        return mapOrderExpression(sortRequest.propertyId(), sortRequest.direction());
+    protected Expression<? extends Comparable<?>> mapOrderExpression(OrderBy<SortPropertyId> orderBy) {
+        return mapOrderExpression(orderBy.propertyId(), orderBy.direction());
     }
 
-    protected abstract Expression<? extends Comparable<?>> mapOrderExpression(SortPropertyId propertyId, SortDirection direction);
+    protected abstract Expression<? extends Comparable<?>> mapOrderExpression(SortPropertyId propertyId, OrderDirection direction);
 
-    protected OrderSpecifier.NullHandling mapOrderNullHandling(SortRequest<SortPropertyId> sortRequest) {
+    protected OrderSpecifier.NullHandling mapOrderNullHandling(OrderBy<SortPropertyId> orderBy) {
         // TODO make the default configurable:
         return OrderSpecifier.NullHandling.Default;
     }

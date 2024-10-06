@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * The server-side DataProvider mimics the client-side DataProvider:
+ * The server-side DataProvider partially mimics the client-side DataProvider:
  * - <a href="https://marmelab.com/react-admin/Architecture.html#providers">React Admin Architecture</a>
  * - <a href="https://marmelab.com/react-admin/DataProviderWriting.html">Writing a DataProvider</a>
  * <p>
@@ -20,8 +20,16 @@ import java.util.List;
  * typically annotated with @Service.
  * <p>
  * Concrete implementations should also be annotated with @Transactional, otherwise no changes will actually occur.
+ * <p>
+ * Do not forget to register a SortOrderArgumentResolver for each entity in a WebMvcConfigurer.
+ * <p>
+ * You also need to register a single StartEndArgumentResolver in WebMvcConfigurer.
  */
-public interface DataProvider<ID, SortPropertyId extends Enum<SortPropertyId>, FilterDto, CreateDto, ReadDto, UpdateDto> {
+public interface DataProvider<
+        ID,
+        SortPropertyId extends Enum<SortPropertyId>,
+        GeneratedOrderDirection extends Enum<GeneratedOrderDirection>,
+        FilterDto, CreateDto, ReadDto, UpdateDto> {
 
     /**
      * Note that for filtering to work, you must register the FilterDto using FilterArgumentResolver,
@@ -31,7 +39,7 @@ public interface DataProvider<ID, SortPropertyId extends Enum<SortPropertyId>, F
      * If your entity does not support search, just pass null.
      */
     @Transactional(readOnly = true)
-    default ResponseEntity<List<ReadDto>> list(List<Long> ids, FilterDto filterDto, String search, SortRequest<SortPropertyId> sortRequest, StartEnd startEnd) {
+    default ResponseEntity<List<ReadDto>> list(List<Long> ids, FilterDto filterDto, String search, SortOrder<SortPropertyId, GeneratedOrderDirection> sortOrder, StartEnd startEnd) {
         throw new UnsupportedOperationException("list not supported by " + getClass().getSimpleName());
     }
 

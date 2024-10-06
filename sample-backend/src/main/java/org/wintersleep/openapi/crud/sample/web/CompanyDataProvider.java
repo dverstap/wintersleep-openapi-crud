@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.wintersleep.openapi.crud.core.domain.BooleanTimestampPair;
 import org.wintersleep.openapi.crud.core.provider.JpaQueryDslDataProvider;
-import org.wintersleep.openapi.crud.core.provider.SortDirection;
+import org.wintersleep.openapi.crud.core.provider.OrderDirection;
 import org.wintersleep.openapi.crud.sample.domain.Company;
 import org.wintersleep.openapi.crud.sample.domain.QCompany;
 
@@ -17,7 +17,7 @@ import org.wintersleep.openapi.crud.sample.domain.QCompany;
 @Transactional
 public class CompanyDataProvider extends JpaQueryDslDataProvider<
         Company, Long,
-        CompanySortDto, CompanyFilterDto,
+        CompanySortPropertyId, SampleOrderDirection, CompanyFilterDto,
         CompanyCreateDto, CompanyDto, CompanyUpdateDto> {
 
     public CompanyDataProvider() {
@@ -46,7 +46,7 @@ public class CompanyDataProvider extends JpaQueryDslDataProvider<
     }
 
     @Override
-    protected Expression<? extends Comparable<?>> mapOrderExpression(CompanySortDto fieldName, SortDirection direction) {
+    protected Expression<? extends Comparable<?>> mapOrderExpression(CompanySortPropertyId fieldName, OrderDirection direction) {
         final QCompany company = QCompany.company;
         return switch (fieldName) {
             case ID -> company.id;

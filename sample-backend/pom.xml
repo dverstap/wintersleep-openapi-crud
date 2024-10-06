@@ -137,7 +137,10 @@
                             <modelNameSuffix>Dto</modelNameSuffix>
                             <!-- To prevent that Dto is added to the name of these enums/classes: -->
                             <modelNameMappings>
-                                SampleSortOrder=SampleSortOrder,
+                                SampleOrderDirection=SampleOrderDirection,
+                                CompanySortPropertyId=CompanySortPropertyId,
+                                EmployeeSortPropertyId=EmployeeSortPropertyId,
+                                UserSortPropertyId=UserSortPropertyId,
                             </modelNameMappings>
                             <parameterNameMappings>
                                 _sort=sort,

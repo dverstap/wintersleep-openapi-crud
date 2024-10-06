@@ -26,14 +26,11 @@ paths:
         in: query
         schema:
           type: string
-      - name: _sort
+      - name: sort-order
         in: query
+        style: form
         schema:
-          $ref: '#/components/schemas/UserSort'
-      - name: _order
-        in: query
-        schema:
-          $ref: '#/components/schemas/SampleSortOrder'
+          $ref: '#/components/schemas/UserSortOrder'
       - name: start-end
         in: query
         style: form
@@ -127,14 +124,11 @@ paths:
         in: query
         schema:
           type: string
-      - name: _sort
+      - name: sort-order
         in: query
+        style: form
         schema:
-          $ref: '#/components/schemas/CompanySort'
-      - name: _order
-        in: query
-        schema:
-          $ref: '#/components/schemas/SampleSortOrder'
+          $ref: '#/components/schemas/CompanySortOrder'
       - name: start-end
         in: query
         style: form
@@ -240,14 +234,11 @@ paths:
         in: query
         schema:
           type: string
-      - name: _sort
+      - name: sort-order
         in: query
+        style: form
         schema:
-          $ref: '#/components/schemas/EmployeeSort'
-      - name: _order
-        in: query
-        schema:
-          $ref: '#/components/schemas/SampleSortOrder'
+          $ref: '#/components/schemas/EmployeeSortOrder'
       - name: start-end
         in: query
         style: form
@@ -373,8 +364,18 @@ components:
         currentEmployeeId:
           type: integer
           format: int64
-    UserSort:
-      title: UserSort
+    UserSortOrder:
+      title: UserSortOrder
+      type: object
+      properties:
+        _sort:
+          $ref: '#/components/schemas/UserSortPropertyId'
+        _order:
+          $ref: '#/components/schemas/SampleOrderDirection'
+      x-implements: "org.wintersleep.openapi.crud.core.provider.SortOrder<org.openapitools.model.UserSortPropertyId,\
+        \ org.openapitools.model.SampleOrderDirection>"
+    UserSortPropertyId:
+      title: UserSortPropertyId
       enum:
       - id
       - email
@@ -459,8 +460,18 @@ components:
         lastUnverifiedAt:
           type: string
           format: date-time
-    CompanySort:
-      title: CompanySort
+    CompanySortOrder:
+      title: CompanySortOrder
+      type: object
+      properties:
+        _sort:
+          $ref: '#/components/schemas/CompanySortPropertyId'
+        _order:
+          $ref: '#/components/schemas/SampleOrderDirection'
+      x-implements: "org.wintersleep.openapi.crud.core.provider.SortOrder<org.openapitools.model.CompanySortPropertyId,\
+        \ org.openapitools.model.SampleOrderDirection>"
+    CompanySortPropertyId:
+      title: CompanySortPropertyId
       enum:
       - id
       - name
@@ -548,8 +559,18 @@ components:
         companyId:
           type: integer
           format: int64
-    EmployeeSort:
-      title: EmployeeSort
+    EmployeeSortOrder:
+      title: EmployeeSortOrder
+      type: object
+      properties:
+        _sort:
+          $ref: '#/components/schemas/EmployeeSortPropertyId'
+        _order:
+          $ref: '#/components/schemas/SampleOrderDirection'
+      x-implements: "org.wintersleep.openapi.crud.core.provider.SortOrder<org.openapitools.model.EmployeeSortPropertyId,\
+        \ org.openapitools.model.SampleOrderDirection>"
+    EmployeeSortPropertyId:
+      title: EmployeeSortPropertyId
       enum:
       - id
       - active
@@ -579,7 +600,7 @@ components:
       properties:
         active:
           type: boolean
-    SampleSortOrder:
+    SampleOrderDirection:
       type: string
       enum:
       - ASC

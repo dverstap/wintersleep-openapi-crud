@@ -5,7 +5,6 @@ import org.openapitools.model.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.wintersleep.openapi.crud.core.provider.SortRequest;
 
 import java.util.List;
 
@@ -32,10 +31,11 @@ public class EmployeeController implements EmployeesApi {
 
     @Override
     public ResponseEntity<List<EmployeeDto>> listEmployees(List<Long> ids,
-                                                           EmployeeFilterDto filter, String search,
-                                                           EmployeeSortDto sort, SampleSortOrder order,
+                                                           EmployeeFilterDto filter,
+                                                           String search,
+                                                           EmployeeSortOrderDto sortOrder,
                                                            SampleStartEndDto startEnd) {
-        return dataProvider.list(ids, filter, search, SortRequest.of(sort, order), startEnd);
+        return dataProvider.list(ids, filter, search, sortOrder, startEnd);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package org.wintersleep.openapi.crud.core.provider;
 
-public enum SortDirection {
+public enum OrderDirection {
     ASC,
     DESC,
 }

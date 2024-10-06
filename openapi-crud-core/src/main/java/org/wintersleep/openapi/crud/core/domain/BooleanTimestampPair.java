@@ -4,7 +4,7 @@ import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import lombok.Data;
-import org.wintersleep.openapi.crud.core.provider.SortDirection;
+import org.wintersleep.openapi.crud.core.provider.OrderDirection;
 import org.wintersleep.openapi.crud.core.util.Now;
 
 import javax.persistence.Embeddable;
@@ -59,7 +59,7 @@ public class BooleanTimestampPair {
     }
 
 
-    public static Expression<? extends Comparable<?>> order(QBooleanTimestampPair timestampPair, SortDirection direction) {
+    public static Expression<? extends Comparable<?>> order(QBooleanTimestampPair timestampPair, OrderDirection direction) {
 //        return switch (direction) {
 //            case ASC -> Expressions.cases()
 //                    .when(trueExpr(timestampPair))

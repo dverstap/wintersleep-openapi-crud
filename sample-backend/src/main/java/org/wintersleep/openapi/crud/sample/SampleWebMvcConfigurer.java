@@ -1,16 +1,12 @@
 package org.wintersleep.openapi.crud.sample;
 
 import lombok.RequiredArgsConstructor;
-import org.openapitools.model.CompanySortDto;
-import org.openapitools.model.EmployeeSortDto;
-import org.openapitools.model.SampleStartEndDto;
-import org.openapitools.model.UserSortDto;
-import org.springframework.format.FormatterRegistry;
+import org.openapitools.model.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.wintersleep.openapi.crud.core.web.SortConverter;
+import org.wintersleep.openapi.crud.core.web.SortOrderArgumentResolver;
 import org.wintersleep.openapi.crud.core.web.StartEndArgumentResolver;
 
 import java.util.List;
@@ -31,17 +27,31 @@ public class SampleWebMvcConfigurer implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers
-                .add(new StartEndArgumentResolver<>(SampleStartEndDto.class,
-                        (start, end) -> new SampleStartEndDto().start(start).end(end)))
-        ;
+        resolvers.add(new SortOrderArgumentResolver<>(CompanySortOrderDto.class,
+                CompanySortPropertyId::fromValue,
+                SampleOrderDirection::fromValue,
+                (sort, order) -> new CompanySortOrderDto().sort(sort).order(order)));
+        resolvers.add(new SortOrderArgumentResolver<>(EmployeeSortOrderDto.class,
+                EmployeeSortPropertyId::fromValue,
+                SampleOrderDirection::fromValue,
+                (sort, order) -> new EmployeeSortOrderDto().sort(sort).order(order)));
+        resolvers.add(new SortOrderArgumentResolver<>(UserSortOrderDto.class,
+                UserSortPropertyId::fromValue,
+                SampleOrderDirection::fromValue,
+                (sort, order) -> new UserSortOrderDto().sort(sort).order(order)));
+
+        // only once for the entire openapi spec:
+        resolvers.add(new StartEndArgumentResolver<>(SampleStartEndDto.class,
+                (start, end) -> new SampleStartEndDto().start(start).end(end)));
     }
 
+/*
     @Override
     public void addFormatters(FormatterRegistry registry) {
-        registry.addConverter(String.class, CompanySortDto.class, new SortConverter<>(CompanySortDto::fromValue));
-        registry.addConverter(String.class, EmployeeSortDto.class, new SortConverter<>(EmployeeSortDto::fromValue));
-        registry.addConverter(String.class, UserSortDto.class, new SortConverter<>(UserSortDto::fromValue));
+        registry.addConverter(String.class, CompanySortOrderDto.class, new SortConverter<>(CompanySortOrderDto::fromValue));
+        registry.addConverter(String.class, EmployeeSortOrderDto.class, new SortConverter<>(EmployeeSortOrderDto::fromValue));
+        registry.addConverter(String.class, UserSortOrderDto.class, new SortConverter<>(UserSortOrderDto::fromValue));
     }
+*/
 
 }

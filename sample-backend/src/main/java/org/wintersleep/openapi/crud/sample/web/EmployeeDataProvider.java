@@ -9,14 +9,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.wintersleep.openapi.crud.core.domain.BooleanTimestampPair;
 import org.wintersleep.openapi.crud.core.provider.JpaQueryDslDataProvider;
-import org.wintersleep.openapi.crud.core.provider.SortDirection;
+import org.wintersleep.openapi.crud.core.provider.OrderDirection;
 import org.wintersleep.openapi.crud.sample.domain.*;
 
 @Service
 @Transactional
 public class EmployeeDataProvider extends JpaQueryDslDataProvider<
         Employee, Long,
-        EmployeeSortDto, EmployeeFilterDto,
+        EmployeeSortPropertyId, SampleOrderDirection, EmployeeFilterDto,
         EmployeeCreateDto, EmployeeDto, EmployeeUpdateDto> {
 
     private final CompanyRepository companyRepository;
@@ -60,7 +60,7 @@ public class EmployeeDataProvider extends JpaQueryDslDataProvider<
     }
 
     @Override
-    protected Expression<? extends Comparable<?>> mapOrderExpression(EmployeeSortDto propertyId, SortDirection direction) {
+    protected Expression<? extends Comparable<?>> mapOrderExpression(EmployeeSortPropertyId propertyId, OrderDirection direction) {
         final QEmployee employee = QEmployee.employee;
         return switch (propertyId) {
             case ID -> employee.id;

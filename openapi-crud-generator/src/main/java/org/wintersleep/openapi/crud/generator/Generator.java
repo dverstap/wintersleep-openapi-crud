@@ -59,17 +59,17 @@ public class Generator {
 
         ObjectMapper dataMapper = new ObjectMapper(new YAMLFactory());
         OpenapiCrudSchema crudSchema = dataMapper.readValue(inputFile, OpenapiCrudSchema.class);
-        String sortOrderSchemaName = prefix + "SortOrder";
+        String orderDirectionSchemaName = prefix + "OrderDirection";
         String startEndSchemaName = prefix + "StartEnd";
         Paths paths = new Paths();
         Components components = new Components();
         for (Entity entity : crudSchema.getEntities()) {
             EntityDef entityDef = new EntityDef(entity);
-            entityDef.addPaths(sortOrderSchemaName, startEndSchemaName, paths);
-            entityDef.addComponents(components);
+            entityDef.addPaths(startEndSchemaName, paths);
+            entityDef.addComponents(orderDirectionSchemaName, components);
         }
         components
-                .addSchemas(sortOrderSchemaName,
+                .addSchemas(orderDirectionSchemaName,
                         new StringSchema()
                                 ._enum(List.of("ASC", "DESC"))
                         // x-implements doesn't do anything for enums

@@ -105,22 +105,35 @@ public class EntityDef {
         return schema;
     }
 
-/*
-    public Schema<?> generateSortSchema() {
+    public Schema<?> generateSortOrderSchema(String orderDirectionSchemaName) {
         String title = getModelName(PropertyModelType.SORT);
+        String pkg = "org.openapitools.model"; // TODO
+        // Make sure that these two are excluded from adding the Dto suffix,
+        // by putting them in the <modelNameMappings> in the pom.xml file:
+        String sortClassName = pkg + "." + getSortPropertyIdTitle();
+        String orderClassName = pkg + "." + orderDirectionSchemaName;
         return new ObjectSchema()
                 .title(title)
-                .addProperty("_sort")
+                .addProperty("_sort", new Schema<>().$ref("#/components/schemas/" + getSortPropertyIdTitle()))
+                .addProperty("_order", new Schema<>().$ref("#/components/schemas/" + orderDirectionSchemaName))
+                .extensions(Map.of(
+                        "x-implements",
+                        "org.wintersleep.openapi.crud.core.provider.SortOrder<%s, %s>".formatted(sortClassName, orderClassName)
+                ))
+                ;
     }
-*/
 
-    public Schema<?> generateSortFieldSchema() {
-        String title = getModelName(PropertyModelType.SORT); // + "Field";
+    public Schema<?> generateSortPropertyIdSchema() {
+        String title = getSortPropertyIdTitle();
         return new Schema<>(SpecVersion.V30)
                 .title(title)
                 // x-implements doesn't do anything for enums
                 //.extensions(Map.of("x-implements", "org.wintersleep.crud.provider.SortEnum"))
                 ._enum(getSortableProperties());
+    }
+
+    private @NotNull String getSortPropertyIdTitle() {
+        return this.title + "SortPropertyId";
     }
 
     public @NotNull String getModelName(EntityModelType modelType) {
@@ -129,7 +142,7 @@ public class EntityDef {
 
     public @NotNull String getModelName(PropertyModelType modelType) {
         return switch (modelType) {
-            case SORT -> this.title + "Sort";
+            case SORT -> this.title + "SortOrder";
             case READ -> this.title;
             default -> this.title + StringUtils.capitalize(modelType.name().toLowerCase());
         };
@@ -148,11 +161,11 @@ public class EntityDef {
         return result;
     }
 
-    public void addPaths(String sortOrderSchemaName, String startEndSchemaName, Paths paths) {
+    public void addPaths(String startEndSchemaName, Paths paths) {
         if (supportsList() || supportsCreate()) {
             PathItem item = new PathItem();
             if (supportsList()) {
-                item.get(buildListOperation(sortOrderSchemaName, startEndSchemaName));
+                item.get(buildListOperation(startEndSchemaName));
             }
             if (supportsCreate()) {
                 item.post(buildCreateOperation());
@@ -174,7 +187,7 @@ public class EntityDef {
         }
     }
 
-    private Operation buildListOperation(String sortOrderSchemaName, String startEndSchemaName) {
+    private Operation buildListOperation(String startEndSchemaName) {
         Operation operation = new Operation()
                 .operationId(operationId(EntityOperationType.LIST))
                 .addParametersItem(idArrayParameter())
@@ -195,15 +208,23 @@ public class EntityDef {
         if (!getSortableProperties().isEmpty()) {
             operation
                     .addParametersItem(new QueryParameter()
-                            .name("_sort")
+                            .name("sort-order")
+                            // https://swagger.io/specification/v3/#parameter-object:
+                            .style(Parameter.StyleEnum.FORM)
+                            // .explode(true) // is the default for style=form
                             .schema(new Schema<>()
                                     .$ref("#/components/schemas/" + getModelName(PropertyModelType.SORT)))
-                    )
-                    .addParametersItem(new QueryParameter()
-                            .name("_order")
-                            .schema(new Schema<>()
-                                    .$ref("#/components/schemas/" + sortOrderSchemaName))
                     );
+//                    .addParametersItem(new QueryParameter()
+//                            .name("_sort")
+//                            .schema(new Schema<>()
+//                                    .$ref("#/components/schemas/" + getModelName(PropertyModelType.SORT)))
+//                    )
+//                    .addParametersItem(new QueryParameter()
+//                            .name("_order")
+//                            .schema(new Schema<>()
+//                                    .$ref("#/components/schemas/" + sortOrderSchemaName))
+//                    );
         }
         operation
                 .addParametersItem(new QueryParameter()
@@ -352,7 +373,7 @@ public class EntityDef {
         }
     }
 
-    public void addComponents(Components components) {
+    public void addComponents(String orderDirectionSchemaName, Components components) {
         for (EntityOperationType operationType : operationTypes) {
             for (EntityModelType modelType : operationType.getModelTypes()) {
                 Schema<?> schema = generateSchema(modelType);
@@ -360,8 +381,12 @@ public class EntityDef {
             }
             List<String> sortableProperties = getSortableProperties();
             if (!sortableProperties.isEmpty()) {
-                Schema<?> schema = generateSortFieldSchema();
-                components.addSchemas(schema.getTitle(), schema);
+                Schema<?> sortOrderSchema = generateSortOrderSchema(orderDirectionSchemaName);
+                components
+                        .addSchemas(sortOrderSchema.getTitle(), sortOrderSchema);
+                Schema<?> sortFieldSchema = generateSortPropertyIdSchema();
+                components
+                        .addSchemas(sortFieldSchema.getTitle(), sortFieldSchema);
             }
         }
     }
