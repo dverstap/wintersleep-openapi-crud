@@ -31,7 +31,7 @@ public interface DataProvider<ID, SortPropertyId extends Enum<SortPropertyId>, F
      * If your entity does not support search, just pass null.
      */
     @Transactional(readOnly = true)
-    default ResponseEntity<List<ReadDto>> list(List<Long> ids, FilterDto filterDto, String search, SortRequest<SortPropertyId> sortRequest, OffsetLimit offsetLimit) {
+    default ResponseEntity<List<ReadDto>> list(List<Long> ids, FilterDto filterDto, String search, SortRequest<SortPropertyId> sortRequest, StartEnd startEnd) {
         throw new UnsupportedOperationException("list not supported by " + getClass().getSimpleName());
     }
 

@@ -17,7 +17,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.wintersleep.openapi.crud.model.internal.Entity;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 @Getter
@@ -106,6 +105,15 @@ public class EntityDef {
         return schema;
     }
 
+/*
+    public Schema<?> generateSortSchema() {
+        String title = getModelName(PropertyModelType.SORT);
+        return new ObjectSchema()
+                .title(title)
+                .addProperty("_sort")
+    }
+*/
+
     public Schema<?> generateSortFieldSchema() {
         String title = getModelName(PropertyModelType.SORT); // + "Field";
         return new Schema<>(SpecVersion.V30)
@@ -140,11 +148,11 @@ public class EntityDef {
         return result;
     }
 
-    public void addPaths(Paths paths) {
+    public void addPaths(String sortOrderSchemaName, String startEndSchemaName, Paths paths) {
         if (supportsList() || supportsCreate()) {
             PathItem item = new PathItem();
             if (supportsList()) {
-                item.get(buildListOperation());
+                item.get(buildListOperation(sortOrderSchemaName, startEndSchemaName));
             }
             if (supportsCreate()) {
                 item.post(buildCreateOperation());
@@ -166,7 +174,7 @@ public class EntityDef {
         }
     }
 
-    private Operation buildListOperation() {
+    private Operation buildListOperation(String sortOrderSchemaName, String startEndSchemaName) {
         Operation operation = new Operation()
                 .operationId(operationId(EntityOperationType.LIST))
                 .addParametersItem(idArrayParameter())
@@ -194,24 +202,17 @@ public class EntityDef {
                     .addParametersItem(new QueryParameter()
                             .name("_order")
                             .schema(new Schema<>()
-                                    .$ref("#/components/schemas/SortOrder"))
+                                    .$ref("#/components/schemas/" + sortOrderSchemaName))
                     );
         }
         operation
                 .addParametersItem(new QueryParameter()
-                                .name("_start")
-                                .schema(new IntegerSchema()
-                                        .format("int64")
-                                        .minimum(BigDecimal.ZERO))
-                        //.required(true)
-                )
-                .addParametersItem(new QueryParameter()
-                                .name("_end")
-                                .schema(new IntegerSchema()
-                                        .format("int64")
-                                        .minimum(BigDecimal.ONE)
-                                        .maximum(BigDecimal.valueOf(1000)))
-                        //.required(true)
+                        .name("start-end")
+                        // https://swagger.io/specification/v3/#parameter-object:
+                        .style(Parameter.StyleEnum.FORM)
+                        // .explode(true) // is the default for style=form
+                        .schema(new Schema<>()
+                                .$ref("#/components/schemas/" + startEndSchemaName))
                 );
         operation
                 .responses(new ApiResponses()
@@ -352,8 +353,8 @@ public class EntityDef {
     }
 
     public void addComponents(Components components) {
-        for (EntityOperationType access : operationTypes) {
-            for (EntityModelType modelType : access.getModelTypes()) {
+        for (EntityOperationType operationType : operationTypes) {
+            for (EntityModelType modelType : operationType.getModelTypes()) {
                 Schema<?> schema = generateSchema(modelType);
                 components.addSchemas(schema.getTitle(), schema);
             }

@@ -33,20 +33,12 @@ paths:
       - name: _order
         in: query
         schema:
-          $ref: '#/components/schemas/SortOrder'
-      - name: _start
+          $ref: '#/components/schemas/SampleSortOrder'
+      - name: start-end
         in: query
+        style: form
         schema:
-          minimum: 0
-          type: integer
-          format: int64
-      - name: _end
-        in: query
-        schema:
-          maximum: 1000
-          minimum: 1
-          type: integer
-          format: int64
+          $ref: '#/components/schemas/SampleStartEnd'
       responses:
         "200":
           description: OK
@@ -142,20 +134,12 @@ paths:
       - name: _order
         in: query
         schema:
-          $ref: '#/components/schemas/SortOrder'
-      - name: _start
+          $ref: '#/components/schemas/SampleSortOrder'
+      - name: start-end
         in: query
+        style: form
         schema:
-          minimum: 0
-          type: integer
-          format: int64
-      - name: _end
-        in: query
-        schema:
-          maximum: 1000
-          minimum: 1
-          type: integer
-          format: int64
+          $ref: '#/components/schemas/SampleStartEnd'
       responses:
         "200":
           description: OK
@@ -263,20 +247,12 @@ paths:
       - name: _order
         in: query
         schema:
-          $ref: '#/components/schemas/SortOrder'
-      - name: _start
+          $ref: '#/components/schemas/SampleSortOrder'
+      - name: start-end
         in: query
+        style: form
         schema:
-          minimum: 0
-          type: integer
-          format: int64
-      - name: _end
-        in: query
-        schema:
-          maximum: 1000
-          minimum: 1
-          type: integer
-          format: int64
+          $ref: '#/components/schemas/SampleStartEnd'
       responses:
         "200":
           description: OK
@@ -603,8 +579,21 @@ components:
       properties:
         active:
           type: boolean
-    SortOrder:
+    SampleSortOrder:
       type: string
       enum:
       - ASC
       - DESC
+    SampleStartEnd:
+      type: object
+      properties:
+        _start:
+          minimum: 0
+          type: integer
+          format: int64
+        _end:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+      x-implements: org.wintersleep.openapi.crud.core.provider.StartEnd

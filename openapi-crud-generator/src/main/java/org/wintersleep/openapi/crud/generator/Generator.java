@@ -8,6 +8,8 @@ import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Paths;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.media.IntegerSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.servers.Server;
 import org.everit.json.schema.ValidationException;
@@ -20,17 +22,20 @@ import org.wintersleep.openapi.crud.model.internal.OpenapiCrudSchema;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public class Generator {
 
     public static void main(String[] args) throws IOException {
-        if (args.length != 2) {
-            System.err.println("Expected two arguments: <INPUT_FILE> <OUTPUT_FILE>");
+        if (args.length != 3) {
+            System.err.println("Expected arguments: <PREFIX> <INPUT_FILE> <OUTPUT_FILE>");
             System.exit(1);
         }
-        File inputFile = new File(args[0]);
-        File outputFile = new File(args[1]);
+        String prefix = args[0];
+        File inputFile = new File(args[1]);
+        File outputFile = new File(args[2]);
 
         OpenAPI openAPI = new OpenAPI()
                 .openapi("3.0.3");
@@ -54,19 +59,34 @@ public class Generator {
 
         ObjectMapper dataMapper = new ObjectMapper(new YAMLFactory());
         OpenapiCrudSchema crudSchema = dataMapper.readValue(inputFile, OpenapiCrudSchema.class);
+        String sortOrderSchemaName = prefix + "SortOrder";
+        String startEndSchemaName = prefix + "StartEnd";
         Paths paths = new Paths();
         Components components = new Components();
         for (Entity entity : crudSchema.getEntities()) {
             EntityDef entityDef = new EntityDef(entity);
-            entityDef.addPaths(paths);
+            entityDef.addPaths(sortOrderSchemaName, startEndSchemaName, paths);
             entityDef.addComponents(components);
         }
         components
-                .addSchemas("SortOrder",
+                .addSchemas(sortOrderSchemaName,
                         new StringSchema()
                                 ._enum(List.of("ASC", "DESC"))
                         // x-implements doesn't do anything for enums
                         //.extensions(Map.of("x-implements", "x.y"))
+                );
+        components
+                .addSchemas(startEndSchemaName,
+                        new ObjectSchema()
+                                .addProperty("_start", new IntegerSchema()
+                                        .format("int64")
+                                        .minimum(BigDecimal.ZERO))
+                                .addProperty("_end", new IntegerSchema()
+                                        .format("int64")
+                                        .minimum(BigDecimal.ONE)
+                                        .maximum(BigDecimal.valueOf(1000))
+                                )
+                                .extensions(Map.of("x-implements", "org.wintersleep.openapi.crud.core.provider.StartEnd"))
                 );
         openAPI.paths(paths);
         openAPI.components(components);

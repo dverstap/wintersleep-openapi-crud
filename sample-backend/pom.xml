@@ -105,6 +105,7 @@
                     <includePluginDependencies>true</includePluginDependencies>
                     <mainClass>org.wintersleep.openapi.crud.generator.Generator</mainClass>
                     <arguments>
+                        <argument>Sample</argument>
                         <argument>${basedir}/../companies.crud.yml</argument>
                         <argument>${basedir}/../companies.openapi.yml</argument>
                     </arguments>
@@ -134,15 +135,13 @@
                             <generatorName>spring</generatorName>
                             <generateSupportingFiles>false</generateSupportingFiles>
                             <modelNameSuffix>Dto</modelNameSuffix>
-                            <!-- To prevent that Dto is added to the name of these enums: -->
+                            <!-- To prevent that Dto is added to the name of these enums/classes: -->
                             <modelNameMappings>
-                                SortOrder=SortOrder,
+                                SampleSortOrder=SampleSortOrder,
                             </modelNameMappings>
                             <parameterNameMappings>
                                 _sort=sort,
                                 _order=order,
-                                _start=start,
-                                _end=end,
                             </parameterNameMappings>
                             <configOptions>
                                 <annotationLibrary>none</annotationLibrary>

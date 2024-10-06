@@ -6,7 +6,6 @@ import org.openapitools.model.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.wintersleep.openapi.crud.core.provider.OffsetLimit;
 import org.wintersleep.openapi.crud.core.provider.SortRequest;
 
 import java.util.List;
@@ -25,9 +24,9 @@ public class UserController implements UsersApi {
     @Override
     public ResponseEntity<List<UserDto>> listUsers(List<Long> ids,
                                                    UserFilterDto filter, String search,
-                                                   UserSortDto sort, SortOrder order,
-                                                   Long start, Long end) {
-        return dataProvider.list(ids, filter, search, SortRequest.of(sort, order), OffsetLimit.ofStartEnd(start, end));
+                                                   UserSortDto sort, SampleSortOrder order,
+                                                   SampleStartEndDto startEnd) {
+        return dataProvider.list(ids, filter, search, SortRequest.of(sort, order), startEnd);
     }
 
     @Override

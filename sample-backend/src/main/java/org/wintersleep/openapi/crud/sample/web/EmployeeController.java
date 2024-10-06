@@ -5,7 +5,6 @@ import org.openapitools.model.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.wintersleep.openapi.crud.core.provider.OffsetLimit;
 import org.wintersleep.openapi.crud.core.provider.SortRequest;
 
 import java.util.List;
@@ -34,9 +33,9 @@ public class EmployeeController implements EmployeesApi {
     @Override
     public ResponseEntity<List<EmployeeDto>> listEmployees(List<Long> ids,
                                                            EmployeeFilterDto filter, String search,
-                                                           EmployeeSortDto sort, SortOrder order,
-                                                           Long start, Long end) {
-        return dataProvider.list(ids, filter, search, SortRequest.of(sort, order), OffsetLimit.ofStartEnd(start, end));
+                                                           EmployeeSortDto sort, SampleSortOrder order,
+                                                           SampleStartEndDto startEnd) {
+        return dataProvider.list(ids, filter, search, SortRequest.of(sort, order), startEnd);
     }
 
     @Override

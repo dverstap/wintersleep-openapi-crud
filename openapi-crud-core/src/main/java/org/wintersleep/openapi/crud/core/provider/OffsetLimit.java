@@ -37,4 +37,8 @@ public record OffsetLimit(
         return new OffsetLimit(offset, limit);
     }
 
+    public static OffsetLimit of(StartEnd startEnd) {
+        return ofStartEnd(startEnd.getStart(), startEnd.getEnd());
+    }
+
 }

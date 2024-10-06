@@ -53,11 +53,11 @@ public abstract class JpaQueryDslDataProvider<
     }
 
     @Override
-    public ResponseEntity<List<ReadDto>> list(List<Long> ids, FilterDto filterDto, String search, SortRequest<SortPropertyId> sortRequest, OffsetLimit offsetLimit) {
+    public ResponseEntity<List<ReadDto>> list(List<Long> ids, FilterDto filterDto, String search, SortRequest<SortPropertyId> sortRequest, StartEnd startEnd) {
         if (ids != null && !ids.isEmpty()) {
             return getMany(ids);
         } else {
-            return getList(filterDto, search, sortRequest, offsetLimit);
+            return getList(filterDto, search, sortRequest, OffsetLimit.of(startEnd));
         }
     }
 
