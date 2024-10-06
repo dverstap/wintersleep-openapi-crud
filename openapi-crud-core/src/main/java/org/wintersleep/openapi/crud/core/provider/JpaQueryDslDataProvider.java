@@ -1,14 +1,16 @@
 package org.wintersleep.openapi.crud.core.provider;
 
 import com.querydsl.core.QueryResults;
-import com.querydsl.core.types.*;
+import com.querydsl.core.types.EntityPath;
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQuery;
 import lombok.Getter;
 import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -52,7 +54,15 @@ public abstract class JpaQueryDslDataProvider<
     }
 
     @Override
-    public ResponseEntity<List<EntryDto>> list(FilterDto filterDto, String search, SortRequest<SortPropertyId> sortRequest, OffsetLimit offsetLimit) {
+    public ResponseEntity<List<EntryDto>> list(List<Long> ids, FilterDto filterDto, String search, SortRequest<SortPropertyId> sortRequest, OffsetLimit offsetLimit) {
+        if (ids != null && !ids.isEmpty()) {
+            return getMany(ids);
+        } else {
+            return getList(filterDto, search, sortRequest, offsetLimit);
+        }
+    }
+
+    protected ResponseEntity<List<EntryDto>> getList(FilterDto filterDto, String search, SortRequest<SortPropertyId> sortRequest, OffsetLimit offsetLimit) {
         log.debug("Filter: {}", filterDto);
         BooleanExpression where = mapWhere(filterDto, search);
         JPAQuery<Entity> query = new JPAQuery<>(entityManager)
@@ -71,10 +81,9 @@ public abstract class JpaQueryDslDataProvider<
         // TODO notice the restrictions on count in the deprecation message!
         QueryResults<Entity> results = query.fetchResults();
         List<Entity> page = results.getResults();
-        String contentRange = contentRange(results);
         return ResponseEntity
                 .ok()
-                .header(HttpHeaders.CONTENT_RANGE, contentRange)
+                .header("X-Total-Count", Long.toString(results.getTotal()))
                 .body(page
                         .stream()
                         .map(this::mapEntry)
@@ -82,9 +91,7 @@ public abstract class JpaQueryDslDataProvider<
                 ;
     }
 
-
-    @Override
-    public ResponseEntity<List<ReadDto>> getMany(Collection<Long> ids) {
+    protected ResponseEntity<List<EntryDto>> getMany(Collection<Long> ids) {
         BooleanExpression where = idPath.in(ids);
         JPAQuery<Entity> query = new JPAQuery<>(entityManager)
                 .select(entityPath)
@@ -95,7 +102,7 @@ public abstract class JpaQueryDslDataProvider<
                 .ok()
                 .body(entities
                         .stream()
-                        .map(this::mapRead)
+                        .map(this::mapEntry)
                         .toList())
                 ;
     }
@@ -185,6 +192,7 @@ public abstract class JpaQueryDslDataProvider<
         }
         return path.likeIgnoreCase("%" + value + "%");
     }
+
     protected <T extends Comparable<?>> BooleanExpression eq(SimpleExpression<T> path, T value) {
         if (value == null) {
             return null;

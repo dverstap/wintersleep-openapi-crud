@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "jsvat": "^2.5.3",
-    "ra-data-simple-rest": "^5.0.0",
+    "ra-data-json-server": "^5.2.2",
     "react": "^18.3.0",
     "react-admin": "^5.0.0",
     "react-dom": "^18.3.0"

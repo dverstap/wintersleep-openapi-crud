@@ -3,7 +3,6 @@ package org.wintersleep.openapi.crud.core.provider;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -32,13 +31,8 @@ public interface DataProvider<ID, EntryDto, SortPropertyId extends Enum<SortProp
      * If your entity does not support search, just pass null.
      */
     @Transactional(readOnly = true)
-    default ResponseEntity<List<EntryDto>> list(FilterDto filterDto, String search, SortRequest<SortPropertyId> sortRequest, OffsetLimit offsetLimit) {
+    default ResponseEntity<List<EntryDto>> list(List<Long> ids, FilterDto filterDto, String search, SortRequest<SortPropertyId> sortRequest, OffsetLimit offsetLimit) {
         throw new UnsupportedOperationException("list not supported by " + getClass().getSimpleName());
-    }
-
-    @Transactional(readOnly = true)
-    default ResponseEntity<List<ReadDto>> getMany(Collection<Long> ids) {
-        throw new UnsupportedOperationException("getMany not supported by " + getClass().getSimpleName());
     }
 
     @Transactional

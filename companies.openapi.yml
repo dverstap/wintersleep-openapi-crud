@@ -10,43 +10,51 @@ paths:
     get:
       operationId: listUsers
       parameters:
+      - name: id
+        in: query
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
       - name: filter
         in: query
+        style: form
         schema:
           $ref: '#/components/schemas/UserFilter'
       - name: q
         in: query
         schema:
           type: string
-      - name: sort
+      - name: _sort
         in: query
         schema:
           $ref: '#/components/schemas/UserSort'
-      - name: order
+      - name: _order
         in: query
         schema:
           $ref: '#/components/schemas/SortOrder'
-      - name: page
+      - name: _start
         in: query
         schema:
           minimum: 0
           type: integer
-          format: int32
-      - name: size
+          format: int64
+      - name: _end
         in: query
         schema:
           maximum: 1000
           minimum: 1
           type: integer
-          format: int32
+          format: int64
       responses:
         "200":
           description: OK
           headers:
-            Content-Range:
+            X-Total-Count:
               schema:
                 type: string
-              example: "Content-Range: users 25-49/123"
+              example: "X-Total-Count: 319"
           content:
             application/json:
               schema:
@@ -107,68 +115,55 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-  /users/ids/{ids}:
+  /companies:
     get:
-      operationId: getManyUsers
+      operationId: listCompanies
       parameters:
-      - name: ids
-        in: path
-        required: true
+      - name: id
+        in: query
         schema:
           type: array
           items:
             type: integer
             format: int64
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
-  /companies:
-    get:
-      operationId: listCompanies
-      parameters:
       - name: filter
         in: query
+        style: form
         schema:
           $ref: '#/components/schemas/CompanyFilter'
       - name: q
         in: query
         schema:
           type: string
-      - name: sort
+      - name: _sort
         in: query
         schema:
           $ref: '#/components/schemas/CompanySort'
-      - name: order
+      - name: _order
         in: query
         schema:
           $ref: '#/components/schemas/SortOrder'
-      - name: page
+      - name: _start
         in: query
         schema:
           minimum: 0
           type: integer
-          format: int32
-      - name: size
+          format: int64
+      - name: _end
         in: query
         schema:
           maximum: 1000
           minimum: 1
           type: integer
-          format: int32
+          format: int64
       responses:
         "200":
           description: OK
           headers:
-            Content-Range:
+            X-Total-Count:
               schema:
                 type: string
-              example: "Content-Range: companies 25-49/123"
+              example: "X-Total-Count: 319"
           content:
             application/json:
               schema:
@@ -241,68 +236,55 @@ paths:
       responses:
         "200":
           description: OK
-  /companies/ids/{ids}:
+  /employees:
     get:
-      operationId: getManyCompanies
+      operationId: listEmployees
       parameters:
-      - name: ids
-        in: path
-        required: true
+      - name: id
+        in: query
         schema:
           type: array
           items:
             type: integer
             format: int64
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Company'
-  /employees:
-    get:
-      operationId: listEmployees
-      parameters:
       - name: filter
         in: query
+        style: form
         schema:
           $ref: '#/components/schemas/EmployeeFilter'
       - name: q
         in: query
         schema:
           type: string
-      - name: sort
+      - name: _sort
         in: query
         schema:
           $ref: '#/components/schemas/EmployeeSort'
-      - name: order
+      - name: _order
         in: query
         schema:
           $ref: '#/components/schemas/SortOrder'
-      - name: page
+      - name: _start
         in: query
         schema:
           minimum: 0
           type: integer
-          format: int32
-      - name: size
+          format: int64
+      - name: _end
         in: query
         schema:
           maximum: 1000
           minimum: 1
           type: integer
-          format: int32
+          format: int64
       responses:
         "200":
           description: OK
           headers:
-            Content-Range:
+            X-Total-Count:
               schema:
                 type: string
-              example: "Content-Range: employees 25-49/123"
+              example: "X-Total-Count: 319"
           content:
             application/json:
               schema:
@@ -375,27 +357,6 @@ paths:
       responses:
         "200":
           description: OK
-  /employees/ids/{ids}:
-    get:
-      operationId: getManyEmployees
-      parameters:
-      - name: ids
-        in: path
-        required: true
-        schema:
-          type: array
-          items:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Employee'
 components:
   schemas:
     UserFilter:

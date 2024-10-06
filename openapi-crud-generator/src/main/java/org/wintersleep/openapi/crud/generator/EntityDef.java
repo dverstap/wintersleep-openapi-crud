@@ -23,8 +23,6 @@ import org.wintersleep.openapi.crud.model.internal.Entity;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static java.lang.String.format;
-
 @Getter
 public class EntityDef {
 
@@ -136,9 +134,6 @@ public class EntityDef {
     private Map<String, Schema<?>> generateProperties(EntityModelType modelType, List<PropertyDef> propertyDefs) {
         Preconditions.checkArgument(!propertyDefs.isEmpty(), "Property definitions cannot be empty for {} model of {}", modelType, title);
         Map<String, Schema<?>> result = new LinkedHashMap<>();
-//        if (modelType == EntityModelType.FILTER) {
-//            result.put("q", new StringSchema());
-//        }
         for (PropertyDef propertyDef : propertyDefs) {
             Schema<?> schema = propertyDef.generateSchema();
             result.put(propertyDef.name(), schema);
@@ -173,18 +168,23 @@ public class EntityDef {
             }
             paths.addPathItem("/" + path + "/{id}", item);
         }
-        if (supportsRead()) {
-            PathItem item = new PathItem();
-            item.get(buildGetManyOperation());
-            paths.addPathItem("/" + path + "/ids/{ids}", item);
-        }
     }
 
     private Operation buildListOperation() {
         Operation operation = new Operation()
                 .operationId(operationId(EntityOperationType.LIST))
                 .addParametersItem(new QueryParameter()
+                        .name("id")
+                        .schema(new ArraySchema()
+                                .items(new IntegerSchema()
+                                        .format("int64")
+                                )
+                        ))
+                .addParametersItem(new QueryParameter()
                         .name("filter")
+                        // https://swagger.io/specification/v3/#parameter-object:
+                        .style(Parameter.StyleEnum.FORM)
+                        // .explode(true) // is the default for style=form
                         .schema(new Schema<>()
                                 .$ref("#/components/schemas/" + getModelName(EntityModelType.FILTER)))
                 );
@@ -197,55 +197,62 @@ public class EntityDef {
         if (!getSortableProperties().isEmpty()) {
             operation
                     .addParametersItem(new QueryParameter()
-                            .name("sort")
+                            .name("_sort")
                             .schema(new Schema<>()
                                     .$ref("#/components/schemas/" + getModelName(PropertyModelType.SORT)))
                     )
                     .addParametersItem(new QueryParameter()
-                            .name("order")
+                            .name("_order")
                             .schema(new Schema<>()
                                     .$ref("#/components/schemas/SortOrder"))
                     );
         }
         operation
                 .addParametersItem(new QueryParameter()
-                                .name("page")
+                                .name("_start")
                                 .schema(new IntegerSchema()
+                                        .format("int64")
                                         .minimum(BigDecimal.ZERO))
                         //.required(true)
                 )
                 .addParametersItem(new QueryParameter()
-                                .name("size")
+                                .name("_end")
                                 .schema(new IntegerSchema()
+                                        .format("int64")
                                         .minimum(BigDecimal.ONE)
                                         .maximum(BigDecimal.valueOf(1000)))
                         //.required(true)
                 );
         operation
                 .responses(new ApiResponses()
-                        .addApiResponse("200", new ApiResponse()
-                                .description("OK")
-                                .content(new Content()
-                                        .addMediaType("application/json", new MediaType()
-                                                .schema(new ArraySchema()
-                                                        .items(new Schema<>()
-                                                                .$ref("#/components/schemas/" + getModelName(EntityModelType.LIST))
+                                .addApiResponse("200", new ApiResponse()
+                                                .description("OK")
+                                                .content(new Content()
+                                                        .addMediaType("application/json", new MediaType()
+                                                                .schema(new ArraySchema()
+                                                                        .items(new Schema<>()
+                                                                                .$ref("#/components/schemas/" + getModelName(EntityModelType.LIST))
+                                                                        )
+                                                                )
                                                         )
                                                 )
-                                        )
+                                                // The React Admin ra-data-simple-rest provider uses Content-Range:
+                                                //   https://github.com/marmelab/react-admin/tree/master/packages/ra-data-simple-rest#cors-setup
+                                                // The Refine simple-rest provider uses: x-total-count:
+                                                //   https://refine.dev/docs/data/data-provider/#retrieving-the-total-row-count
+                                                //   https://github.com/refinedev/refine/blob/master/packages/simple-rest/src/provider.ts
+                                                // In either case, if API and UI are on different hosts, make sure CORS is set up correctly,
+                                                // as explained in the React Admin docs.
+//                                .addHeaderObject("Content-Range", new Header()
+//                                        .schema(new StringSchema())
+//                                        .example(format("Content-Range: %s 25-49/123", path))
+//                                )
+                                                // The React Admin ra-data-json-server uses X-Total-Count:
+                                                //   https://github.com/marmelab/react-admin/tree/master/packages/ra-data-json-server#rest-dialect
+                                                .addHeaderObject("X-Total-Count", new Header()
+                                                        .schema(new StringSchema())
+                                                        .example("X-Total-Count: 319"))
                                 )
-                                // The React Admin ra-data-simple-rest provider uses Content-Range:
-                                //   https://github.com/marmelab/react-admin/tree/master/packages/ra-data-simple-rest#cors-setup
-                                // The Refine simple-rest provider uses: x-total-count:
-                                //   https://refine.dev/docs/data/data-provider/#retrieving-the-total-row-count
-                                //   https://github.com/refinedev/refine/blob/master/packages/simple-rest/src/provider.ts
-                                // In either case, if API and UI are on different hosts, make sure CORS is set up correctly,
-                                // as explained in the React Admin docs.
-                                .addHeaderObject("Content-Range", new Header()
-                                        .schema(new StringSchema())
-                                        .example(format("Content-Range: %s 25-49/123", path))
-                                )
-                        )
                 );
         return operation
                 //.extensions(Map.of("x-spring-paginated", true))

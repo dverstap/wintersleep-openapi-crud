@@ -17,9 +17,24 @@ public record OffsetLimit(
         if (page == null) {
             throw new IllegalArgumentException("page must not be null");
         }
-        int pageSize = size == null ? DEFAULT_LIMIT : size;
-        long offset = ((long) page) * pageSize;
-        return new OffsetLimit(offset, pageSize);
+        int limit = size == null ? DEFAULT_LIMIT : size;
+        long offset = ((long) page) * limit;
+        return new OffsetLimit(offset, limit);
+    }
+
+    public static OffsetLimit ofStartEnd(Long start, Long end) {
+        if (start == null && end == null) {
+            return null;
+        }
+        if (start == null) {
+            throw new IllegalArgumentException("start must not be null");
+        }
+        if (end != null && start > end) {
+            throw new IllegalArgumentException("start (%s) must be less than end (%s)".formatted(start, end));
+        }
+        long offset = start;
+        int limit = end == null ? DEFAULT_LIMIT : (int) (end - start);
+        return new OffsetLimit(offset, limit);
     }
 
 }
