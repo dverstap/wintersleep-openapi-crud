@@ -29,6 +29,25 @@ public enum PropertyModelType {
         throw new IllegalArgumentException(format("Invalid character for PropertyModelType: %s (%s)", (char) ch, ch));
     }
 
+    public static String validCodes() {
+        StringBuilder sb = new StringBuilder();
+        for (PropertyModelType access : PropertyModelType.values()) {
+            sb.append(access.letter);
+        }
+        return sb.toString();
+    }
+
+    public static String findInvalidCodes(String str) {
+        String validCodes = validCodes();
+        StringBuilder sb = new StringBuilder();
+        for (char c : str.toCharArray()) {
+            if (!validCodes.contains(String.valueOf(c))) {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
     public static Set<PropertyModelType> parse(String str) {
         return str.chars()
                 .mapToObj(PropertyModelType::of)

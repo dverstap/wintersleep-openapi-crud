@@ -80,16 +80,24 @@ public record PropertyDef(
         boolean optional = key.endsWith("?");
         String[] parts1 = value.split(" ");
         if (parts1.length != 2) {
-            throw new IllegalArgumentException(String.format("Invalid value '%s' for property '%s'", value, name));
+            throw new IllegalArgumentException("Expected two space-separated words instead of '%s' for property '%s'"
+                    .formatted(value, name));
         }
-        Set<PropertyModelType> accesses = PropertyModelType.parse(parts1[0]);
+        String propertyCodes = parts1[0];
+        String invalidCodes = PropertyModelType.findInvalidCodes(propertyCodes);
+        if (!invalidCodes.isEmpty()) {
+            throw new IllegalArgumentException("Invalid PropertyModelType codes '%s' in '%s' for property '%s'"
+                    .formatted(invalidCodes, value, name));
+        }
+        Set<PropertyModelType> propertyModelTypes = PropertyModelType.parse(propertyCodes);
         String[] parts2 = parts1[1].split(":");
         if (parts2.length > 2) {
-            throw new IllegalArgumentException(String.format("Invalid value '%s' for property '%s'", value, name));
+            throw new IllegalArgumentException("Expected 'type' or 'type:format' in the second word of '%s' for property '%s'"
+                    .formatted(value, name));
         }
         String type = parts2[0];
         String format = parts2.length > 1 ? parts2[1] : null;
-        return new PropertyDef(name, optional, accesses, type, format);
+        return new PropertyDef(name, optional, propertyModelTypes, type, format);
     }
 
     public boolean isIn(PropertyModelType modelType) {
