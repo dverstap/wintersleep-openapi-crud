@@ -105,13 +105,13 @@ public class EntityDef {
         return schema;
     }
 
-    public Schema<?> generateSortOrderSchema(String orderDirectionSchemaName) {
+    public Schema<?> generateSortOrderSchema(String orderDirectionSchemaName, String javaPackageName) {
         String title = getModelName(PropertyModelType.SORT);
-        String pkg = "org.openapitools.model"; // TODO
         // Make sure that these two are excluded from adding the Dto suffix,
         // by putting them in the <modelNameMappings> in the pom.xml file:
-        String sortClassName = pkg + "." + getSortPropertyIdTitle();
-        String orderClassName = pkg + "." + orderDirectionSchemaName;
+        String sortClassName = javaPackageName + "." + getSortPropertyIdTitle();
+        String orderClassName = javaPackageName + "." + orderDirectionSchemaName;
+        //System.out.println(sortClassName + ": " + orderClassName);
         return new ObjectSchema()
                 .title(title)
                 .addProperty("_sort", new Schema<>().$ref("#/components/schemas/" + getSortPropertyIdTitle()))
@@ -373,7 +373,7 @@ public class EntityDef {
         }
     }
 
-    public void addComponents(String orderDirectionSchemaName, Components components) {
+    public void addComponents(String orderDirectionSchemaName, String javaPackageName, Components components) {
         for (EntityOperationType operationType : operationTypes) {
             for (EntityModelType modelType : operationType.getModelTypes()) {
                 Schema<?> schema = generateSchema(modelType);
@@ -381,7 +381,7 @@ public class EntityDef {
             }
             List<String> sortableProperties = getSortableProperties();
             if (!sortableProperties.isEmpty()) {
-                Schema<?> sortOrderSchema = generateSortOrderSchema(orderDirectionSchemaName);
+                Schema<?> sortOrderSchema = generateSortOrderSchema(orderDirectionSchemaName, javaPackageName);
                 components
                         .addSchemas(sortOrderSchema.getTitle(), sortOrderSchema);
                 Schema<?> sortFieldSchema = generateSortPropertyIdSchema();

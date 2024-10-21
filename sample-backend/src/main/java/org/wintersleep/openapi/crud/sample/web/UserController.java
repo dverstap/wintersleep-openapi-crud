@@ -1,8 +1,8 @@
 package org.wintersleep.openapi.crud.sample.web;
 
 import lombok.extern.slf4j.Slf4j;
-import org.openapitools.api.UsersApi;
-import org.openapitools.model.*;
+import org.wintersleep.openapi.crud.sample.api.UsersApi;
+import org.wintersleep.openapi.crud.sample.api.model.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

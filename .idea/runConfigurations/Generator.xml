@@ -2,7 +2,7 @@
   <configuration default="false" name="Generator" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="org.wintersleep.openapi.crud.generator.Generator" />
     <module name="wintersleep-openapi-crud-generator" />
-    <option name="PROGRAM_PARAMETERS" value="companies.crud.yml companies.openapi.yml" />
+    <option name="PROGRAM_PARAMETERS" value="Sample org.wintersleep.openapi.sample companies.crud.yml companies.openapi.yml" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="org.wintersleep.openapi.crud.generator.*" />

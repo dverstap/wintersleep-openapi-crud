@@ -1,13 +1,13 @@
 package org.wintersleep.openapi.crud.sample;
 
 import lombok.RequiredArgsConstructor;
-import org.openapitools.model.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.wintersleep.openapi.crud.core.web.SortOrderArgumentResolver;
 import org.wintersleep.openapi.crud.core.web.StartEndArgumentResolver;
+import org.wintersleep.openapi.crud.sample.api.model.*;
 
 import java.util.List;
 

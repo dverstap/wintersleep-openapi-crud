@@ -4,7 +4,7 @@ import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import lombok.NonNull;
-import org.openapitools.model.*;
+import org.wintersleep.openapi.crud.sample.api.model.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.wintersleep.openapi.crud.core.provider.JpaQueryDslDataProvider;

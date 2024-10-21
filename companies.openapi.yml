@@ -372,8 +372,8 @@ components:
           $ref: '#/components/schemas/UserSortPropertyId'
         _order:
           $ref: '#/components/schemas/SampleOrderDirection'
-      x-implements: "org.wintersleep.openapi.crud.core.provider.SortOrder<org.openapitools.model.UserSortPropertyId,\
-        \ org.openapitools.model.SampleOrderDirection>"
+      x-implements: "org.wintersleep.openapi.crud.core.provider.SortOrder<org.wintersleep.openapi.crud.sample.api.model.UserSortPropertyId,\
+        \ org.wintersleep.openapi.crud.sample.api.model.SampleOrderDirection>"
     UserSortPropertyId:
       title: UserSortPropertyId
       enum:
@@ -468,8 +468,8 @@ components:
           $ref: '#/components/schemas/CompanySortPropertyId'
         _order:
           $ref: '#/components/schemas/SampleOrderDirection'
-      x-implements: "org.wintersleep.openapi.crud.core.provider.SortOrder<org.openapitools.model.CompanySortPropertyId,\
-        \ org.openapitools.model.SampleOrderDirection>"
+      x-implements: "org.wintersleep.openapi.crud.core.provider.SortOrder<org.wintersleep.openapi.crud.sample.api.model.CompanySortPropertyId,\
+        \ org.wintersleep.openapi.crud.sample.api.model.SampleOrderDirection>"
     CompanySortPropertyId:
       title: CompanySortPropertyId
       enum:
@@ -567,8 +567,8 @@ components:
           $ref: '#/components/schemas/EmployeeSortPropertyId'
         _order:
           $ref: '#/components/schemas/SampleOrderDirection'
-      x-implements: "org.wintersleep.openapi.crud.core.provider.SortOrder<org.openapitools.model.EmployeeSortPropertyId,\
-        \ org.openapitools.model.SampleOrderDirection>"
+      x-implements: "org.wintersleep.openapi.crud.core.provider.SortOrder<org.wintersleep.openapi.crud.sample.api.model.EmployeeSortPropertyId,\
+        \ org.wintersleep.openapi.crud.sample.api.model.SampleOrderDirection>"
     EmployeeSortPropertyId:
       title: EmployeeSortPropertyId
       enum:

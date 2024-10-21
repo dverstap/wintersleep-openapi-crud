@@ -28,14 +28,23 @@ import java.util.Map;
 
 public class Generator {
 
-    public static void main(String[] args) throws IOException {
-        if (args.length != 3) {
-            System.err.println("Expected arguments: <PREFIX> <INPUT_FILE> <OUTPUT_FILE>");
+    public static void main(String[] args) {
+        try {
+            run(args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void run(String[] args) throws IOException {
+        if (args.length != 4) {
+            System.err.println("Expected arguments: <PREFIX> <INPUT_FILE> <OUTPUT_FILE> <MODEL_PACKAGE>");
             System.exit(1);
         }
         String prefix = args[0];
-        File inputFile = new File(args[1]);
-        File outputFile = new File(args[2]);
+        String javaPackageName = args[1];
+        File inputFile = new File(args[2]);
+        File outputFile = new File(args[3]);
 
         OpenAPI openAPI = new OpenAPI()
                 .openapi("3.0.3");
@@ -59,6 +68,9 @@ public class Generator {
 
         ObjectMapper dataMapper = new ObjectMapper(new YAMLFactory());
         OpenapiCrudSchema crudSchema = dataMapper.readValue(inputFile, OpenapiCrudSchema.class);
+        if (crudSchema.getEntities().isEmpty()) {
+            throw new IllegalArgumentException("%s: No entities found".formatted(inputFile));
+        }
         String orderDirectionSchemaName = prefix + "OrderDirection";
         String startEndSchemaName = prefix + "StartEnd";
         Paths paths = new Paths();
@@ -66,7 +78,7 @@ public class Generator {
         for (Entity entity : crudSchema.getEntities()) {
             EntityDef entityDef = new EntityDef(entity);
             entityDef.addPaths(startEndSchemaName, paths);
-            entityDef.addComponents(orderDirectionSchemaName, components);
+            entityDef.addComponents(orderDirectionSchemaName, javaPackageName, components);
         }
         components
                 .addSchemas(orderDirectionSchemaName,

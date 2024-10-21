@@ -11,6 +11,10 @@
 
     <artifactId>wintersleep-openapi-crud-sample</artifactId>
 
+    <properties>
+        <javaPackageName>org.wintersleep.openapi.crud.sample</javaPackageName>
+    </properties>
+
     <dependencies>
 
         <dependency>
@@ -106,6 +110,7 @@
                     <mainClass>org.wintersleep.openapi.crud.generator.Generator</mainClass>
                     <arguments>
                         <argument>Sample</argument>
+                        <argument>${javaPackageName}.api.model</argument>
                         <argument>${basedir}/../companies.crud.yml</argument>
                         <argument>${basedir}/../companies.openapi.yml</argument>
                     </arguments>
@@ -134,6 +139,8 @@
                             <inputSpec>${project.basedir}/../companies.openapi.yml</inputSpec>
                             <generatorName>spring</generatorName>
                             <generateSupportingFiles>false</generateSupportingFiles>
+                            <apiPackage>${javaPackageName}.api</apiPackage>
+                            <modelPackage>${javaPackageName}.api.model</modelPackage>
                             <modelNameSuffix>Dto</modelNameSuffix>
                             <!-- To prevent that Dto is added to the name of these enums/classes: -->
                             <modelNameMappings>
@@ -149,7 +156,6 @@
                             <configOptions>
                                 <annotationLibrary>none</annotationLibrary>
                                 <!--<apiFirst>true</apiFirst>-->
-                                <basePackage>org.wintersleep.openapi.sample</basePackage>
                                 <bigDecimalAsString>true</bigDecimalAsString>
                                 <booleanGetterPrefix>is</booleanGetterPrefix>
                                 <delegatePattern>false</delegatePattern>

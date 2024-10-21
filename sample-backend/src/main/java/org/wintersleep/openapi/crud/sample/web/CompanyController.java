@@ -1,7 +1,7 @@
 package org.wintersleep.openapi.crud.sample.web;
 
-import org.openapitools.api.CompaniesApi;
-import org.openapitools.model.*;
+import org.wintersleep.openapi.crud.sample.api.CompaniesApi;
+import org.wintersleep.openapi.crud.sample.api.model.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
