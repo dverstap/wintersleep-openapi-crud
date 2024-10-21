@@ -65,9 +65,7 @@ public abstract class JpaQueryDslDataProvider<
     protected ResponseEntity<List<ReadDto>> getList(FilterDto filterDto, String search, OrderBy<SortPropertyId> orderBy, OffsetLimit offsetLimit) {
         log.debug("Filter: {}", filterDto);
         BooleanExpression where = mapWhere(filterDto, search);
-        JPAQuery<Entity> query = new JPAQuery<>(entityManager)
-                .select(entityPath)
-                .from(entityPath)
+        JPAQuery<Entity> query = baseQuery()
                 .where(where);
         if (orderBy != null) {
             query
@@ -89,6 +87,12 @@ public abstract class JpaQueryDslDataProvider<
                         .map(this::mapRead)
                         .toList())
                 ;
+    }
+
+    protected JPAQuery<Entity> baseQuery() {
+        return new JPAQuery<>(entityManager)
+                .select(entityPath)
+                .from(entityPath);
     }
 
     protected ResponseEntity<List<ReadDto>> getMany(Collection<Long> ids) {
