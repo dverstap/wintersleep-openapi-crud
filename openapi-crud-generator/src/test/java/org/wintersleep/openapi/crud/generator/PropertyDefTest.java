@@ -11,9 +11,9 @@ class PropertyDefTest {
     @Test
     void of() {
         assertThat(PropertyDef.of("pname", "sfcru int"))
-                .isEqualTo(new PropertyDef("pname", false, PropertyModelType.allOf(), "int", null));
+                .isEqualTo(new PropertyDef("pname", false, PropertyModelType.allOf(), "int", null, null));
         assertThat(PropertyDef.of("pname?", "sfcru string:email"))
-                .isEqualTo(new PropertyDef("pname", true, PropertyModelType.allOf(), "string", "email"));
+                .isEqualTo(new PropertyDef("pname", true, PropertyModelType.allOf(), "string", "email", null));
     }
 
     @Test

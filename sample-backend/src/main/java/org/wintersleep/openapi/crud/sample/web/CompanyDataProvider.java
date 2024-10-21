@@ -4,13 +4,14 @@ import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import lombok.NonNull;
-import org.wintersleep.openapi.crud.sample.api.model.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.wintersleep.openapi.crud.core.domain.BooleanTimestampPair;
 import org.wintersleep.openapi.crud.core.provider.JpaQueryDslDataProvider;
 import org.wintersleep.openapi.crud.core.provider.OrderDirection;
+import org.wintersleep.openapi.crud.sample.api.model.*;
 import org.wintersleep.openapi.crud.sample.domain.Company;
+import org.wintersleep.openapi.crud.sample.domain.CompanyType;
 import org.wintersleep.openapi.crud.sample.domain.QCompany;
 
 @Service
@@ -29,6 +30,7 @@ public class CompanyDataProvider extends JpaQueryDslDataProvider<
         QCompany company = QCompany.company;
         return Expressions.allOf(
                 like(company.name, dto.getName()),
+                eq(company.type, mapType(dto.getType())),
                 like(company.externalId, dto.getExternalId()),
                 like(company.vatNumber, dto.getVatNumber()),
                 BooleanTimestampPair.filter(company.verifiedTimestampPair, dto.isVerified())
@@ -51,6 +53,7 @@ public class CompanyDataProvider extends JpaQueryDslDataProvider<
         return switch (fieldName) {
             case ID -> company.id;
             case NAME -> company.name;
+            case TYPE -> company.type;
             case EXTERNAL_ID -> company.externalId;
             case VAT_NUMBER -> company.vatNumber;
             case VERIFIED -> BooleanTimestampPair.order(company.verifiedTimestampPair, direction);
@@ -90,6 +93,10 @@ public class CompanyDataProvider extends JpaQueryDslDataProvider<
         company.setUrl(dto.getUrl());
         company.setVerified(dto.isVerified());
         return company;
+    }
+
+    private CompanyType mapType(CompanyTypeDto type) {
+        return CompanyType.valueOf(type.name());
     }
 
 }

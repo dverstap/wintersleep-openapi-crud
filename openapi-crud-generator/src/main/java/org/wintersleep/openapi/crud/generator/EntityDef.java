@@ -16,6 +16,7 @@ import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.wintersleep.openapi.crud.model.internal.Entity;
+import org.wintersleep.openapi.crud.model.internal.EnumDefinition;
 
 import java.util.*;
 
@@ -31,7 +32,7 @@ public class EntityDef {
     private final boolean search;
     private final @NonNull Map<String, PropertyDef> properties;
 
-    public EntityDef(Entity entity) {
+    public EntityDef(Entity entity, Map<String, EnumDefinition> enumDefinitionMap) {
         this.path = entity.getPath();
         this.title = entity.getTitle();
         this.pluralTitle = entity.getPluralTitle();
@@ -41,7 +42,7 @@ public class EntityDef {
         var properties = new LinkedHashMap<String, PropertyDef>();
         if (entity.getProperties() != null) {
             for (var entry : entity.getProperties().entrySet()) {
-                var propertyDef = PropertyDef.of(entry.getKey(), entry.getValue());
+                var propertyDef = PropertyDef.of(entry.getKey(), entry.getValue(), enumDefinitionMap);
                 properties.put(propertyDef.name(), propertyDef);
             }
         }

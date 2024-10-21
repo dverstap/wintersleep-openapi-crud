@@ -26,12 +26,16 @@ public class Company implements Persistable<Long> {
     @Column(nullable = false)
     private Long id;
 
+    @Column(nullable = false)
+    private String name;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private CompanyType type;
+
     @NaturalId
     @Column(nullable = false)
     private String vatNumber;
-
-    @Column(nullable = false)
-    private String name;
 
     private String externalId;
 

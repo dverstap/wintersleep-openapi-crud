@@ -3,6 +3,22 @@ $id: https://wintersleep.org/openapi-crud.schema.yml
 title: CrudDefinition
 type: object
 properties:
+  enums:
+    type: array
+    items:
+      type: object
+      title: EnumDefinition
+      javaType: org.wintersleep.openapi.crud.model.internal.EnumDefinition
+      properties:
+        name:
+          type: string
+        values:
+          type: array
+          items:
+            type: string
+      required:
+        - name
+        - values
   entities:
     type: array
     items:

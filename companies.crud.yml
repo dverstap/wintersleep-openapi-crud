@@ -8,9 +8,12 @@ structs:
     country: string:country-code
 
 # TODO arrays and maps
-# TODO enums
-# TODO Add s to properties, for sortable
-# TODO Add q to entities, for query (text search, q parameter)
+
+enums:
+  - name: CompanyType
+    values:
+      - supplier
+      - customer
 
 entities:
 
@@ -37,6 +40,7 @@ entities:
     properties:
       id: sfr id
       name: sfcru string
+      type: sfcru string:CompanyType
       vatNumber: sfcr string:vat
       externalId?: sfcr string
       # TODO: address: cru Address

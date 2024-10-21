@@ -5,7 +5,9 @@ import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import lombok.NonNull;
 import org.jetbrains.annotations.Nullable;
+import org.wintersleep.openapi.crud.model.internal.EnumDefinition;
 
+import java.util.Map;
 import java.util.Set;
 
 public record PropertyDef(
@@ -13,7 +15,8 @@ public record PropertyDef(
         boolean optional,
         @NonNull Set<PropertyModelType> modelTypes,
         @NonNull String type,
-        @Nullable String format
+        @Nullable String format,
+        @Nullable EnumDefinition enumDefinition
 ) {
 
     public boolean required() {
@@ -25,13 +28,17 @@ public record PropertyDef(
         if (result == null) {
             throw new IllegalStateException();
         }
-        if (result.getType() == null) {
-            throw new IllegalStateException();
+        if (result.getType() == null || result.get$ref() == null) {
+            //throw new IllegalStateException();
         }
         return result;
     }
 
     private Schema<?> generateSchemaInternal() {
+        if (enumDefinition != null) {
+            return new Schema<>()
+                    .$ref("#/components/schemas/" + enumDefinition.getName());
+        }
         if (format == null) {
             switch (type) {
                 case "int":
@@ -76,6 +83,10 @@ public record PropertyDef(
     }
 
     public static PropertyDef of(String key, String value) {
+        return of(key, value, Map.of());
+    }
+
+    public static PropertyDef of(String key, String value, Map<String, EnumDefinition> enums) {
         String name = key.endsWith("?") ? key.substring(0, key.length() - 1) : key;
         boolean optional = key.endsWith("?");
         String[] parts1 = value.split(" ");
@@ -97,7 +108,8 @@ public record PropertyDef(
         }
         String type = parts2[0];
         String format = parts2.length > 1 ? parts2[1] : null;
-        return new PropertyDef(name, optional, propertyModelTypes, type, format);
+        return new PropertyDef(name, optional, propertyModelTypes, type, format,
+                format != null ? enums.get(format) : null);
     }
 
     public boolean isIn(PropertyModelType modelType) {

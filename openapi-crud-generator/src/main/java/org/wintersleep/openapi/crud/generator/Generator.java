@@ -3,6 +3,7 @@ package org.wintersleep.openapi.crud.generator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.google.common.collect.Maps;
 import io.swagger.v3.core.util.ObjectMapperFactory;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -17,6 +18,7 @@ import org.everit.json.schema.loader.SchemaLoader;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.wintersleep.openapi.crud.model.internal.Entity;
+import org.wintersleep.openapi.crud.model.internal.EnumDefinition;
 import org.wintersleep.openapi.crud.model.internal.OpenapiCrudSchema;
 
 import java.io.File;
@@ -75,10 +77,17 @@ public class Generator {
         String startEndSchemaName = prefix + "StartEnd";
         Paths paths = new Paths();
         Components components = new Components();
+        Map<String, EnumDefinition> enums = Maps.uniqueIndex(crudSchema.getEnums(), EnumDefinition::getName);
         for (Entity entity : crudSchema.getEntities()) {
-            EntityDef entityDef = new EntityDef(entity);
+            EntityDef entityDef = new EntityDef(entity, enums);
             entityDef.addPaths(startEndSchemaName, paths);
             entityDef.addComponents(orderDirectionSchemaName, javaPackageName, components);
+        }
+        for (EnumDefinition definition : crudSchema.getEnums()) {
+            components
+                    .addSchemas(definition.getName(),
+                            new StringSchema()
+                                    ._enum(definition.getValues()));
         }
         components
                 .addSchemas(orderDirectionSchemaName,
