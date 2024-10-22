@@ -1,10 +1,7 @@
 package org.wintersleep.openapi.crud.core.provider;
 
 import com.querydsl.core.QueryResults;
-import com.querydsl.core.types.EntityPath;
-import com.querydsl.core.types.Expression;
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.*;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQuery;
 import lombok.Getter;
@@ -40,21 +37,21 @@ public abstract class JpaQueryDslDataProvider<
     protected final String resource;
     protected final Class<Entity> entityClass;
     protected final EntityPath<Entity> entityPath;
-    protected final NumberPath<Long> idPath;
+    protected final SimpleExpression<ID> idPath;
 
     @PersistenceContext
     protected EntityManager entityManager;
 
-    public JpaQueryDslDataProvider(String resource, Class<Entity> entityClass, EntityPath<Entity> entityPath, NumberPath<Long> idPath) {
+    public JpaQueryDslDataProvider(String resource, Class<Entity> entityClass, EntityPath<Entity> entityPath, Path<ID> idPath) {
         this.log = LoggerFactory.getLogger(getClass() + "." + resource);
         this.resource = resource;
         this.entityClass = entityClass;
         this.entityPath = entityPath;
-        this.idPath = idPath;
+        this.idPath = (SimpleExpression<ID>) idPath;
     }
 
     @Override
-    public ResponseEntity<List<ReadDto>> list(List<Long> ids, FilterDto filterDto, String search, SortOrder<SortPropertyId, GeneratedOrderDirection> sortOrder, StartEnd startEnd) {
+    public ResponseEntity<List<ReadDto>> list(List<ID> ids, FilterDto filterDto, String search, SortOrder<SortPropertyId, GeneratedOrderDirection> sortOrder, StartEnd startEnd) {
         if (ids != null && !ids.isEmpty()) {
             return getMany(ids);
         } else {
@@ -95,7 +92,7 @@ public abstract class JpaQueryDslDataProvider<
                 .from(entityPath);
     }
 
-    protected ResponseEntity<List<ReadDto>> getMany(Collection<Long> ids) {
+    protected ResponseEntity<List<ReadDto>> getMany(Collection<ID> ids) {
         BooleanExpression where = idPath.in(ids);
         JPAQuery<Entity> query = new JPAQuery<>(entityManager)
                 .select(entityPath)

@@ -35,6 +35,7 @@ public class Generator {
             run(args);
         } catch (Exception e) {
             e.printStackTrace();
+            System.exit(1);
         }
     }
 

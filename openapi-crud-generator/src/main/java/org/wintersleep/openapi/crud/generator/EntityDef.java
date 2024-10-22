@@ -90,6 +90,9 @@ public class EntityDef {
     public Schema<?> generateSchema(EntityModelType modelType) {
         String title = getModelName(modelType);
         List<PropertyDef> propertyDefs = getPropertyDefs(modelType);
+        if (propertyDefs.isEmpty()) {
+            return null;
+        }
         Schema<?> schema = new Schema<>(SpecVersion.V30)
                 .title(title)
                 .properties(generateProperties(modelType, propertyDefs));
@@ -150,7 +153,7 @@ public class EntityDef {
     }
 
     private Map<String, Schema<?>> generateProperties(EntityModelType modelType, List<PropertyDef> propertyDefs) {
-        Preconditions.checkArgument(!propertyDefs.isEmpty(), "Property definitions cannot be empty for {} model of {}", modelType, title);
+        Preconditions.checkArgument(!propertyDefs.isEmpty(), "Property definitions cannot be empty for %s model of %s", modelType, title);
         Map<String, Schema<?>> result = new LinkedHashMap<>();
         for (PropertyDef propertyDef : propertyDefs) {
             Schema<?> schema = propertyDef.generateSchema();
@@ -378,7 +381,9 @@ public class EntityDef {
         for (EntityOperationType operationType : operationTypes) {
             for (EntityModelType modelType : operationType.getModelTypes()) {
                 Schema<?> schema = generateSchema(modelType);
-                components.addSchemas(schema.getTitle(), schema);
+                if (schema != null) {
+                    components.addSchemas(schema.getTitle(), schema);
+                }
             }
             List<String> sortableProperties = getSortableProperties();
             if (!sortableProperties.isEmpty()) {
@@ -392,14 +397,28 @@ public class EntityDef {
         }
     }
 
-    private static Parameter idParameter() {
+    private Parameter idParameter() {
+        PropertyDef id = properties.get("id");
+        if (id != null) {
+            return new PathParameter()
+                    .name("id")
+                    .required(true)
+                    .schema(id.generateSchema());
+        }
         return new PathParameter()
                 .name("id")
                 .required(true)
                 .schema(PrimitiveType.LONG.createProperty());
     }
 
-    private static Parameter idArrayParameter() {
+    private Parameter idArrayParameter() {
+        PropertyDef id = properties.get("id");
+        if (id != null) {
+            return new QueryParameter()
+                    .name("id")
+                    .schema(new ArraySchema()
+                            .items(id.generateSchema()));
+        }
         return new QueryParameter()
                 .name("id")
                 .schema(new ArraySchema()
