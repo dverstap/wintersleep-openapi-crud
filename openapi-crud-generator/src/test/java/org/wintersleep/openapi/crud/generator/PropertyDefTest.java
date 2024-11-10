@@ -11,9 +11,11 @@ class PropertyDefTest {
     @Test
     void of() {
         assertThat(PropertyDef.of("pname", "sfcru int"))
-                .isEqualTo(new PropertyDef("pname", false, PropertyModelType.allOf(), "int", null, null));
+                .isEqualTo(new PropertyDef("pname", false, false, PropertyModelType.allOf(), "int", null, null));
         assertThat(PropertyDef.of("pname?", "sfcru string:email"))
-                .isEqualTo(new PropertyDef("pname", true, PropertyModelType.allOf(), "string", "email", null));
+                .isEqualTo(new PropertyDef("pname", true, false, PropertyModelType.allOf(), "string", "email", null));
+        assertThat(PropertyDef.of("pname[]", "sfcru string:email"))
+                .isEqualTo(new PropertyDef("pname", false, true, PropertyModelType.allOf(), "string", "email", null));
     }
 
     @Test

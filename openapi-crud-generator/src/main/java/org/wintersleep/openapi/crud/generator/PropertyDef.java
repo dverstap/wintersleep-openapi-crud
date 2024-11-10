@@ -1,6 +1,7 @@
 package org.wintersleep.openapi.crud.generator;
 
 import io.swagger.v3.core.util.PrimitiveType;
+import io.swagger.v3.oas.models.media.ArraySchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import lombok.NonNull;
@@ -13,6 +14,7 @@ import java.util.Set;
 public record PropertyDef(
         @NonNull String name,
         boolean optional,
+        boolean array,
         @NonNull Set<PropertyModelType> modelTypes,
         @NonNull String type,
         @Nullable String format,
@@ -24,17 +26,21 @@ public record PropertyDef(
     }
 
     public Schema<?> generateSchema() {
-        var result = generateSchemaInternal();
+        var result = generatePrimitiveSchema();
         if (result == null) {
             throw new IllegalStateException();
         }
         if (result.getType() == null || result.get$ref() == null) {
             //throw new IllegalStateException();
         }
+        if (array) {
+            return new ArraySchema()
+                    .items(result);
+        }
         return result;
     }
 
-    private Schema<?> generateSchemaInternal() {
+    private Schema<?> generatePrimitiveSchema() {
         if (enumDefinition != null) {
             return new Schema<>()
                     .$ref("#/components/schemas/" + enumDefinition.getName());
@@ -87,8 +93,16 @@ public record PropertyDef(
     }
 
     public static PropertyDef of(String key, String value, Map<String, EnumDefinition> enums) {
-        String name = key.endsWith("?") ? key.substring(0, key.length() - 1) : key;
         boolean optional = key.endsWith("?");
+        boolean array = key.endsWith("[]");
+        String name;
+        if (optional) {
+            name = key.substring(0, key.length() - 1);
+        } else if (array) {
+            name = key.substring(0, key.length() - 2);
+        } else {
+            name = key;
+        }
         String[] parts1 = value.split(" ");
         if (parts1.length != 2) {
             throw new IllegalArgumentException("Expected two space-separated words instead of '%s' for property '%s'"
@@ -108,7 +122,7 @@ public record PropertyDef(
         }
         String type = parts2[0];
         String format = parts2.length > 1 ? parts2[1] : null;
-        return new PropertyDef(name, optional, propertyModelTypes, type, format,
+        return new PropertyDef(name, optional, array, propertyModelTypes, type, format,
                 format != null ? enums.get(format) : null);
     }
 
