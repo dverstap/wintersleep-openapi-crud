@@ -438,6 +438,7 @@ components:
       - name
       - type
       - vatNumber
+      - address
       - verified
       - lastVerifiedAt
       - lastUnverifiedAt
@@ -454,6 +455,8 @@ components:
           format: vat
         externalId:
           type: string
+        address:
+          $ref: '#/components/schemas/Address'
         url:
           type: string
           format: url
@@ -492,6 +495,7 @@ components:
       - name
       - type
       - vatNumber
+      - address
       - verified
       properties:
         name:
@@ -503,6 +507,8 @@ components:
           format: vat
         externalId:
           type: string
+        address:
+          $ref: '#/components/schemas/Address'
         url:
           type: string
           format: url
@@ -513,12 +519,15 @@ components:
       required:
       - name
       - type
+      - address
       - verified
       properties:
         name:
           type: string
         type:
           $ref: '#/components/schemas/CompanyType'
+        address:
+          $ref: '#/components/schemas/Address'
         url:
           type: string
           format: url
@@ -617,6 +626,26 @@ components:
       enum:
       - supplier
       - customer
+    Address:
+      title: Address
+      required:
+      - street
+      - streetNumber
+      - zipCode
+      - city
+      - country
+      properties:
+        street:
+          type: string
+        streetNumber:
+          type: string
+        zipCode:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+          format: CountryCode
     SampleOrderDirection:
       type: string
       enum:

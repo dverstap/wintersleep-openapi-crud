@@ -32,7 +32,7 @@ public class EntityDef {
     private final boolean search;
     private final @NonNull Map<String, PropertyDef> properties;
 
-    public EntityDef(Entity entity, Map<String, EnumDefinition> enumDefinitionMap) {
+    public EntityDef(Entity entity, Map<String, EnumDefinition> enums, Map<String, StructDef> structs) {
         this.path = entity.getPath();
         this.title = entity.getTitle();
         this.pluralTitle = entity.getPluralTitle();
@@ -42,7 +42,7 @@ public class EntityDef {
         var properties = new LinkedHashMap<String, PropertyDef>();
         if (entity.getProperties() != null) {
             for (var entry : entity.getProperties().entrySet()) {
-                var propertyDef = PropertyDef.of(entry.getKey(), entry.getValue(), enumDefinitionMap);
+                var propertyDef = PropertyDef.ofEntity(entry.getKey(), entry.getValue(), enums, structs);
                 properties.put(propertyDef.name(), propertyDef);
             }
         }

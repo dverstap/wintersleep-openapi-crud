@@ -20,6 +20,7 @@ import org.json.JSONTokener;
 import org.wintersleep.openapi.crud.model.internal.Entity;
 import org.wintersleep.openapi.crud.model.internal.EnumDefinition;
 import org.wintersleep.openapi.crud.model.internal.OpenapiCrudSchema;
+import org.wintersleep.openapi.crud.model.internal.StructDefinition;
 
 import java.io.File;
 import java.io.IOException;
@@ -79,8 +80,13 @@ public class Generator {
         Paths paths = new Paths();
         Components components = new Components();
         Map<String, EnumDefinition> enums = Maps.uniqueIndex(crudSchema.getEnums(), EnumDefinition::getName);
+        Map<String, StructDef> structs = Maps.uniqueIndex(crudSchema.getStructs()
+                        .stream()
+                        .map(sd -> new StructDef(sd, enums))
+                        .toList()
+                , StructDef::getName);
         for (Entity entity : crudSchema.getEntities()) {
-            EntityDef entityDef = new EntityDef(entity, enums);
+            EntityDef entityDef = new EntityDef(entity, enums, structs);
             entityDef.addPaths(startEndSchemaName, paths);
             entityDef.addComponents(orderDirectionSchemaName, javaPackageName, components);
         }
@@ -89,6 +95,10 @@ public class Generator {
                     .addSchemas(definition.getName(),
                             new StringSchema()
                                     ._enum(definition.getValues()));
+        }
+        for (StructDefinition struct : crudSchema.getStructs()) {
+            StructDef structDef = new StructDef(struct, enums);
+            components.addSchemas(structDef.getName(), structDef.generateSchema());
         }
         components
                 .addSchemas(orderDirectionSchemaName,

@@ -1,19 +1,20 @@
-structs:
-
-  Address:
-    street: string
-    streetNumber: string
-    zipCode: string
-    city: string
-    country: string:country-code
-
-# TODO arrays and maps
+# TODO maps
 
 enums:
   - name: CompanyType
     values:
       - supplier
       - customer
+
+structs:
+
+  - name: Address
+    properties:
+      street: string
+      streetNumber: string
+      zipCode: string
+      city: string
+      country: string:CountryCode
 
 entities:
 
@@ -43,7 +44,7 @@ entities:
       type: sfcru string:CompanyType
       vatNumber: sfcr string:vat
       externalId?: sfcr string
-      # TODO: address: cru Address
+      address: cru Address
       url?: cru string:url
       verified: sfcru boolean
       lastVerifiedAt: sfr string:date-time

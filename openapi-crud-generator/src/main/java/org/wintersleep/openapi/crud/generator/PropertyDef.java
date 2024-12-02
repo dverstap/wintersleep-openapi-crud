@@ -18,7 +18,8 @@ public record PropertyDef(
         @NonNull Set<PropertyModelType> modelTypes,
         @NonNull String type,
         @Nullable String format,
-        @Nullable EnumDefinition enumDefinition
+        @Nullable EnumDefinition enumDefinition,
+        @Nullable StructDef structDef
 ) {
 
     public boolean required() {
@@ -44,6 +45,10 @@ public record PropertyDef(
         if (enumDefinition != null) {
             return new Schema<>()
                     .$ref("#/components/schemas/" + enumDefinition.getName());
+        }
+        if (structDef != null) {
+            return new Schema<>()
+                    .$ref("#/components/schemas/" + structDef.getName());
         }
         if (format == null) {
             switch (type) {
@@ -88,42 +93,42 @@ public record PropertyDef(
 */
     }
 
-    public static PropertyDef of(String key, String value) {
-        return of(key, value, Map.of());
+    static PropertyDef ofEntity(String key, String value) {
+        return ofEntity(key, value, Map.of(), Map.of());
     }
 
-    public static PropertyDef of(String key, String value, Map<String, EnumDefinition> enums) {
-        boolean optional = key.endsWith("?");
-        boolean array = key.endsWith("[]");
-        String name;
-        if (optional) {
-            name = key.substring(0, key.length() - 1);
-        } else if (array) {
-            name = key.substring(0, key.length() - 2);
-        } else {
-            name = key;
-        }
+    public static PropertyDef ofEntity(String key, String value,
+                                       Map<String, EnumDefinition> enums,
+                                       Map<String, StructDef> structs) {
+        Name name = Name.parse(key);
         String[] parts1 = value.split(" ");
         if (parts1.length != 2) {
             throw new IllegalArgumentException("Expected two space-separated words instead of '%s' for property '%s'"
-                    .formatted(value, name));
+                    .formatted(value, name.name()));
         }
         String propertyCodes = parts1[0];
         String invalidCodes = PropertyModelType.findInvalidCodes(propertyCodes);
         if (!invalidCodes.isEmpty()) {
             throw new IllegalArgumentException("Invalid PropertyModelType codes '%s' in '%s' for property '%s'"
-                    .formatted(invalidCodes, value, name));
+                    .formatted(invalidCodes, value, name.name()));
         }
         Set<PropertyModelType> propertyModelTypes = PropertyModelType.parse(propertyCodes);
-        String[] parts2 = parts1[1].split(":");
-        if (parts2.length > 2) {
-            throw new IllegalArgumentException("Expected 'type' or 'type:format' in the second word of '%s' for property '%s'"
-                    .formatted(value, name));
-        }
-        String type = parts2[0];
-        String format = parts2.length > 1 ? parts2[1] : null;
-        return new PropertyDef(name, optional, array, propertyModelTypes, type, format,
-                format != null ? enums.get(format) : null);
+        Type typeResult = Type.parse(name, parts1[1], value);
+        return new PropertyDef(
+                name.name(), name.optional(), name.array(), propertyModelTypes, typeResult.type(), typeResult.format(),
+                typeResult.format() != null ? enums.get(typeResult.format()) : null,
+                structs.get(typeResult.type())
+        );
+    }
+
+    public static PropertyDef ofStruct(String key, String value,
+                                       Map<String, EnumDefinition> enums) {
+        Name name = Name.parse(key);
+        Type typeResult = Type.parse(name, value, null);
+        return new PropertyDef(name.name(), name.optional(), name.array(), Set.of(), typeResult.type(), typeResult.format(),
+                typeResult.format() != null ? enums.get(typeResult.format()) : null,
+                null // nested structs not supported at the moment
+        );
     }
 
     public boolean isIn(PropertyModelType modelType) {
@@ -133,4 +138,41 @@ public record PropertyDef(
     public boolean isIn(EntityModelType modelType) {
         return modelTypes.contains(modelType.getPropertyModelType());
     }
+
+    private record Name(boolean optional, boolean array, String name) {
+        static Name parse(String key) {
+            boolean optional = key.endsWith("?");
+            boolean array = key.endsWith("[]");
+            String name;
+            if (optional) {
+                name = key.substring(0, key.length() - 1);
+            } else if (array) {
+                name = key.substring(0, key.length() - 2);
+            } else {
+                name = key;
+            }
+            return new Name(optional, array, name);
+        }
+    }
+
+
+    private record Type(String type, String format) {
+        private static Type parse(Name result, String value, String entityPropertyValue) {
+            String[] parts = value.split(":");
+            if (parts.length > 2) {
+                if (entityPropertyValue != null) {
+                    throw new IllegalArgumentException("Expected 'type' or 'type:format' in the second word of '%s' for property '%s'"
+                            .formatted(entityPropertyValue, result.name()));
+                } else {
+                    throw new IllegalArgumentException("Expected 'type' or 'type:format' in the value '%s' for property '%s'"
+                            .formatted(value, result.name()));
+                }
+            }
+            String type = parts[0];
+            String format = parts.length > 1 ? parts[1] : null;
+            return new Type(type, format);
+        }
+    }
+
+
 }

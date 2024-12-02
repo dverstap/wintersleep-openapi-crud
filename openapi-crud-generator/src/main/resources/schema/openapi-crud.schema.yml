@@ -19,6 +19,21 @@ properties:
       required:
         - name
         - values
+  structs:
+    type: array
+    items:
+      type: object
+      title: EnumDefinition
+      javaType: org.wintersleep.openapi.crud.model.internal.StructDefinition
+      properties:
+        name:
+          type: string
+        properties:
+          type: object
+          existingJavaType: java.util.Map<String,String>
+      required:
+        - name
+        - properties
   entities:
     type: array
     items:
