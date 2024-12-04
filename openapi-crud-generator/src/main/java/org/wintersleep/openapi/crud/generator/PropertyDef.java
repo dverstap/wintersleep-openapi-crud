@@ -6,7 +6,7 @@ import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import lombok.NonNull;
 import org.jetbrains.annotations.Nullable;
-import org.wintersleep.openapi.crud.model.internal.EnumDefinition;
+import org.wintersleep.openapi.crud.model.internal.EnumSpec;
 
 import java.util.Map;
 import java.util.Set;
@@ -18,7 +18,7 @@ public record PropertyDef(
         @NonNull Set<PropertyModelType> modelTypes,
         @NonNull String type,
         @Nullable String format,
-        @Nullable EnumDefinition enumDefinition,
+        @Nullable EnumSpec enumSpec,
         @Nullable StructDef structDef
 ) {
 
@@ -42,9 +42,9 @@ public record PropertyDef(
     }
 
     private Schema<?> generatePrimitiveSchema() {
-        if (enumDefinition != null) {
+        if (enumSpec != null) {
             return new Schema<>()
-                    .$ref("#/components/schemas/" + enumDefinition.getName());
+                    .$ref("#/components/schemas/" + enumSpec.getName());
         }
         if (structDef != null) {
             return new Schema<>()
@@ -98,7 +98,7 @@ public record PropertyDef(
     }
 
     public static PropertyDef ofEntity(String key, String value,
-                                       Map<String, EnumDefinition> enums,
+                                       Map<String, EnumSpec> enums,
                                        Map<String, StructDef> structs) {
         Name name = Name.parse(key);
         String[] parts1 = value.split(" ");
@@ -122,7 +122,7 @@ public record PropertyDef(
     }
 
     public static PropertyDef ofStruct(String key, String value,
-                                       Map<String, EnumDefinition> enums) {
+                                       Map<String, EnumSpec> enums) {
         Name name = Name.parse(key);
         Type typeResult = Type.parse(name, value, null);
         return new PropertyDef(name.name(), name.optional(), name.array(), Set.of(), typeResult.type(), typeResult.format(),

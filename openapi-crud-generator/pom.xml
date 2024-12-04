@@ -57,6 +57,7 @@
                     <sourceDirectory>${basedir}/src/main/resources/schema</sourceDirectory>
                     <sourceType>yamlschema</sourceType>
                     <targetPackage>org.wintersleep.openapi.crud.model.internal</targetPackage>
+                    <classNameSuffix>Spec</classNameSuffix>
                 </configuration>
                 <executions>
                     <execution>

@@ -17,10 +17,10 @@ import org.everit.json.schema.ValidationException;
 import org.everit.json.schema.loader.SchemaLoader;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-import org.wintersleep.openapi.crud.model.internal.Entity;
-import org.wintersleep.openapi.crud.model.internal.EnumDefinition;
-import org.wintersleep.openapi.crud.model.internal.OpenapiCrudSchema;
-import org.wintersleep.openapi.crud.model.internal.StructDefinition;
+import org.wintersleep.openapi.crud.model.internal.EntitySpec;
+import org.wintersleep.openapi.crud.model.internal.EnumSpec;
+import org.wintersleep.openapi.crud.model.internal.OpenApiCrudSpec;
+import org.wintersleep.openapi.crud.model.internal.StructSpec;
 
 import java.io.File;
 import java.io.IOException;
@@ -71,32 +71,32 @@ public class Generator {
         //validate(node);
 
         ObjectMapper dataMapper = new ObjectMapper(new YAMLFactory());
-        OpenapiCrudSchema crudSchema = dataMapper.readValue(inputFile, OpenapiCrudSchema.class);
-        if (crudSchema.getEntities().isEmpty()) {
+        OpenApiCrudSpec crudSpec = dataMapper.readValue(inputFile, OpenApiCrudSpec.class);
+        if (crudSpec.getEntities().isEmpty()) {
             throw new IllegalArgumentException("%s: No entities found".formatted(inputFile));
         }
         String orderDirectionSchemaName = prefix + "OrderDirection";
         String startEndSchemaName = prefix + "StartEnd";
         Paths paths = new Paths();
         Components components = new Components();
-        Map<String, EnumDefinition> enums = Maps.uniqueIndex(crudSchema.getEnums(), EnumDefinition::getName);
-        Map<String, StructDef> structs = Maps.uniqueIndex(crudSchema.getStructs()
+        Map<String, EnumSpec> enums = Maps.uniqueIndex(crudSpec.getEnums(), EnumSpec::getName);
+        Map<String, StructDef> structs = Maps.uniqueIndex(crudSpec.getStructs()
                         .stream()
                         .map(sd -> new StructDef(sd, enums))
                         .toList()
                 , StructDef::getName);
-        for (Entity entity : crudSchema.getEntities()) {
-            EntityDef entityDef = new EntityDef(entity, enums, structs);
+        for (EntitySpec entitySpec : crudSpec.getEntities()) {
+            EntityDef entityDef = new EntityDef(entitySpec, enums, structs);
             entityDef.addPaths(startEndSchemaName, paths);
             entityDef.addComponents(orderDirectionSchemaName, javaPackageName, components);
         }
-        for (EnumDefinition definition : crudSchema.getEnums()) {
+        for (EnumSpec spec : crudSpec.getEnums()) {
             components
-                    .addSchemas(definition.getName(),
+                    .addSchemas(spec.getName(),
                             new StringSchema()
-                                    ._enum(definition.getValues()));
+                                    ._enum(spec.getValues()));
         }
-        for (StructDefinition struct : crudSchema.getStructs()) {
+        for (StructSpec struct : crudSpec.getStructs()) {
             StructDef structDef = new StructDef(struct, enums);
             components.addSchemas(structDef.getName(), structDef.generateSchema());
         }

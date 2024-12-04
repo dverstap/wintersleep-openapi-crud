@@ -45,13 +45,13 @@
 
             <dependency>
                 <groupId>io.swagger.core.v3</groupId>
-                <artifactId>swagger-models</artifactId>
-                <version>2.2.25</version>
+                <artifactId>swagger-core</artifactId>
+                <version>2.2.26</version>
             </dependency>
             <dependency>
                 <groupId>io.swagger.core.v3</groupId>
-                <artifactId>swagger-core</artifactId>
-                <version>2.2.25</version>
+                <artifactId>swagger-models</artifactId>
+                <version>2.2.26</version>
             </dependency>
 
             <dependency>

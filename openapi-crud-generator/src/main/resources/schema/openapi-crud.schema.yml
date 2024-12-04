@@ -1,14 +1,14 @@
 #$schema: "https://json-schema.org/draft/2020-12/schema",
 $id: https://wintersleep.org/openapi-crud.schema.yml
-title: CrudDefinition
+title: Crud
+javaType: org.wintersleep.openapi.crud.model.internal.OpenApiCrud
 type: object
 properties:
   enums:
     type: array
     items:
       type: object
-      title: EnumDefinition
-      javaType: org.wintersleep.openapi.crud.model.internal.EnumDefinition
+      title: Enum
       properties:
         name:
           type: string
@@ -23,8 +23,7 @@ properties:
     type: array
     items:
       type: object
-      title: EnumDefinition
-      javaType: org.wintersleep.openapi.crud.model.internal.StructDefinition
+      title: Enum
       properties:
         name:
           type: string

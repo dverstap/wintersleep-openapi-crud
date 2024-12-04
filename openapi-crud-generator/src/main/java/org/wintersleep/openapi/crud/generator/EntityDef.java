@@ -15,8 +15,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import org.wintersleep.openapi.crud.model.internal.Entity;
-import org.wintersleep.openapi.crud.model.internal.EnumDefinition;
+import org.wintersleep.openapi.crud.model.internal.EntitySpec;
+import org.wintersleep.openapi.crud.model.internal.EnumSpec;
 
 import java.util.*;
 
@@ -32,16 +32,16 @@ public class EntityDef {
     private final boolean search;
     private final @NonNull Map<String, PropertyDef> properties;
 
-    public EntityDef(Entity entity, Map<String, EnumDefinition> enums, Map<String, StructDef> structs) {
-        this.path = entity.getPath();
-        this.title = entity.getTitle();
-        this.pluralTitle = entity.getPluralTitle();
-        this.operationTypes = Collections.unmodifiableSet(EntityOperationType.parse(entity.getOperations()));
-        this.audits = Collections.unmodifiableSet(AccessAudit.parse(entity.getAudit()));
-        this.search = entity.getSearch();
+    public EntityDef(EntitySpec entitySpec, Map<String, EnumSpec> enums, Map<String, StructDef> structs) {
+        this.path = entitySpec.getPath();
+        this.title = entitySpec.getTitle();
+        this.pluralTitle = entitySpec.getPluralTitle();
+        this.operationTypes = Collections.unmodifiableSet(EntityOperationType.parse(entitySpec.getOperations()));
+        this.audits = Collections.unmodifiableSet(AccessAudit.parse(entitySpec.getAudit()));
+        this.search = entitySpec.getSearch();
         var properties = new LinkedHashMap<String, PropertyDef>();
-        if (entity.getProperties() != null) {
-            for (var entry : entity.getProperties().entrySet()) {
+        if (entitySpec.getProperties() != null) {
+            for (var entry : entitySpec.getProperties().entrySet()) {
                 var propertyDef = PropertyDef.ofEntity(entry.getKey(), entry.getValue(), enums, structs);
                 properties.put(propertyDef.name(), propertyDef);
             }
@@ -153,7 +153,7 @@ public class EntityDef {
     }
 
     private Map<String, Schema<?>> generateProperties(EntityModelType modelType, List<PropertyDef> propertyDefs) {
-        Preconditions.checkArgument(!propertyDefs.isEmpty(), "Property definitions cannot be empty for %s model of %s", modelType, title);
+        Preconditions.checkArgument(!propertyDefs.isEmpty(), "Property specs cannot be empty for %s model of %s", modelType, title);
         Map<String, Schema<?>> result = new LinkedHashMap<>();
         for (PropertyDef propertyDef : propertyDefs) {
             Schema<?> schema = propertyDef.generateSchema();
